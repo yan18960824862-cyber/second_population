@@ -1,0 +1,18 @@
+/* Approved AC loader proportions and boot / fade sequence. */
+#objArchive .oa-scan{background:#000;gap:0}
+#objArchive .scan-shell{position:relative;width:min(780px,76vw,calc(68dvh * 1.4));opacity:var(--frame-opacity,0);text-shadow:0 0 2px #a0e5ff50}
+#objArchive .scan-header{height:17px;min-height:17px;margin-bottom:8px;padding:0 6px;border-radius:3px;gap:8px;font:11px/1 var(--ap);letter-spacing:.5px;box-shadow:0 0 3px #9dd8f133,inset 0 0 2px #9dd8f133;opacity:1;justify-content:space-between}
+#objArchive .scan-header>span{opacity:var(--content-opacity,0);white-space:nowrap}
+#objArchive .scan-window{aspect-ratio:1.4;border-radius:10px;border-color:#9dccdc;box-shadow:0 0 3px #94d5ec44;transform:scale(var(--frame-x,.28),var(--frame-y,.02));transform-origin:50% 50%;background:#000}
+#objArchive .scan-crosses{inset:7% 6%;opacity:var(--content-opacity,0)}
+#objArchive .scan-crosses span{opacity:.5}
+#objArchive .scan-corner,#objArchive .scan-drift,#objArchive .scan-footnote{display:none}
+#objArchive .scan-meter{width:55%;gap:10px;margin:6px 0 0 7px;opacity:var(--content-opacity,0);font:14px/1 var(--ap)}
+#objArchive .segmented-track{height:8px;padding:0;border:0;background:repeating-linear-gradient(90deg,#355c6a55 0 2px,transparent 2px 4px)}
+#objArchive .segmented-track>div{background:repeating-linear-gradient(90deg,#b9e9fa 0 2px,transparent 2px 4px);box-shadow:0 0 3px #a3def350}
+#objArchive #oaProgressNum{font:14px/1 var(--ap);min-width:33px}
+#objArchive .scan-copy{position:absolute;right:1px;bottom:0;margin:0;font:11px/1 var(--ap);letter-spacing:.6px;color:#7eabbc;opacity:var(--content-opacity,0)}
+#objArchive .scan-copy>span+span{display:none}
+#objArchive .obj-archive-close{left:24px;right:auto;top:24px;padding:0;font:12px var(--ap);letter-spacing:.5px;border:0;background:transparent;backdrop-filter:none;opacity:.5}
+#objArchive .obj-archive-close:hover,#objArchive .obj-archive-close:focus-visible{opacity:1}
+@media(max-width:760px){#objArchive .scan-shell{width:88vw}#objArchive .scan-header{font-size:9px;height:14px;min-height:14px;padding:0 4px;margin-bottom:5px}#objArchive .scan-window{border-radius:7px}#objArchive .scan-meter{width:57%;margin-left:4px}#objArchive .segmented-track{height:6px}#objArchive #oaProgressNum{font-size:12px}#objArchive .scan-copy{font-size:8px;letter-spacing:.1px}#objArchive .scan-crosses span{opacity:.4}#objArchive .obj-archive-close{left:4%;top:12px}}

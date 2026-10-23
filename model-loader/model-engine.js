@@ -21,7 +21,7 @@
 (function () {
   "use strict";
   const TAU = Math.PI * 2;
-  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 
   /* ─────────── 调色板（黑 + #A8D3E0 体系内的金属灰阶） ─────────── */
   const PAL = {
@@ -527,6 +527,7 @@
   }
 
   function buildModel(category, subtype) {
+    if (window.ArchiveModels) { const detailed = window.ArchiveModels.build(category, subtype); if (detailed) { detailed.archiveKind=category==='person'?'rider':subtype;return detailed; } }
     const m = new Mesh();
     const st = subtype || detectSubtype(category);
     if (category === "person") buildRider(m, st === "delivery");
@@ -540,6 +541,7 @@
     else if (category === "infrastructure") buildStreetLight(m);
     else if (category === "appliance") buildOutdoorUnit(m);
     else buildSedan(m);
+    m.archiveKind=category==='person'?'rider':st;
     return m;
   }
 
@@ -558,6 +560,7 @@
   }
 
   function renderSolid(ctx, m, o) {
+    if (o.archive && window.ArchiveVisuals) return window.ArchiveVisuals.render(ctx, m, o);
     const w = o.w, h = o.h;
     const yaw = o.yaw, pitch = o.pitch == null ? -0.16 : o.pitch;
     const dist = 8.6;
@@ -591,7 +594,7 @@
     const list = [];
     for (const f of m.faces) {
       const q = f.p.map(p => Cam.rotate(p, yaw, pitch));
-      const z = (q[0][2] + q[1][2] + q[2][2] + q[3][2]) / 4;
+      const z = q.reduce((sum, p) => sum + p[2], 0) / q.length;
       list.push({ f: f, q: q, z: z });
     }
     list.sort((a, b) => a.z - b.z);
@@ -709,8 +712,9 @@
 
   /* ─────────── 渲染：线网扫描（逐级揭示 + 旋转 + 频闪带） ─────────── */
   function renderScan(ctx, m, o) {
+    if(m.cleanWire && window.RiderGeometry) return window.RiderGeometry.render(ctx,m,o);
     const w = o.w, h = o.h;
-    const yaw = o.yaw, pitch = o.pitch == null ? -0.16 : o.pitch;
+    const yaw = o.yaw, pitch = o.pitch == null ? 0.20 : o.pitch;
     const dist = 8.6;
     const scale = Math.min(w * 0.62 / m.size.w, h * 0.66 / m.size.h);
     const cx = w * 0.5, cy = h * 0.54;
@@ -771,8 +775,11 @@
     }
     resize() {
       const r = this.canvas.getBoundingClientRect();
-      this.w = Math.max(1, r.width || 300);
-      this.h = Math.max(1, r.height || 240);
+      // The acquisition frame opens with scale(.28,.02). Bounding rects include
+      // that transform; using them permanently squashes the rendered model.
+      // Match ac-archive/MeshLoader: projection uses untransformed layout size.
+      this.w = Math.max(1, this.canvas.clientWidth || r.width || 300);
+      this.h = Math.max(1, this.canvas.clientHeight || r.height || 240);
       const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
       this.canvas.width = Math.round(this.w * dpr);
       this.canvas.height = Math.round(this.h * dpr);
@@ -793,16 +800,16 @@
       this.duration = opts.duration || 2100;
       this.onDone = opts.onDone || null;
       this.phase = "scan";
-      this.start = (typeof performance !== "undefined" ? performance.now() : Date.now());
+      this.start = opts.started ?? (typeof performance !== "undefined" ? performance.now() : Date.now());
       this.resize();
       if (this.raf) cancelAnimationFrame(this.raf);
       const loop = (time) => {
         const elapsed = time - this.start;
         const p = clamp(elapsed / this.duration, 0, 1);
-        const yaw = this.reduced ? 0 : clamp((p - 0.10) / 0.68) * Math.PI * 4;
-        // 完成度更快爬升：主体在前 40% 时间内成型
-        const completion = clamp((p - 0.06) / 0.42);
-        const opacity = clamp((p - 0.08) / 0.06) * clamp((0.97 - p) / 0.05);
+        const frame=window.ArchiveSequence.frame(elapsed,this.duration);
+        const yaw = this.reduced ? 0 : frame.yaw;
+        const completion = frame.completion;
+        const opacity = frame.objectOpacity;
         if (this.phase === "scan") {
           renderScan(this.ctx, this.model, {
             w: this.w, h: this.h, yaw: yaw, time: time,
@@ -811,7 +818,7 @@
         } else {
           renderSolid(this.ctx, this.model, {
             w: this.w, h: this.h,
-            yaw: this.reduced ? -0.5 : -0.5 + time * 0.00022,
+            yaw: -0.62, archive: true,
             time: time
           });
         }
@@ -834,7 +841,7 @@
         if (this.phase !== "solid") return;
         renderSolid(this.ctx, this.model, {
           w: this.w, h: this.h,
-          yaw: this.reduced ? -0.5 : -0.5 + time * 0.00022,
+          yaw: this.reduced ? -0.62 : -0.62 + Math.sin(time * 0.00015) * 0.045, archive: true,
           time: time
         });
         this.raf = requestAnimationFrame(loop);
@@ -850,6 +857,8 @@
   }
 
   window.ModelEngine = {
+    Mesh: Mesh,
+    primitives: { box: addBox, wheel: addWheel, cylinderY: addCylY, panel: panel },
     buildModel: buildModel,
     detectSubtype: detectSubtype,
     renderSolid: renderSolid,

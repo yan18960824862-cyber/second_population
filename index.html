@@ -7,6 +7,10 @@
 <title>SECOND POPULATION — 看见另一种人口 / OBJECT ARCHIVE</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="glitch.css">
+<link rel="stylesheet" href="archive/dossier.css">
+<link rel="stylesheet" href="archive/entry.css">
+<link rel="stylesheet" href="archive/ac-composition.css">
+<link rel="stylesheet" href="archive/reference-entry.css">
 </head>
 <body class="is-booting">
 
@@ -279,13 +283,13 @@
 
 <!-- ══════════ 通用 OBJECT ARCHIVE（全屏两段式：扫描 → 档案） ══════════ -->
 <section class="obj-archive" id="objArchive" hidden aria-hidden="true">
-  <button id="objArchiveClose" class="obj-archive-close" type="button">← 返回监控</button>
+  <button id="objArchiveClose" class="obj-archive-close" type="button">← BACK TO MONITOR</button>
 
   <!-- 阶段一：几何扫描 -->
   <div class="oa-stage oa-scan" id="oaScan">
     <div class="scan-shell" id="oaScanShell">
       <div class="scan-header">
-        <span id="oaScanId">SP-0000</span><span>AC / 01</span><span>GEOMETRY</span><span>ROTATION</span><span>SECOND POPULATION</span>
+        <span id="oaScanId">SP-0000</span><span id="oaScanType">OBJECT / 01</span><span>GEOMETRY</span><span>ROTATION</span><span>SECOND POPULATION</span>
       </div>
       <div class="scan-window">
         <div class="scan-crosses" id="oaCrosses" aria-hidden="true"></div>
@@ -326,15 +330,15 @@
               <span id="oaViewLabel">VIEW 01/01</span>
             </div>
             <canvas id="oaSolidCanvas" class="approved-object" aria-label="目标实体模型"></canvas>
-            <span class="visual-caption">OPERATION SIMULATION / NOT LIVE TELEMETRY</span>
+            <span class="visual-caption">STRUCTURAL STUDY / ILLUSTRATIVE RECONSTRUCTION</span>
           </section>
           <div class="insets">
             <section class="dossier-box anatomy reveal r3">
-              <div class="mini-heading">GEOMETRY / 线框结构</div>
+              <div class="mini-heading"><span id="oaInsetOne">WHEEL / GEOMETRY</span></div>
               <canvas id="oaWireCanvas" class="approved-detail" aria-label="目标线框结构图"></canvas>
             </section>
             <section class="dossier-box anatomy reveal r4">
-              <div class="mini-heading">PROFILE / 侧影视图</div>
+              <div class="mini-heading"><span id="oaInsetTwo">THERMAL / ASSEMBLY</span></div>
               <canvas id="oaProfileCanvas" class="approved-detail" aria-label="目标侧影视图"></canvas>
             </section>
           </div>
@@ -344,34 +348,35 @@
         <div class="info-column">
           <section class="dossier-box identity-box reveal r2">
             <div class="record-name">
-              <h2 id="oaName" tabindex="-1">目标名称</h2>
+              <h2 id="oaName" tabindex="-1">TARGET</h2>
               <p id="oaNameEn">TARGET LABEL</p>
             </div>
             <dl class="identity-table" id="oaIdentity"></dl>
           </section>
 
           <section class="dossier-box carbon-box reveal r4">
-            <h3>CARBON RECORD · 碳记录</h3>
+            <h3>CARBON RECORD</h3>
             <div class="carbon-body">
               <div class="carbon-value">
-                <span>USE-PHASE CO₂e</span>
+                <span>ANNUAL USE-PHASE CO₂e</span>
                 <strong id="oaCarbonValue">DATA PENDING</strong>
-                <small>kg CO₂e</small>
+                <span id="oaCarbonExpression"></span>
+                <small id="oaCarbonUnit">kg CO₂e / year</small>
                 <p id="oaCarbonNote">MODEL, ENERGY USE AND GRID<br>FACTOR REQUIRED.</p>
               </div>
               <div class="carbon-diagram">
-                <span>SCHEMATIC / NOT MEASURED</span>
+                <span>IF ELECTRIC / METHOD ONLY</span>
                 <div class="carbon-chain">
                   <div>
                     <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M32 5 16 32h13l-4 23 21-33H32Z" class="filled-wire"/></svg>
-                    <b>INPUT<br>ENERGY</b>
+                    <b>CHARGING<br>kWh / YEAR</b>
                   </div>
-                  <span class="arrow">→</span>
+                  <span class="arrow">×</span>
                   <div>
                     <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M8 51V34l12-8v9l12-9v25M32 51V9h8v42M9 51h44M14 42v4m8-4v4"/></svg>
-                    <b>EMISSION<br>FACTOR</b>
+                    <b>GRID FACTOR<br>kg CO₂e / kWh</b>
                   </div>
-                  <span class="arrow">→</span>
+                  <span class="arrow">=</span>
                   <div>
                     <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M14 44a12 12 0 0 1 0-24 17 17 0 0 1 32 0 12 12 0 0 1 0 24Z"/><text x="30" y="35" text-anchor="middle">CO₂</text></svg>
                     <b>CO₂e</b>
@@ -383,13 +388,13 @@
 
           <section class="dossier-box resource-box reveal r5">
             <header>
-              <h3>RESOURCE CONNECTION · 资源连接</h3>
-              <span>SOURCE VERIFICATION PENDING<br>BOUNDARY / USE PHASE</span>
+              <h3>RESOURCE CONNECTION</h3>
+              <span>OPERATION BOUNDARY ONLY<br>PRODUCTION ACCOUNTED SEPARATELY</span>
             </header>
             <div class="resource-network">
               <div class="resource-inputs">
-                <div><span>MATERIALS</span><b>→</b><span>MANUFACTURE</span></div>
-                <div><span>ELECTRICITY</span><b>→</b><span>OPERATION</span></div>
+                <div><span>ENERGY RECORD</span><b>+</b><span>PERIOD</span></div>
+                <div><span>REGION / YEAR</span><b>→</b><span>FACTOR</span></div>
               </div>
               <b class="network-arrow">→</b>
               <div class="resource-unit">
@@ -408,11 +413,12 @@
       </div>
 
       <footer class="dossier-footer reveal r6">
-        <button id="oaBackToScene" type="button">◀ 返回监控</button>
+        <button id="oaBackToScene" type="button">◀ BACK TO SCENE</button>
         <span id="oaFooterNote">MODEL-SPECIFIC DATA NOT YET VERIFIED.</span>
         <div>
-          <button id="oaPrev" type="button">‹ 上一目标</button>
-          <button id="oaNext" type="button">下一目标 ›</button>
+          <button id="oaPrev" type="button">‹ PREVIOUS</button>
+          <button id="oaNext" type="button">NEXT ›</button>
+          <button id="oaSource" type="button">SOURCE NOTES ↗</button>
           <button id="oaReplay" type="button">REPLAY ↻</button>
         </div>
       </footer>
@@ -420,9 +426,20 @@
   </div>
 </section>
 
+<dialog id="oaSourceDialog"><button id="oaSourceClose" type="button">CLOSE ×</button><h2>SOURCE NOTES</h2><p id="oaSourceText"></p><p>Manufacturing energy, manufacturing water and use-phase carbon have different boundaries. Energy class is not a carbon value.</p></dialog>
 <script src="glitch.js"></script>
 <script src="model-loader/cam.js"></script>
-<script src="model-loader/model-engine.js"></script>
+  <script src="archive/sequence.js"></script>
+  <script src="model-loader/model-engine.js"></script>
+  <script src="archive/models.js"></script>
+  <script src="archive/rider-geometry.js"></script>
+  <script src="archive/rider-approved.js"></script>
+  <script src="archive/rider-gpu.js"></script>
+<script src="archive/scan-assets.js"></script>
+  <script src="archive/motion.js"></script>
+<script src="archive/visuals.js"></script>
+<script src="archive/data.js"></script>
+<script src="archive/entry.js"></script>
 <script src="panels.js"></script>
 <script src="tracker.js"></script>
 </body>

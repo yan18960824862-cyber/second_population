@@ -394,7 +394,8 @@
       const ctx = canvas.getContext("2d");
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const model = window.ModelEngine.buildModel(category, subtype);
-      window.ModelEngine.renderSolid(ctx, model, { w: w, h: h, yaw: -0.5, time: 0 });
+      if(category==='person'&&window.RiderGeometry){window.RiderGeometry.thumbnail(ctx,{w,h});return;}
+      window.ModelEngine.renderSolid(ctx, model, { w: w, h: h, yaw: -0.62, time: 0, archive:true });
     }
 
     function build(objects) {

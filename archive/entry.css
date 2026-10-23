@@ -1,0 +1,10 @@
+/* Presentation only: text, data, spacing and column sizes remain intact. */
+#oaDossier.is-open .reveal{animation:none!important;opacity:1;clip-path:none}
+#oaDossier.is-revealing .dossier-box,#oaDossier.is-revealing .dossier-header{border-color:transparent}
+.entry-border{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);overflow:visible;pointer-events:none;z-index:2;fill:none;stroke:var(--line);stroke-width:1}
+.entry-border rect{width:calc(100% - 1px);height:calc(100% - 1px);stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 2px #9bdaf580)}
+#oaDossier.is-revealing .dossier-box:before,#oaDossier.is-revealing .dossier-box:after,#oaDossier.is-revealing .dossier-header:before,#oaDossier.is-revealing .dossier-header:after{animation:entryCorner .38s steps(2,end) 2}
+.info-column{position:relative}
+.entry-sweep{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#c8f3ff99,transparent);box-shadow:0 0 8px #bceaff44;z-index:3;pointer-events:none}
+@keyframes entryCorner{0%,100%{opacity:.25}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.entry-border,.entry-sweep{display:none!important}}
