@@ -1,0 +1,10 @@
+{
+  "objectId": "填写对应 tracks.json 的 objectId",
+  "category": "vehicle",
+  "name": "填写与 tracks.json 一致的中文名称",
+  "nameEn": "填写与 tracks.json 一致的英文名称",
+  "model": "sedan",
+  "description": "",
+  "descriptionSource": "",
+  "details": []
+}

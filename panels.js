@@ -226,7 +226,7 @@
 
     function getModel(category, subtype) {
       const key = category + "|" + subtype;
-      if (!models[key]) models[key] = window.ModelEngine.buildModel(category, subtype);
+      if (!models[key]) models[key] = window.ArchiveEngineering?.previewModel(category,subtype) || window.ModelEngine.buildModel(category, subtype);
       return models[key];
     }
 
@@ -394,7 +394,9 @@
       const ctx = canvas.getContext("2d");
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const model = window.ModelEngine.buildModel(category, subtype);
-      window.ModelEngine.renderSolid(ctx, model, { w: w, h: h, yaw: -0.5, time: 0 });
+      if(category==='person'&&window.RiderGeometry){window.RiderGeometry.thumbnail(ctx,{w,h});return;}
+      if(window.ArchiveEngineering?.thumbnail(ctx,category,subtype,{w,h,yaw:-.62,time:0}))return;
+      window.ModelEngine.renderSolid(ctx, model, { w: w, h: h, yaw: -0.62, time: 0, archive:true });
     }
 
     function build(objects) {

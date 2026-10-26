@@ -1,0 +1,55 @@
+/* Match the approved AC sheet, without changing its separate iframe. */
+#objArchive{--line:#84b3c4;--pixel:var(--ap)}
+#objArchive .dossier-shell{box-sizing:border-box;width:100%;max-width:1600px;min-height:0;padding:26px 4.5% 18px;margin:0 auto;text-shadow:0 0 3px #a8d8ea44}
+#objArchive .dossier-header{justify-content:space-between;margin-bottom:16px;padding:9px 16px;border-color:#86b5c5;min-height:54px}
+#objArchive .dossier-header strong{font-size:34px;letter-spacing:1.2px;white-space:nowrap}
+#objArchive .dossier-header>span{font-size:17px;letter-spacing:.3px}
+#objArchive .record-icon{width:30px;height:19px;border:2px solid #96c7d7;background:transparent;clip-path:none;position:relative;flex:none}
+#objArchive .record-icon:before{content:'';position:absolute;left:3px;top:3px;width:10px;height:4px;background:#a8d3e0}
+#objArchive .record-icon:after{content:'';position:absolute;left:3px;bottom:3px;width:20px;height:2px;background:#a8d3e0}
+#objArchive .dossier-grid{padding:0 0 10px;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:15px;align-items:stretch}
+#objArchive .dossier-box{border-color:#84b3c4;background:#000}
+#objArchive .visual-column{gap:0;min-width:0}
+#objArchive .info-column{gap:13px;min-width:0}
+#objArchive .object-visual{flex:1;min-height:340px;height:auto;overflow:hidden}
+#objArchive .mini-heading{font-size:16px;padding:9px 12px 5px;color:#b5ddea;margin:0}
+#objArchive .approved-object{position:absolute;left:6px;top:32px;width:calc(100% - 12px);height:calc(100% - 51px);min-height:0;flex:none;background:#000}
+#objArchive .visual-caption{position:absolute;bottom:7px;left:12px;font-size:10px;letter-spacing:.4px;padding:0;color:#789eae}
+#objArchive .insets{height:clamp(158px,14vw,210px);gap:12px;margin-top:12px}
+#objArchive .approved-detail{min-height:0;height:0;flex:1;width:100%;background:#000}
+#objArchive .record-name{padding:10px 15px 12px}
+#objArchive .record-name h2{font-size:clamp(32px,3.45vw,54px);font-weight:400;letter-spacing:1.3px}
+#objArchive .record-name p{font-size:22px;letter-spacing:.6px;margin-top:4px}
+#objArchive .id-row{min-height:34px;border-color:#84b3c4}
+#objArchive .id-row dt,#objArchive .id-row dd{font-size:20px;padding:7px 13px;line-height:1;border-color:#84b3c4;color:#b5ddea}
+#objArchive .carbon-box h3,#objArchive .resource-box h3{font-size:23px;font-weight:400;letter-spacing:.4px}
+#objArchive .carbon-box h3{padding:8px 13px;border-color:#84b3c4}
+#objArchive .carbon-body{min-height:160px}
+#objArchive .carbon-value{padding:10px 13px;border-color:#84b3c4}
+#objArchive .carbon-value>span{font-size:20px}
+#objArchive .carbon-value>strong{font-size:33px;white-space:normal;line-height:1.1;margin:7px 0 4px}
+#objArchive .carbon-value>small{font-size:17px}
+#objArchive .carbon-value p{font-size:14px;line-height:1.2;margin-top:14px;color:#a8cbd9}
+#objArchive .carbon-diagram>span{font-size:14px;color:#a8cbd9}
+#objArchive .carbon-chain svg{border:1px solid #84b3c4;padding:5px;height:55px;max-width:62px}
+#objArchive .carbon-chain>div:last-child svg{border:0;padding:0}
+#objArchive .resource-box{padding:0 13px 10px}
+#objArchive .resource-box header{border-bottom:1px solid #84b3c4;padding:8px 0;margin-bottom:9px}
+#objArchive .resource-network{min-height:88px;gap:8px}
+#objArchive .resource-inputs span,#objArchive .resource-result{border:1px solid #84b3c4;padding:6px 4px;font:14px/1 var(--ap)}
+#objArchive .resource-unit{border:1px solid #84b3c4;padding:5px}
+#objArchive .dossier-footer{padding:10px 0 7px;border-color:#84b3c4}
+#objArchive .carbon-value{position:relative}
+#objArchive .carbon-value>strong{padding-right:66px}
+#objArchive #oaCarbonExpression{position:absolute;right:12px;top:42px}
+#objArchive .carbon-face{display:block;width:51px;text-align:center;color:#b6e3f2}
+#objArchive .carbon-face svg{display:block;width:48px;height:48px;fill:currentColor;filter:drop-shadow(0 0 3px #91c6e34a)}
+#objArchive .carbon-face .face-ring{fill:none;stroke:currentColor;stroke-width:1.5}
+#objArchive .carbon-face small{display:block;font:11px var(--ap);margin-top:4px;color:#91b9c9;letter-spacing:.4px}
+#objArchive .carbon-face[data-status=pending]{color:#a0c6d6}
+#objArchive .carbon-chain .arrow,#objArchive .network-arrow{animation:archiveFlow 2.8s steps(6,end) infinite}
+#objArchive .carbon-chain .arrow:nth-of-type(2){animation-delay:.6s}
+@keyframes archiveFlow{0%,100%{opacity:.35}50%{opacity:1;text-shadow:0 0 5px #a8d3e0}}
+@media(prefers-reduced-motion:reduce){#objArchive .carbon-chain .arrow,#objArchive .network-arrow{animation:none}}
+@media(max-width:1100px){#objArchive .dossier-shell{padding:22px 2.5%}#objArchive .dossier-header strong{font-size:26px}#objArchive .dossier-header>span{font-size:13px}#objArchive .record-name h2{font-size:39px}#objArchive .record-name p{font-size:18px}#objArchive .id-row dt,#objArchive .id-row dd{font-size:17px;padding:7px 10px}#objArchive .carbon-value>strong{font-size:27px}#objArchive .resource-inputs span,#objArchive .resource-result{font-size:12px}}
+@media(max-width:760px){#objArchive .dossier-shell{padding:18px 4%}#objArchive .dossier-grid{grid-template-columns:1fr}#objArchive .object-visual{height:390px;min-height:390px;flex:none}#objArchive .approved-object{min-height:0;height:calc(100% - 51px)}#objArchive .insets{height:170px}#objArchive .dossier-header strong{font-size:24px}#objArchive .record-name h2{font-size:43px}#objArchive .dossier-header>span{font-size:11px}#objArchive .mini-heading{font-size:14px}#objArchive .record-name p{font-size:20px}#objArchive .carbon-value>strong{font-size:30px}}

@@ -53,6 +53,7 @@
   }
 
   const objects = data.objects;
+  if (window.ArchiveCatalog) await window.ArchiveCatalog.load(objects);
   const duration = data.duration;
 
   // 真实能耗最大值：用于相对强度条（不再写死 45000）
@@ -111,7 +112,6 @@
       '<div class="t-time">' + timeText + "</div>";
     li.addEventListener("click", () => {
       video.currentTime = obj.appear + 0.05;
-      video.play();
       selectObject(obj.objectId);
     });
     targetList.appendChild(li);
@@ -173,10 +173,10 @@
     const obj = objects.find((o) => o.objectId === objectId);
     if (!obj) return;
 
-    if (idx != null) currentOrderIndex = idx;
+    currentOrderIndex = idx != null ? idx : (idToOrderIndex.get(objectId) ?? 0);
 
     // 空调目标：打开全屏 v7 专用档案模块
-    if (obj.isAc) { openAcArchive(); return; }
+    if (obj.isAc) { if (objArchiveOpen) closeObjectArchive(); openAcArchive(); return; }
 
     // 其余目标：打开全屏 OBJECT ARCHIVE（扫描 → 档案两段式）
     openObjectArchive(obj);
@@ -189,7 +189,6 @@
     const obj = order[next];
     const maxT = video.duration || duration;
     video.currentTime = Math.min(maxT, obj.appear + 0.1);
-    video.play().catch(() => {});
     selectObject(obj.objectId, next);
   }
 
@@ -215,40 +214,7 @@
     energy: "能耗档案 · ENERGY",
   };
 
-  function renderIdentityTable(obj) {
-    const catLabel = (obj.category || "").toUpperCase();
-    const energyType = obj.info["能源类型"] || (obj.category === "person" ? "HUMAN POWER" : "ELECTRICITY");
-    const rows = [
-      ["ID", obj.objectId],
-      ["TYPE", catLabel],
-      ["FUNCTION", obj.function],
-      ["能源类型", energyType],
-      ["CONFIDENCE", obj.conf.toFixed(2)],
-      ["TRACK", obj.appear.toFixed(1) + "s — " + obj.disappear.toFixed(1) + "s"],
-    ];
-    const buckets = { ident: [], oper: [], energy: [] };
-    Object.entries(obj.info).forEach(([k, v]) => { (buckets[GROUP_OF[k] || "energy"]).push([k, v]); });
-
-    let html = "";
-    for (const [k, v] of rows) {
-      html += '<div class="id-row"><dt>' + k + "</dt><dd>" + v + "</dd></div>";
-    }
-    for (const g of ["ident", "oper", "energy"]) {
-      if (!buckets[g].length) continue;
-      html += '<div class="id-group">' + GROUP_TITLE[g] + "</div>";
-      for (const [k, v] of buckets[g]) {
-        html += '<div class="id-row"><dt>' + k + "</dt><dd>" + v + "</dd></div>";
-      }
-    }
-    const pct = Math.max(2, Math.round((obj.energyKwh / maxEnergy) * 100));
-    html +=
-      '<div class="id-group">RELATIVE INTENSITY \u00b7 \u76f8\u5bf9\u80fd\u8017\u5f3a\u5ea6</div>' +
-      '<div class="id-bar-row"><div class="lbl"><span>\u5236\u9020\u80fd\u8017\u5f3a\u5ea6</span><span>' + pct + '%</span></div>' +
-      '<div class="id-bar"><i style="--w:' + pct + '%"></i></div></div>' +
-      '<div class="id-return">RETURN VALUE \u00b7 <b>objectId = "' + obj.objectId + '"</b></div>';
-    return html;
-  }
-
+  function renderIdentityTable(obj) { return window.ArchiveData.identity(obj); }
 
   /* ── 播放控制 ── */
   playBtn.addEventListener("click", () => {
@@ -274,6 +240,8 @@
 
   // 键盘导航：档案打开时左右切换目标，Esc 关闭
   document.addEventListener("keydown", (e) => {
+    if (document.getElementById("oaInspectionDialog")?.open) return;
+    if (document.getElementById("oaSourceDialog")?.open) return;
     if (acArchiveOpen) {
       if (e.key === "Escape") { e.preventDefault(); closeAcArchive(); }
       return;
@@ -312,6 +280,7 @@
     const api = ensureAcApi();
     if (!api) { showToast("AC ARCHIVE 模块加载中…"); return; }
     acArchiveOpen = true;
+    rememberScene();
     acFrame.hidden = false;          // 先可见，画布才能取得正确尺寸
     acFrameClose.hidden = false;
     video.pause();
@@ -331,7 +300,7 @@
     if (acApi && typeof acApi.close === "function") {
       try { acApi.close(); } catch (err) {}
     }
-    video.play().catch(() => {});
+    restoreScene();
   }
 
   acFrameClose.addEventListener("click", closeAcArchive);
@@ -366,6 +335,7 @@
   const oaProfileCanvas = document.getElementById("oaProfileCanvas");
   const oaCrosses       = document.getElementById("oaCrosses");
 
+  const oaEntry = new window.ArchiveEntry(oaDossier, {reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches});
   let objArchiveOpen = false;
   let oaScanPlayer = null;    // 扫描阶段播放器（线网）
   let oaSolidPlayer = null;   // 档案阶段播放器（实体）
@@ -373,35 +343,59 @@
   let oaCurrent = null;         // 当前目标对象
   let oaRevealTimer = null;
   let oaScanRaf = null;
+  let sceneState = null;
+  function rememberScene() {
+    if (!sceneState) sceneState = { paused: video.paused, focus: document.activeElement, overflow: document.body.style.overflow };
+  }
+  function restoreScene() {
+    const saved = sceneState; sceneState = null;
+    document.body.style.overflow = saved?.overflow ?? '';
+    if (saved && !saved.paused) video.play().catch(() => {});
+    else video.pause();
+    if (saved?.focus?.isConnected) saved.focus.focus({ preventScroll: true });
+  }
+  const inspection = new window.ArchiveInspection(document.getElementById('oaInspectionDialog'));
+  document.getElementById('oaInspect').addEventListener('click', () => {
+    if (!oaCurrent || oaPhase !== 'dossier') return;
+    if (oaSolidPlayer) oaSolidPlayer.stop();
+    if (window.ArchiveMotion) window.ArchiveMotion.stop();
+    inspection.open(oaCurrent);
+  });
+  inspection.onClose = () => {
+    if (!objArchiveOpen || oaPhase !== 'dossier' || !oaCurrent) return;
+    oaSolidPlayer?.showSolid(oaCurrent.category, window.ArchiveCatalog.subtype(oaCurrent));
+    window.ArchiveMotion?.start(oaProfileCanvas, oaCurrent);
+  };
 
   if (oaCrosses) oaCrosses.innerHTML = "<span></span>".repeat(20);
 
   /* 阶段二：档案内容填充 */
   function populateObjectArchive(obj) {
-    oaSubject.textContent = "SUBJECT " + obj.objectId;
-    oaName.textContent = obj.label;
-    oaNameEn.textContent = obj.labelEn + "  ·  " + (obj.category || "").toUpperCase();
-    oaIdentity.innerHTML = renderIdentityTable(obj);
-    oaResourceUnit.textContent = obj.labelEn;
-    oaViewLabel.textContent = "VIEW 01/01";
-
-    // 碳记录：优先取真实运营碳排字段，否则标注待核验
-    const carbon = obj.info["年运营碳排放"];
-    if (carbon) {
-      oaCarbonValue.textContent = carbon.replace(/[^0-9.]/g, "") + "";
-      oaCarbonNote.innerHTML = "ANNUAL OPERATIONAL CO₂e<br>FROM TARGET RECORD / SIMULATED";
-    } else {
-      oaCarbonValue.textContent = "DATA PENDING";
-      oaCarbonNote.innerHTML = "MODEL, ENERGY USE AND GRID<br>FACTOR REQUIRED.";
-    }
-    oaFooterNote.textContent = obj.isAc
-      ? "SP-0004 走专用空调档案模块（v7 handoff）。"
-      : "MODEL-SPECIFIC DATA NOT YET VERIFIED.";
+    const A=window.ArchiveData;
+    oaSubject.textContent='SUBJECT '+obj.objectId;
+    oaName.textContent=obj.labelEn.toUpperCase();
+    oaNameEn.textContent=obj.label+' / '+A.type(obj);
+    const record = window.ArchiveCatalog.get(obj);
+    document.getElementById('oaDescription').textContent = record?.description || '';
+    oaIdentity.innerHTML=A.identity(obj);
+    oaResourceUnit.textContent=A.type(obj);
+    document.querySelector('#objArchive .resource-unit svg').innerHTML=A.symbol(obj);
+    oaViewLabel.textContent='PORTRAIT / 3D VIEW AVAILABLE';
+    oaCarbonValue.textContent='DATA PENDING';
+    document.getElementById('oaCarbonExpression').innerHTML=A.expression(obj);
+    document.getElementById('oaCarbonUnit').textContent='kg CO₂e / year';
+    const vehicle = obj.category === 'person' || obj.category === 'vehicle';
+    oaCarbonNote.textContent=(vehicle?'VEHICLE':'OBJECT')+' OPERATION ONLY / ENERGY RECORD AND SOURCED FACTOR REQUIRED.';
+    oaFooterNote.textContent='ILLUSTRATIVE MODEL / OBJECT DATA NOT YET VERIFIED.';
+    document.getElementById('oaInsetOne').textContent=obj.category==='infrastructure'?'STRUCTURE / GEOMETRY':'WHEEL / CONSTRUCTION';
+    document.getElementById('oaInsetTwo').textContent=window.ArchiveMechanisms.title(obj);
+    document.getElementById('oaSourceText').textContent=A.sourceNotes(obj);
   }
 
   /* 缩略图：线框结构 + 侧影视图（一次性静态渲染） */
   function renderArchiveInsets(obj) {
     if (!window.ModelEngine) return;
+    if (window.ArchiveVisuals) { requestAnimationFrame(()=>{ if(oaCurrent!==obj||!objArchiveOpen)return; window.ArchiveVisuals.detail(oaWireCanvas,obj,"wheel");window.ArchiveVisuals.detail(oaProfileCanvas,obj,"assembly"); }); return; }
     const subtype = window.ModelEngine.detectSubtype(obj.category, obj.labelEn);
     const model = window.ModelEngine.buildModel(obj.category, subtype);
     const draw = (canvas, mode, yaw) => {
@@ -430,38 +424,49 @@
 
   /* 阶段一：扫描 */
   function runScan(obj) {
+    oaPhase = 'scan';
+    inspection.close();
+    if(window.ArchiveMotion)window.ArchiveMotion.stop();
+    oaEntry.cancel();
+    if(oaScanPlayer)oaScanPlayer.stop();
+    if(oaSolidPlayer)oaSolidPlayer.stop();
+    if(oaScanRaf)cancelAnimationFrame(oaScanRaf);
+    if(oaRevealTimer)clearTimeout(oaRevealTimer);
     oaPhase = "scan";
     oaScan.hidden = false;
     oaDossier.hidden = true;
     oaDossier.classList.remove("is-open", "is-revealing");
     oaScanId.textContent = obj.objectId;
+    document.getElementById("oaScanType").textContent=window.ArchiveData.type(obj)+" / 01";
+    const subtype=window.ArchiveCatalog.subtype(obj);
+    const parts=obj.category==='person'?['HELMET','RIDER','FRAME','DRIVE']:subtype==='truck'?['CAB','CARGO BODY','CHASSIS','RUNNING GEAR']:obj.category==='infrastructure'?['MAST','ARM','LED ARRAY','BASE']:['BODY','GLAZING','RUNNING GEAR','THERMAL'];
+    document.getElementById('oaScanParts').replaceChildren(...parts.map(label=>{const span=document.createElement('span');span.textContent=label;return span;}));
     oaFootnoteId.textContent = obj.objectId;
     oaScanStatus.textContent = "INITIALIZING";
+    oaScanShell.style.setProperty('--frame-opacity','0');
+    oaScanShell.style.setProperty('--content-opacity','0');
+    oaScanShell.style.setProperty('--frame-x','.28');
+    oaScanShell.style.setProperty('--frame-y','.02');
     oaProgressFill.style.width = "0%";
     oaProgressNum.textContent = "00%";
     oaProgressBar.setAttribute("aria-valuenow", "0");
 
-    const duration = 2200;
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1200 : window.ArchiveSequence.duration;
     const start = performance.now();
     const reduced = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
     const step = () => {
       const el = performance.now() - start;
-      const p = Math.max(0, Math.min(1, el / duration));
-      const prog = Math.round(Math.max(0, Math.min(1, (p - 0.12) / 0.76)) * 100);
+      const frame=window.ArchiveSequence.frame(el,duration);
+      const prog = frame.progress;
       oaProgressFill.style.width = prog + "%";
       oaProgressNum.textContent = String(prog).padStart(2, "0") + "%";
       oaProgressBar.setAttribute("aria-valuenow", String(prog));
-      oaScanStatus.textContent =
-        p < 0.16 ? "INITIALIZING" :
-        p < 0.60 ? "STRUCTURE / ACQUIRING" :
-        p < 0.92 ? "ROTATION / ANALYZING" : "RECORD / READY";
-      // 扫描框开合
-      const fx = 0.30 + 0.70 * Math.max(0, Math.min(1, (p - 0.03) / 0.09));
-      const fy = 0.02 + 0.98 * Math.max(0, Math.min(1, (p - 0.06) / 0.09));
-      oaScanShell.style.setProperty("--frame-x", fx.toFixed(3));
-      oaScanShell.style.setProperty("--frame-y", fy.toFixed(3));
-      oaScanShell.style.setProperty("--content-opacity", Math.max(0, Math.min(1, (p - 0.14) / 0.05)).toFixed(3));
-      if (p < 1) { oaScanRaf = requestAnimationFrame(step); }
+      oaScanStatus.textContent=frame.label;
+      oaScanShell.style.setProperty('--frame-opacity',frame.frameOpacity.toFixed(3));
+      oaScanShell.style.setProperty('--frame-x',frame.frameX.toFixed(3));
+      oaScanShell.style.setProperty('--frame-y',frame.frameY.toFixed(3));
+      oaScanShell.style.setProperty('--content-opacity',frame.contentOpacity.toFixed(3));
+      if (!frame.done) { oaScanRaf = requestAnimationFrame(step); }
     };
     oaScanRaf = requestAnimationFrame(step);
 
@@ -469,9 +474,10 @@
     if (window.ModelEngine) {
       if (!oaScanPlayer) oaScanPlayer = new window.ModelEngine.Player(document.getElementById("oaModelCanvas"));
       oaScanPlayer.attach(document.getElementById("oaModelCanvas"));
-      oaScanPlayer.play(obj.category, window.ModelEngine.detectSubtype(obj.category, obj.labelEn), {
+      oaScanPlayer.play(obj.category, window.ArchiveCatalog.subtype(obj), {
         duration: duration,
-        onDone: function () { showDossier(obj); }
+        started: start,
+        onDone: function () { if(oaScanPlayer)oaScanPlayer.stop(); if(objArchiveOpen && oaCurrent===obj)showDossier(obj); }
       });
     } else {
       if (oaRevealTimer) clearTimeout(oaRevealTimer);
@@ -484,24 +490,23 @@
     oaPhase = "dossier";
     oaScan.hidden = true;
     oaDossier.hidden = false;
+    oaDossier.scrollTop=0;
     oaDossier.classList.add("is-revealing");
     populateObjectArchive(obj);
     renderArchiveInsets(obj);
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        oaDossier.classList.add("is-open");
-        oaDossier.classList.remove("is-revealing");
-      });
-    });
+    if(window.ArchiveMotion)requestAnimationFrame(()=>{if(objArchiveOpen&&oaCurrent===obj)window.ArchiveMotion.start(oaProfileCanvas,obj);});
+    oaEntry.play();
+    requestAnimationFrame(function () { if(objArchiveOpen && oaCurrent===obj)oaDossier.classList.add("is-open"); });
     // 实体模型持续渲染（切换到档案阶段的画布）
     if (window.ModelEngine) {
       if (!oaSolidPlayer) oaSolidPlayer = new window.ModelEngine.Player(oaSolidCanvas);
       oaSolidPlayer.attach(oaSolidCanvas);
-      oaSolidPlayer.showSolid(obj.category, window.ModelEngine.detectSubtype(obj.category, obj.labelEn));
+      oaSolidPlayer.showSolid(obj.category, window.ArchiveCatalog.subtype(obj));
     }
   }
 
   function openObjectArchive(obj) {
+    rememberScene();
     selectedId = obj.objectId;
     oaCurrent = obj;
     boxEls.forEach((el, id) => el.classList.toggle("selected", id === obj.objectId));
@@ -511,6 +516,7 @@
 
     objArchiveOpen = true;
     objArchive.hidden = false;
+    objArchive.setAttribute("aria-hidden","false");
     document.body.style.overflow = "hidden";
     video.pause();
     runScan(obj);
@@ -519,14 +525,19 @@
   function closeObjectArchive() {
     if (!objArchiveOpen) return;
     objArchiveOpen = false;
+    inspection.close();
+    if (document.getElementById('oaSourceDialog').open) document.getElementById('oaSourceDialog').close();
+    if(window.ArchiveMotion)window.ArchiveMotion.stop();
     objArchive.hidden = true;
+    objArchive.setAttribute("aria-hidden","true");
+    oaEntry.cancel();
     document.body.style.overflow = "";
     if (oaScanPlayer) oaScanPlayer.stop();
     if (oaSolidPlayer) oaSolidPlayer.stop();
     if (oaScanRaf) cancelAnimationFrame(oaScanRaf);
     if (oaRevealTimer) clearTimeout(oaRevealTimer);
     if (Panels.library && Panels.library.markActive) Panels.library.markActive(null);
-    video.play().catch(function () {});
+    restoreScene();
   }
 
   objArchiveClose.addEventListener("click", closeObjectArchive);
@@ -540,6 +551,10 @@
   if (oaReplay) oaReplay.addEventListener("click", function () {
     if (oaCurrent) runScan(oaCurrent);
   });
+
+  document.getElementById('oaSource').addEventListener('click',()=>document.getElementById('oaSourceDialog').showModal());
+  document.getElementById('oaSourceClose').addEventListener('click',()=>document.getElementById('oaSourceDialog').close());
+  window.addEventListener('resize',()=>{if(!objArchiveOpen)return;if(oaPhase==='scan'&&oaScanPlayer)oaScanPlayer.resize();if(oaPhase==='dossier'){if(oaSolidPlayer)oaSolidPlayer.resize();renderArchiveInsets(oaCurrent);}});
 
   /* ── 数字滚动动画 ── */
   const shown = { objects: 0, energy: 0, water: 0, persons: 0 };
@@ -647,7 +662,7 @@
 
   video.addEventListener("loadedmetadata", () => {
     lastMainSize = "";
-    video.play().catch(() => { playBtn.textContent = "▶"; });
+    if (!objArchiveOpen && !acArchiveOpen) video.play().catch(() => { playBtn.textContent = "▶"; });
   });
 
   window.addEventListener("resize", () => {
@@ -668,7 +683,6 @@
         if (obj.isAc) { openAcArchive(); return; }
         const maxT = video.duration || duration;
         video.currentTime = Math.min(maxT, obj.appear + 0.1);
-        video.play().catch(() => {});
         selectObject(obj.objectId);
       });
     }
