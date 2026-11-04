@@ -299,7 +299,13 @@
   });
 
   /* ── 空调档案模块（v7 handoff）同源 iframe 集成 ──
-     按 README 推荐方式：先显示 iframe 再 open，监听 sp:archive-close 后隐藏 */
+     旧实现：acApi 未就绪时直接 return，且依赖 load / sp-ready 事件；
+     这两类事件若早于本脚本注册监听器（脚本执行竞态）就会丢失，导致点击永远打不开。
+     新实现：点击即显示 iframe；用轮询直查 contentWindow.SecondPopulationArchive，
+     命中后立即 open，彻底规避事件竞态。 */
+  let acPendingOpen = false;   // 已点击、正等待模块就绪
+  let acPollTimer = null;
+
   function ensureAcApi() {
     if (acApi) return acApi;
     try {
@@ -315,28 +321,52 @@
     return acApi;
   }
 
+  // 命中 API 且处于待打开态 → 直接进入档案；返回是否成功
+  function attemptAcOpen() {
+    if (!ensureAcApi()) return false;
+    if (acPendingOpen) {
+      acPendingOpen = false;
+      try { acApi.open("SP-0004"); }   // 直接进入旋转加载 → 档案，跳过模块演示空间
+      catch (err) { console.error("[AC] open 失败:", err); }
+    }
+    return true;
+  }
+
   acFrame.addEventListener("load", ensureAcApi);
   window.addEventListener("message", (e) => {
     if (e.data && e.data.type === "sp-ready") ensureAcApi();
   });
 
   function openAcArchive() {
-    const api = ensureAcApi();
-    if (!api) { showToast("AC ARCHIVE 模块加载中…"); return; }
     acArchiveOpen = true;
-    acFrame.hidden = false;          // 先可见，画布才能取得正确尺寸
+    acPendingOpen = true;
+    acFrame.hidden = false;          // 先可见：①画布才能取得正确尺寸 ②用户至少看到全屏档案空间
     acFrameClose.hidden = false;
     video.pause();
     document.body.style.overflow = "hidden";
-    requestAnimationFrame(() => {
-      try { api.open("SP-0004"); }   // 直接进入旋转加载 → 档案，跳过模块演示空间
-      catch (err) { console.error("[AC] open 失败:", err); }
-    });
+
+    // 模块已就绪 → 立即打开
+    if (attemptAcOpen()) return;
+
+    // 否则轮询等待（最多 ~10s），直查 contentWindow，不依赖可能丢失的事件
+    showToast("空调档案模块载入中…");
+    if (acPollTimer) clearInterval(acPollTimer);
+    let tries = 0;
+    acPollTimer = setInterval(() => {
+      tries++;
+      if (attemptAcOpen() || tries > 100) {
+        clearInterval(acPollTimer);
+        acPollTimer = null;
+        if (tries > 100 && !acApi) showToast("空调档案加载超时，请重试");
+      }
+    }, 100);
   }
 
   function closeAcArchive() {
     if (!acArchiveOpen) return;
+    if (acPollTimer) { clearInterval(acPollTimer); acPollTimer = null; }
     acArchiveOpen = false;
+    acPendingOpen = false;
     acFrame.hidden = true;
     acFrameClose.hidden = true;
     document.body.style.overflow = "";
@@ -369,7 +399,9 @@
   const oaNameEn        = document.getElementById("oaNameEn");
   const oaIdentity      = document.getElementById("oaIdentity");
   const oaCarbonValue   = document.getElementById("oaCarbonValue");
+  const oaCarbonUnit    = document.getElementById("oaCarbonUnit");
   const oaCarbonNote    = document.getElementById("oaCarbonNote");
+  const oaRefCard       = document.getElementById("oaRefCard");
   const oaResourceUnit  = document.getElementById("oaResourceUnit");
   const oaFooterNote    = document.getElementById("oaFooterNote");
   const oaViewLabel     = document.getElementById("oaViewLabel");
@@ -389,6 +421,89 @@
   if (oaCrosses) oaCrosses.innerHTML = "<span></span>".repeat(20);
 
   /* 阶段二：档案内容填充 */
+  /* ── 参考数据卡 ──
+     数据口径对齐档案参考图（空调室外机 / 汽车两张卡）：
+     指标行 + 估算说明 + 排放因子 + 「数据性质 · 非现场实测 ｜ 来源」页脚。
+     电力因子 0.5306 kg CO₂/kWh 为 2023 年全国平均值（生态环境部）。 */
+  function refCardFor(obj) {
+    const energy = obj.info["能源类型"] || "";
+    const annual = obj.info["年运营碳排放"] || "—";
+    if (obj.isAc) {
+      return {
+        rows: [
+          ["能效等级", "1 级"],
+          ["APF", "4.75"],
+          ["碳排放", "约 3.61 kg CO₂/天"],
+        ],
+        note: "按 850 W 每日运行 8 小时估算，仅计用电间接排放；排放因子采用 2023 年全国平均值 0.5306 kg CO₂/kWh。",
+        foot: ["参考数据 · 非现场实测", "来源：小米官方参数页"],
+        carbon: { value: "3.61", unit: "kg CO₂ / 天" },
+      };
+    }
+    if (obj.category === "vehicle" && obj.function === "PRIVATE TRANSPORT") {
+      return {
+        rows: [
+          ["能耗标识参考", "GB 22757.2—2023"],
+          ["百公里电耗", "15.0 kWh/100 km"],
+          ["用电间接排放", "约 7.96 kg CO₂/100 km"],
+        ],
+        note: "纯电动情景示例，按 15.0 kWh × 0.5306 估算；电力因子为 2023 年全国平均值。目标本体年运营碳排放（" + annual + "）为模拟估算。",
+        foot: ["纯电动情景示例 · 非现场实测", "来源：生态环境部"],
+        carbon: { value: "7.96", unit: "kg CO₂ / 100 km · 纯电动情景" },
+      };
+    }
+    if (obj.category === "infrastructure") {
+      return {
+        rows: [
+          ["年运营耗电", obj.info["年运营耗电"] || "1,100 kWh"],
+          ["电力因子", "0.5306 kg CO₂/kWh"],
+          ["年运营碳排放", "约 0.58 t CO₂"],
+        ],
+        note: "按年运营耗电 1,100 kWh × 0.5306 估算；电力因子为 2023 年全国平均值，仅计用电间接排放。",
+        foot: ["参考数据 · 非现场实测", "来源：生态环境部"],
+        carbon: { value: "0.58", unit: "t CO₂e / 年" },
+      };
+    }
+    if (energy.indexOf("纯电动") >= 0) {
+      return {
+        rows: [
+          ["电力因子", "0.5306 kg CO₂/kWh"],
+          ["因子口径", "2023 年全国平均值"],
+          ["年运营碳排放", annual],
+        ],
+        note: "按年运营耗电 × 电力因子估算，仅计用电间接排放；目标本体数据为模拟估算。",
+        foot: ["参考数据 · 非现场实测", "来源：生态环境部"],
+        carbon: null,   // 沿用既有年碳排数值
+      };
+    }
+    if (energy.indexOf("柴油") >= 0) {
+      return {
+        rows: [["年运营碳排放", annual]],
+        note: "柴油情景 · 模拟估算，未套用用电排放因子；非现场实测。",
+        foot: ["模拟估算数据 · 非现场实测", "来源：模拟估算模型"],
+        carbon: null,
+      };
+    }
+    // 人员等其他目标：仅给既有模拟值 + 口径说明
+    return {
+      rows: [["年运营碳排放", annual]],
+      note: "人力 / 电力混合出行情景 · 模拟估算，非现场实测。",
+      foot: ["模拟估算数据 · 非现场实测", "来源：模拟估算模型"],
+      carbon: null,
+    };
+  }
+
+  function renderRefCard(profile) {
+    if (!oaRefCard) return;
+    let html = "<dl>";
+    for (const [k, v] of profile.rows) {
+      html += '<div class="ref-row"><dt>' + k + "</dt><dd>" + v + "</dd></div>";
+    }
+    html += "</dl>" + '<p class="ref-note">' + profile.note + "</p>" +
+      '<div class="ref-foot"><b>' + profile.foot[0] + "</b><span>" + profile.foot[1] + "</span></div>";
+    oaRefCard.innerHTML = html;
+  }
+
   function populateObjectArchive(obj) {
     oaSubject.textContent = "SUBJECT " + obj.objectId;
     oaName.textContent = obj.label;
@@ -397,13 +512,21 @@
     oaResourceUnit.textContent = obj.labelEn;
     oaViewLabel.textContent = "VIEW 01/01";
 
-    // 碳记录：优先取真实运营碳排字段，否则标注待核验
+    // 碳记录 + 参考数据卡（口径见 refCardFor）
+    const profile = refCardFor(obj);
+    renderRefCard(profile);
     const carbon = obj.info["年运营碳排放"];
-    if (carbon) {
-      oaCarbonValue.textContent = carbon.replace(/[^0-9.]/g, "") + "";
+    if (profile.carbon) {
+      oaCarbonValue.textContent = profile.carbon.value;
+      oaCarbonUnit.textContent = profile.carbon.unit;
+      oaCarbonNote.innerHTML = profile.note.replace("；", "；<br>");
+    } else if (carbon) {
+      oaCarbonValue.textContent = carbon.replace(/[^0-9.]/g, "");
+      oaCarbonUnit.textContent = "t CO₂e / 年 · 模拟估算";
       oaCarbonNote.innerHTML = "ANNUAL OPERATIONAL CO₂e<br>FROM TARGET RECORD / SIMULATED";
     } else {
       oaCarbonValue.textContent = "DATA PENDING";
+      oaCarbonUnit.textContent = "kg CO₂e";
       oaCarbonNote.innerHTML = "MODEL, ENERGY USE AND GRID<br>FACTOR REQUIRED.";
     }
     oaFooterNote.textContent = obj.isAc

@@ -18,187 +18,44 @@
   function hash(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
 
   /* ═══════════════════════════════════════════════════
-     1. 数据可视化粒子场（制成品 vs 世界人口 1950—2025）
+     1. 数据可视化（三维粒子场：工业制成品 vs 世界人口）
+        由 viz3d.js（Three.js）接管 #dvCanvas，本 IIFE 仅做引导与控件桥接。
      ═══════════════════════════════════════════════════ */
   const DataViz = (function () {
     const canvas = el("dvCanvas");
     if (!canvas) return { update() {} };
-    const ctx = canvas.getContext("2d");
     const range = el("dvRange");
     const toggle = el("dvToggle");
+    const resetBtn = el("dvReset");
+    const rateSel = el("dvRate");
     const yearValue = el("dvYearValue");
     const objectsValue = el("dvObjectsValue");
     const peopleValue = el("dvPeopleValue");
+    const footEl = el("dvFoot");
+    const interpFlag = el("dvInterpFlag");
+    const fullBtn = el("dvFull");
 
-    const START = 1950, END = 2025, YEARS = END - START;
-    const MAX_DOTS = 1500, BASE_DOTS = 8;
-    let currentYear = START, playing = true, lastFrame = 0, elapsed = 0, lastDraw = 0;
-    let W = 0, H = 0, dpr = 1;
-    let objectDots = [], peopleDots = [];
-
-    // 人口曲线：先快后慢；制成品曲线：后段加速
-    const popCurve = t => 1.4 * t - 0.4 * t * t;
-    const objCurve = t => 0.6 * t + 1.2 * t * t - 0.8 * t * t * t;
-    const clampT = t => clamp(t, 0, 1);
-
-    function countAt(curve, t) { return BASE_DOTS + Math.floor(MAX_DOTS * clampT(curve(t))); }
-    function metrics(t) {
-      return {
-        pop: 2.5 + 5.7 * popCurve(t),
-        obj: 0.8 + 5.7 * objCurve(t)
-      };
-    }
-    function mix(a, b, t) {
-      const hx = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
-      const x = hx(a), y = hx(b), f = clamp(t, 0, 1);
-      return "rgb(" + x.map((v, i) => Math.round(v + (y[i] - v) * f)).join(",") + ")";
-    }
-
-    /* 粒子场：u=水平位置 v=列内高度（与序号相关→随年份自下而上生长）
-       side/r/p/h=抖动幅度/半径/相位/色相档位（industrial-growth 同源算法） */
-    function dots(seed) {
-      let s = seed >>> 0;
-      const rand = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
-      return Array.from({ length: MAX_DOTS }, (_, i) => ({
-        u: rand(),
-        v: clamp(Math.pow(i / (MAX_DOTS - 1), 0.76) + (rand() - 0.5) * 0.055, 0, 1),
-        side: (rand() - 0.5) * 2,
-        r: 0.8 + Math.pow(rand(), 1.15) * 2.1,
-        p: rand() * TAU,
-        h: rand()
-      }));
-    }
-
-    function resize() {
-      const r = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = Math.max(1, r.width); H = Math.max(1, r.height);
-      canvas.width = Math.round(W * dpr);
-      canvas.height = Math.round(H * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // 粒子全用相对坐标，resize 只需补种
-      if (!objectDots.length) { objectDots = dots(22); peopleDots = dots(91); }
-      draw();
-    }
-
-    /* 上升粒子流：随年份密度增长，整体 + 个体双向摆动，screen 叠加发光 */
-    function stream(arr, curve, t, isObject) {
-      ctx.save();
-      ctx.globalCompositeOperation = "screen";
-      const n = countAt(curve, t);
-      const globalSway = Math.sin(elapsed * 0.34) * (W * 0.012);
-      const x0 = isObject ? W * 0.035 : W * 0.535;
-      const x1 = isObject ? W * 0.465 : W * 0.965;
-      const regionW = x1 - x0;
-      const baseline = H - 6;
-      const maxH = H - 24;
-      for (let i = 0; i < n; i++) {
-        const p = arr[i];
-        const u = p.u;
-        const rise = 1 - Math.pow(1 - u, 1.82);
-        const height = maxH * rise;
-        const sway = Math.sin(elapsed * 0.72 + p.p + u * 4.5) * (1 + 5 * u);
-        const x = clamp(x0 + u * regionW + globalSway + sway + p.side * (0.6 + u * 2), x0 + 2, x1 - 2);
-        const y = baseline - (4 + p.v * height) + Math.cos(elapsed * 0.48 + p.p) * 1.6;
-        // 制成品：深蓝→亮蓝；人口：青→近白青（同参考配色，冷调一致）
-        const color = isObject ? mix("#1766f5", "#55a4ff", p.h * 0.68) : mix("#67c2ff", "#d3f0ff", p.h);
-        ctx.fillStyle = color;
-        ctx.globalAlpha = 0.48 + p.h * 0.45;
-        ctx.beginPath();
-        ctx.arc(x, y, p.r * (0.76 + 0.55 * u), 0, TAU);
-        ctx.fill();
-      }
-      ctx.restore();
-      ctx.globalAlpha = 1;
-    }
-
-    function draw() {
-      if (!W || !H || !objectDots.length) return;
-      ctx.clearRect(0, 0, W, H);
-      const t = clampT((currentYear - START) / YEARS);
-      // 顶部微弱辉光（参考稿的 radial 氛围）
-      const g = ctx.createRadialGradient(W / 2, H * 0.3, 2, W / 2, H * 0.3, H * 0.9);
-      g.addColorStop(0, "rgba(90,170,235,.07)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
-      // 两条泳道基线
-      ctx.strokeStyle = "rgba(168,211,224,.22)";
-      ctx.lineWidth = 1;
-      [W * 0.035, W * 0.535].forEach(function (x0) {
-        ctx.beginPath();
-        ctx.moveTo(x0, H - 4);
-        ctx.lineTo(x0 + W * 0.43, H - 4);
-        ctx.stroke();
+    let app = null;
+    // 动态导入 ES 模块（importmap 已解析 'three'）
+    import("./viz3d.js").then((M) => {
+      app = M.initViz3D({
+        canvas,
+        controls: { range, toggle, resetBtn, rateSel, yearValue, objectsValue, peopleValue, footEl, interpFlag, fullBtn }
       });
-      // 中轴分隔（虚线）
-      ctx.strokeStyle = "rgba(168,211,224,.16)";
-      ctx.setLineDash([3, 4]);
-      ctx.beginPath();
-      ctx.moveTo(W / 2, 0);
-      ctx.lineTo(W / 2, H);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      // 泳道顶部标签
-      ctx.font = "8px ui-monospace, Consolas, monospace";
-      ctx.fillStyle = "rgba(85,164,255,.85)";
-      ctx.fillText("OBJECTS", W * 0.035 + 2, 12);
-      ctx.fillStyle = "rgba(103,194,255,.85)";
-      ctx.fillText("POPULATION", W * 0.535 + 2, 12);
-      // 两股粒子流
-      stream(objectDots, objCurve, t, true);
-      stream(peopleDots, popCurve, t, false);
-    }
-
-    function updateLabels() {
-      const t = clampT((currentYear - START) / YEARS);
-      const m = metrics(t);
-      const y = Math.floor(currentYear);
-      yearValue.textContent = String(y);
-      if (range) range.value = String(y);
-      objectsValue.textContent = m.obj.toFixed(2) + "B";
-      peopleValue.textContent = m.pop.toFixed(2) + "B";
-    }
-
-    function tick(now) {
-      if (!lastFrame) lastFrame = now;
-      const dt = Math.min(0.05, (now - lastFrame) / 1000);
-      lastFrame = now;
-      elapsed += dt;   // 粒子摆动时钟：暂停年份推进也保持流动
-      if (playing) {
-        currentYear += dt * 2.6;
-        if (currentYear >= END) { currentYear = END; setPlaying(false); }
-        updateLabels();
+      window.__viz3d = app;
+    }).catch((err) => {
+      console.error("[viz3d] 初始化失败：", err);
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "rgba(168,211,224,.5)";
+        ctx.font = '11px monospace';
+        ctx.fillText("3D 可视化加载失败（模块/WebGL）", 8, 20);
       }
-      // 限到 ~30fps：摆动极慢，肉眼无差，省下一半 canvas 重绘开销
-      if (now - lastDraw >= 33) { lastDraw = now; draw(); }
-      requestAnimationFrame(tick);
-    }
-
-    function setPlaying(v) {
-      playing = v;
-      if (toggle) {
-        toggle.textContent = playing ? "暂停" : "播放";
-        toggle.setAttribute("aria-pressed", String(playing));
-      }
-    }
-
-    if (toggle) toggle.addEventListener("click", () => {
-      if (!playing && currentYear >= END) currentYear = START;
-      setPlaying(!playing);
     });
-    if (range) range.addEventListener("input", (e) => {
-      currentYear = Number(e.target.value);
-      setPlaying(false);
-      updateLabels();
-      draw();
-    });
-    window.addEventListener("resize", resize);
-    updateLabels();
-    resize();
-    requestAnimationFrame(tick);
 
-    return { update() { updateLabels(); } };
+    return {
+      update() { if (app) app.refreshLabels(); }
+    };
   })();
 
   /* ═══════════════════════════════════════════════════

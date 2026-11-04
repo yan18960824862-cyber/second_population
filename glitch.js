@@ -934,6 +934,7 @@
   }
 
   /* ═════════════ 4. 转场：信号崩塌 ═════════════ */
+  let gfxActive = true;   // 开场 glitch 主循环开关：进入主站后置 false 以停止空烧 CPU
   function enterSite() {
     if (bootDone) return;
     bootDone = true;
@@ -1054,7 +1055,7 @@
     else Gfx.video.addEventListener("loadeddata", tryPlay, { once: true });
 
     /* 主循环 —— 仅服务于开场 glitch 画布；进入主站后停掉，避免空烧 CPU */
-    let gfxActive = true;
+    gfxActive = true;
     (function loop(now) {
       if (!gfxActive) return;
       if (!lastT) lastT = now;

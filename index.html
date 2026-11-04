@@ -8,6 +8,14 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='5' y='11' width='22' height='3' fill='%23A8D3E0'/%3E%3Crect x='9' y='18' width='15' height='3' fill='%23A8D3E0'/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="glitch.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.min.js",
+    "three/addons/": "./vendor/three/jsm/"
+  }
+}
+</script>
 </head>
 <body class="is-booting">
 
@@ -212,36 +220,69 @@
 
   <!-- ══════════ 右侧：数据可视化（制成品 vs 世界人口） ══════════ -->
   <aside class="dataviz" id="dataviz" aria-label="数据可视化：工业制成品与世界人口">
+    <!-- 主体：单一 WebGL 画布（左右并列两个系统） + 右侧窄栏（趋势/图例/日志） -->
+    <div class="dv-main">
     <header class="dv-head">
       <span class="dv-title">工业制成品 vs 世界人口</span>
       <span class="dv-range">1950 — 2025</span>
     </header>
 
-    <div class="dv-lanes">
-      <div class="dv-lane dv-objects">
-        <div class="dv-label"><i class="swatch"></i>工业制成品</div>
-        <div class="dv-value" id="dvObjectsValue">0.80B</div>
-        <div class="dv-unit">累计制造量 · 示意</div>
-      </div>
-      <div class="dv-lane dv-people">
-        <div class="dv-label"><i class="swatch"></i>世界人口</div>
-        <div class="dv-value" id="dvPeopleValue">2.50B</div>
-        <div class="dv-unit">人口 · 示意模型</div>
-      </div>
-    </div>
+<!-- 顶部统计：两套系统各自的名称 / 绝对值 / 单位 / 变化 / 指数 / 来源 -->
+    <div class="dv-stats" id="dvStats"></div>
 
-    <div class="dv-plot">
-      <canvas id="dvCanvas" role="img" aria-label="两列下落粒子分别累积工业制成品与世界人口"></canvas>
+    <div class="dv-plot" id="dvRoot">
+      <canvas id="dvCanvas" role="img" aria-label="左侧工业制成品粒子场，右侧世界人口粒子场，共享时间轴"></canvas>
+
+      <!-- 覆盖层：扫描线 / 追踪框 / 放大镜 / 日志 -->
+      <div class="dv-overlay" id="dvOverlay">
+        <div class="dv-scan" id="dvScan"></div>
+        <div class="dv-sep" aria-hidden="true"></div>
+        <div class="dv-side-lab left">INDUSTRIAL OBJECTS<span>工业制成品</span></div>
+        <div class="dv-side-lab right">WORLD POPULATION<span>世界人口</span></div>
+        <div class="dv-lens" id="dvLens" hidden>
+          <span class="lv-corner tl"></span><span class="lv-corner tr"></span>
+          <span class="lv-corner bl"></span><span class="lv-corner br"></span>
+          <span class="lv-label">FOCUS LENS</span>
+        </div>
+      </div>
+
       <div class="dv-axis" aria-hidden="true">
         <span>1950</span><span id="dvYearValue">1950</span><span>2025</span>
       </div>
     </div>
 
+    <!-- 悬停 / 锁定详情 -->
+    <div class="dv-detail" id="dvDetail" hidden></div>
+
     <div class="dv-controls">
       <button id="dvToggle" type="button" aria-pressed="true">暂停</button>
+      <button id="dvReset" type="button" title="重置到 1950">重置</button>
+      <button id="dvFull" type="button" aria-pressed="false" title="切换全屏分析模式">全屏分析</button>
       <input id="dvRange" type="range" min="1950" max="2025" step="1" value="1950" aria-label="选择年份">
+      <select id="dvRate" aria-label="播放速度">
+        <option value="1.5">0.5×</option>
+        <option value="3.2" selected>1×</option>
+        <option value="6.4">2×</option>
+      </select>
+      <span class="dv-interp" id="dvInterpFlag">原始节点</span>
     </div>
-    <div class="dv-foot">粒子密度表示相对量级，非一一对应计数</div>
+
+    <div class="dv-foot" id="dvFoot">粒子密度表示相对量级，非一一对应计数</div>
+    </div>
+
+    <!-- 右侧窄栏：趋势线 / 图例 / 识别日志（不与画布争夺纵向空间） -->
+    <aside class="dv-side">
+    <!-- 趋势线：相对增长指数（同尺度可比） -->
+    <div class="dv-trend" id="dvTrend"></div>
+
+    <!-- 图例：视觉编码说明 -->
+    <div class="dv-legend" id="dvLegend"></div>
+
+    <div class="dv-log" id="dvLog">
+      <div class="dv-log-h">TRACKING LOG / 识别日志</div>
+      <ul></ul>
+    </div>
+    </aside>
   </aside>
 
   <!-- ══════════ 底部：3D 人群 + 档案库 + 实时代码 ══════════ -->
@@ -378,7 +419,7 @@
               <div class="carbon-value">
                 <span>USE-PHASE CO₂e</span>
                 <strong id="oaCarbonValue">DATA PENDING</strong>
-                <small>kg CO₂e</small>
+                <small id="oaCarbonUnit">kg CO₂e</small>
                 <p id="oaCarbonNote">MODEL, ENERGY USE AND GRID<br>FACTOR REQUIRED.</p>
               </div>
               <div class="carbon-diagram">
@@ -401,6 +442,11 @@
                 </div>
               </div>
             </div>
+          </section>
+
+          <section class="dossier-box refcard-box reveal r45">
+            <h3>REFERENCE DATA · 参考数据</h3>
+            <div class="refcard" id="oaRefCard"></div>
           </section>
 
           <section class="dossier-box resource-box reveal r5">
