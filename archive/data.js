@@ -1,0 +1,25 @@
+/* Archive-only presentation. Original tracks.json values remain unchanged. */
+(function(){
+ 'use strict';
+ const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const num=new Intl.NumberFormat('en-US',{maximumFractionDigits:3});
+ function carbon(raw){if(!raw)return null;const text=String(raw).replace(/,/g,''),match=text.match(/(\d+(?:\.\d+)?)\s*(kg|t|tonnes?|吨|千克)\b/i)||text.match(/(\d+(?:\.\d+)?)\s*(吨|千克)/);if(!match)return null;const factor=/^(t|tonne|tonnes|吨)$/i.test(match[2])?1000:1;return {kg:Number(match[1])*factor,original:String(raw)};}
+ function energy(obj){const s=String((obj.info||{})['能源类型']||'');if(s.includes('纯电')||s.includes('电动'))return 'ELECTRIC / INFERRED';if(s.includes('柴油'))return 'DIESEL / INFERRED';if(s.includes('燃油'))return 'PETROL / INFERRED';return obj.category==='infrastructure'?'ELECTRICITY':'UNVERIFIED';}
+ function type(obj){if(obj.category==='person')return 'RIDER + VEHICLE';if(window.ModelEngine)return window.ModelEngine.detectSubtype(obj.category,obj.labelEn).toUpperCase();return String(obj.category||'OBJECT').toUpperCase();}
+ function row(k,v){return '<div class="id-row"><dt>'+escape(k)+'</dt><dd>'+escape(v)+'</dd></div>';}
+ function expression(obj){
+  const a=obj.carbonAssessment,verified=a&&a.status==='verified'&&a.source&&a.comparison&&['low','medium','high'].includes(a.level),level=verified?a.level:'pending';
+  const mouth=level==='low'?'M8 20h3v3h3v2h5v-2h3v-3h3v5h-3v3H11v-3H8Z':level==='high'?'M8 25h3v-3h3v-2h5v2h3v3h3v-5h-3v-3H11v3H8Z':'M9 22h15v3H9Z';
+  const label=verified?level.toUpperCase()+' CARBON / '+a.comparison:'PENDING / NOT A MEDIUM-CARBON RATING';
+  return '<span class="carbon-face" data-status="'+level+'" role="img" aria-label="'+escape(label)+'" title="'+escape(label)+'"><svg viewBox="0 0 34 34" aria-hidden="true" shape-rendering="crispEdges"><path class="face-ring" d="M11 2h12v2h5v4h3v5h2v9h-2v5h-3v4h-5v2H11v-2H6v-4H3v-5H1v-9h2V8h3V4h5Z"/><path d="M10 11h3v7h-3ZM22 11h3v7h-3Z'+mouth+'"/></svg><small>'+ (verified?level.toUpperCase()+' CARBON':'PENDING')+'</small></span>';
+ }
+ function identity(obj){
+  let html=row('ID',obj.objectId)+row('TYPE',type(obj))+row('FUNCTION',obj.function||'UNVERIFIED');
+  html+=row('MODEL','NOT IDENTIFIED')+row('ENERGY SOURCE','NOT VERIFIED')+row('ENERGY STATUS','UNRATED / DATA PENDING');
+  return html;
+ }
+ const methodUrl='https://ghgprotocol.org/scope-2-guidance';
+ function sourceNotes(obj){return 'RECORD: '+obj.objectId+' / tracks.json\n\nDATA AUDIT\nThe project dataset explicitly describes its environmental figures as simulated estimates. Its manufacturing energy, manufacturing water and annual carbon numbers are withheld from this dossier because no source, activity record or calculation is supplied. Tracking labels are project annotations, not verified vehicle specifications.\n\nACCOUNTING BOUNDARY\nVehicle operation only. Production, maintenance, replacement batteries and end-of-life require separate records; this is not a complete product footprint. '+(obj.category==='person'?'Human metabolism, food and personal equipment are excluded. ':'')+'\n\nMETHOD IF ELECTRIC PROPULSION IS CONFIRMED\nCharging electricity at the meter (kWh/year) x applicable electricity emission factor (kg CO2e/kWh) = electricity-related emissions (kg CO2e/year). Meter-side charging data include charging losses; do not add them again. Record the region, reporting year, factor publication and factor boundary. This method covers electricity supply within the selected factor boundary, not the complete vehicle life cycle.\n\nIF FUEL-POWERED\nUse documented fuel quantity and an appropriate fuel emission factor, with its units and coverage recorded separately. Do not apply a grid factor to fuel use.\n\nREQUIRED EVIDENCE\nVehicle model / propulsion type; reporting period; charging or fuel records; factor source, year and region. Production figures additionally need a supplier report or documented life-cycle inventory.\n\nMETHOD REFERENCE\nGHG Protocol Scope 2 Guidance (method reference only; no measured data for this vehicle):\n'+methodUrl+'\n\nVISUAL STATUS\nAI-generated scan study. Components shown are illustrative, not measured reconstructions. The single neutral face marked PENDING indicates missing assessment data; it does not classify emissions as medium. Low/medium/high expressions require a sourced comparison basis. Energy-module animation shows illustrative flow, not live telemetry.';}
+ function symbol(obj){if(obj.category==='vehicle')return '<path d="M8 40h74v15H8zM23 40l12-18h26l13 18M35 22v18m26-18v18"/><circle cx="25" cy="55" r="8"/><circle cx="67" cy="55" r="8"/>';if(obj.category==='person')return '<circle cx="22" cy="51" r="13"/><circle cx="71" cy="51" r="13"/><path d="M22 51l17-29 16 29H22l16-14h21l12 14M58 20h12M40 20v-6"/>';return '<path d="M39 63V11h23l13 9M33 63h14M63 20h21v8H63z"/>';}
+ window.ArchiveData={escape,carbon,energy,type,identity,symbol,sourceNotes,expression,number:v=>num.format(v)};
+})();

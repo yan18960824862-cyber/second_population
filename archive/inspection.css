@@ -1,0 +1,14 @@
+#oaInspectionDialog{box-sizing:border-box;margin:auto;width:min(1000px,94vw);max-width:94vw;max-height:92dvh;padding:16px;background:var(--bg);color:var(--ink);border:1px solid var(--ink-50);font:17px ArchivePixel,monospace}
+#oaSourceDialog{margin:auto}
+#oaInspectionDialog::backdrop{background:#000e}
+#oaInspectionDialog header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--ink-30);padding-bottom:12px}
+#oaInspectionDialog canvas{display:block;width:100%;height:min(60dvh,580px);touch-action:none;cursor:grab;background:var(--bg)}
+#oaInspectionDialog canvas:active{cursor:grabbing}
+#oaInspectionDialog button,#oaInspect{color:var(--ink);border:1px solid var(--ink-50);background:var(--bg);padding:6px 10px;font:15px ArchivePixel,monospace;cursor:pointer}
+#oaInspectionDialog button:focus-visible,#oaInspect:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+#oaInspectionDialog footer{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--ink-30);padding-top:12px}
+#oaInspectionDialog p{font-size:13px;color:var(--ink-70);margin-bottom:0}
+#objArchive .visual-caption{display:flex;justify-content:space-between;align-items:center;gap:8px;position:relative}
+#objArchive .archive-description{padding:9px 12px;margin:0;border-top:1px solid var(--ink-30);font:13px/1.5 var(--ap);color:var(--ink-70)}
+#objArchive .archive-description:empty{display:none}
+@media(max-width:600px){#oaInspectionDialog{padding:10px}#oaInspectionDialog header{font-size:14px}#oaInspectionDialog canvas{height:52dvh}#objArchive .visual-caption{font-size:11px}#oaInspect{font-size:12px;padding:4px 6px}}

@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "source": "Four existing B source videos; extracted without adding generated content.",
+  "frames": [
+    {
+      "file": "CAM01-01.jpg",
+      "sceneId": "street1",
+      "cameraId": "CAM01",
+      "sourceVideo": "street_census/site/street_01.mp4",
+      "sourceTime": 1.688,
+      "width": 800,
+      "height": 500,
+      "sha256": "3a0aa497eef116297ffb33c73f8d24f186a40cf3e0db57383ebdb7d703a8903a"
+    },
+    {
+      "file": "CAM01-02.jpg",
+      "sceneId": "street1",
+      "cameraId": "CAM01",
+      "sourceVideo": "street_census/site/street_01.mp4",
+      "sourceTime": 6.752,
+      "width": 800,
+      "height": 500,
+      "sha256": "025ae89cee6c807fef8e7c0310b591938fb79bef634993a8214a686296fefb4b"
+    },
+    {
+      "file": "CAM01-03.jpg",
+      "sceneId": "street1",
+      "cameraId": "CAM01",
+      "sourceVideo": "street_census/site/street_01.mp4",
+      "sourceTime": 12.027,
+      "width": 800,
+      "height": 500,
+      "sha256": "0a40aa9caada989eed74822543e0e7e654e1314af64d558a9005f3bdafcfbd05"
+    },
+    {
+      "file": "CAM01-04.jpg",
+      "sceneId": "street1",
+      "cameraId": "CAM01",
+      "sourceVideo": "street_census/site/street_01.mp4",
+      "sourceTime": 17.302,
+      "width": 800,
+      "height": 500,
+      "sha256": "23aa8ec6387f2c295d80aaf154f64a89c14ab8ff7f0b4be8944b5f5eb7daf65e"
+    },
+    {
+      "file": "CAM02-01.jpg",
+      "sceneId": "street2",
+      "cameraId": "CAM02",
+      "sourceVideo": "street_census/site/street_02.mp4",
+      "sourceTime": 2.4,
+      "width": 800,
+      "height": 500,
+      "sha256": "4ab60b8eb4624ac90f9214b019353596df756d0c04ce06395e5b00238a979a13"
+    },
+    {
+      "file": "CAM02-02.jpg",
+      "sceneId": "street2",
+      "cameraId": "CAM02",
+      "sourceVideo": "street_census/site/street_02.mp4",
+      "sourceTime": 9.6,
+      "width": 800,
+      "height": 500,
+      "sha256": "c9517507fa35f9fe74e1ebf48f5010ba1238b1de22b62bb93e53889f84b987ac"
+    },
+    {
+      "file": "CAM02-03.jpg",
+      "sceneId": "street2",
+      "cameraId": "CAM02",
+      "sourceVideo": "street_census/site/street_02.mp4",
+      "sourceTime": 17.1,
+      "width": 800,
+      "height": 500,
+      "sha256": "b3a01f8bcc8af08ade7901827b1d9c715adba8a32027e13f164a13f71d846cba"
+    },
+    {
+      "file": "CAM02-04.jpg",
+      "sceneId": "street2",
+      "cameraId": "CAM02",
+      "sourceVideo": "street_census/site/street_02.mp4",
+      "sourceTime": 24.6,
+      "width": 800,
+      "height": 500,
+      "sha256": "30af97a2626765c08b68845bd2135d1cadc9e72bf383d380c32c90df736c11dc"
+    },
+    {
+      "file": "CAM03-01.jpg",
+      "sceneId": "street3",
+      "cameraId": "CAM03",
+      "sourceVideo": "street_census/site/street_03.mp4",
+      "sourceTime": 0.504,
+      "width": 800,
+      "height": 500,
+      "sha256": "dd60a56ed0e394310a93624f2b67b62356b5f536ff1133967537398295bf6d21"
+    },
+    {
+      "file": "CAM03-02.jpg",
+      "sceneId": "street3",
+      "cameraId": "CAM03",
+      "sourceVideo": "street_census/site/street_03.mp4",
+      "sourceTime": 2.016,
+      "width": 800,
+      "height": 500,
+      "sha256": "7b5272e00c27d1823e74101e6557cd629cf46ea3f282ea5fff7b4e6b7f010211"
+    },
+    {
+      "file": "CAM03-03.jpg",
+      "sceneId": "street3",
+      "cameraId": "CAM03",
+      "sourceVideo": "street_census/site/street_03.mp4",
+      "sourceTime": 3.591,
+      "width": 800,
+      "height": 500,
+      "sha256": "978dc7665b6973eb057c3982f27c0c0c9f791baacd025bb3793616bc45fb1f2b"
+    },
+    {
+      "file": "CAM03-04.jpg",
+      "sceneId": "street3",
+      "cameraId": "CAM03",
+      "sourceVideo": "street_census/site/street_03.mp4",
+      "sourceTime": 5.166,
+      "width": 800,
+      "height": 500,
+      "sha256": "a7d5355ff25bac37d3bfb517ad036a17cd382b4026479e49c0e02001a97f9271"
+    },
+    {
+      "file": "CAM04-01.jpg",
+      "sceneId": "street4",
+      "cameraId": "CAM04",
+      "sourceVideo": "street_census/site/street_04.mp4",
+      "sourceTime": 1.712,
+      "width": 800,
+      "height": 500,
+      "sha256": "1360aba3c3af748f9cc4341eea8aa159d72b0ab376e3dca92f88fd3454392600"
+    },
+    {
+      "file": "CAM04-02.jpg",
+      "sceneId": "street4",
+      "cameraId": "CAM04",
+      "sourceVideo": "street_census/site/street_04.mp4",
+      "sourceTime": 6.848,
+      "width": 800,
+      "height": 500,
+      "sha256": "97c80ea486e6c5120b7fd4f93dcefc6a378857b71714ffd51d7e732b7cf37ce1"
+    },
+    {
+      "file": "CAM04-03.jpg",
+      "sceneId": "street4",
+      "cameraId": "CAM04",
+      "sourceVideo": "street_census/site/street_04.mp4",
+      "sourceTime": 12.198,
+      "width": 800,
+      "height": 500,
+      "sha256": "426d9c0f303a36d63657dfc17a51992ea1fad58172556b19b66d6a18d29b3626"
+    },
+    {
+      "file": "CAM04-04.jpg",
+      "sceneId": "street4",
+      "cameraId": "CAM04",
+      "sourceVideo": "street_census/site/street_04.mp4",
+      "sourceTime": 17.548,
+      "width": 800,
+      "height": 500,
+      "sha256": "28d4825fff9e54e2284fed16b62af088d0fca850cdb8bec59bca64f802b5e387"
+    }
+  ]
+}

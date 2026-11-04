@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "description": "Low resolution video proxies captured from the four existing source clips. No generated scene content.",
+  "clips": [
+    {
+      "sceneId": "street1",
+      "cameraId": "CAM01",
+      "alias": "站前交叉口",
+      "sourceVideo": "street_census/site/street_01.mp4",
+      "sourceStart": 0.0194,
+      "sourceEnd": 5.952,
+      "width": 480,
+      "height": 270,
+      "fps": 12,
+      "file": "CAM01-preview.webm",
+      "bytes": 103930,
+      "sha256": "86d1b0731ec3ef69fa503f3795c4c3dd1b6ac80e45543af254fa52802233539b"
+    },
+    {
+      "sceneId": "street2",
+      "cameraId": "CAM02",
+      "alias": "夜间主路 · 车流",
+      "sourceVideo": "street_census/site/street_02.mp4",
+      "sourceStart": 0,
+      "sourceEnd": 5.9173,
+      "width": 480,
+      "height": 270,
+      "fps": 12,
+      "file": "CAM02-preview.webm",
+      "bytes": 98340,
+      "sha256": "6b3f5cffc7931d456038fcf600626c339cd8514042a65f8cff90916e4a3a27e5"
+    },
+    {
+      "sceneId": "street3",
+      "cameraId": "CAM03",
+      "alias": "南段慢行道",
+      "sourceVideo": "street_census/site/street_03.mp4",
+      "sourceStart": 0.0072,
+      "sourceEnd": 5.9139,
+      "width": 480,
+      "height": 270,
+      "fps": 12,
+      "file": "CAM03-preview.webm",
+      "bytes": 98370,
+      "sha256": "e7a05cc9804003e6cab0d8df84fae662695abbc51003600cba825d87caa52870"
+    },
+    {
+      "sceneId": "street4",
+      "cameraId": "CAM04",
+      "alias": "辅道停靠带",
+      "sourceVideo": "street_census/site/street_04.mp4",
+      "sourceStart": 0.0018,
+      "sourceEnd": 5.9143,
+      "width": 480,
+      "height": 270,
+      "fps": 12,
+      "file": "CAM04-preview.webm",
+      "bytes": 97895,
+      "sha256": "4187e99f68842914e08f620e962d8d9f8140f4bac4ad7561f9adecb48e409a83"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+/* Detailed shared geometry for archive cards, acquisition and dossier views. */
+(function(){'use strict';
+ const E=window.ModelEngine,P=E.primitives,TAU=Math.PI*2;
+ const shell=[53,67,73],glass=[10,18,21],metal=[91,114,123],rubber=[9,13,15];
+ function surface(m,p,c,normal,level=.12){m.face(p,c,normal,{lvl:level});for(let i=0;i<p.length;i++)m.stroke(p[i],p[(i+1)%p.length],.42,level);}
+ function normal(p,center=[0,0,0]){const a=p[1].map((v,i)=>v-p[0][i]),b=p[2].map((v,i)=>v-p[0][i]),n=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],c=p[0].map((_,i)=>p.reduce((s,q)=>s+q[i],0)/p.length-center[i]);if(n.reduce((s,v,i)=>s+v*c[i],0)<0)n.forEach((v,i)=>n[i]=-v);const d=Math.hypot(...n)||1;return n.map(v=>v/d);}
+ function loft(m,sections,color){for(let x=1;x<sections.length;x++)for(let j=0;j<sections[x].length;j++){const k=(j+1)%sections[x].length,p=[sections[x-1][j],sections[x][j],sections[x][k],sections[x-1][k]];surface(m,p,color,normal(p),.07+(j%3)*.04);}for(const s of [sections[0],sections.at(-1)])surface(m,s,color,normal(s),.06);}
+ function ellipse(m,c,r,color){const rings=[];for(let j=0;j<=10;j++){const v=-Math.PI/2+.001+j/10*(Math.PI-.002),ring=[];for(let i=0;i<18;i++){const u=i/18*TAU;ring.push([c[0]+r[0]*Math.cos(v)*Math.cos(u),c[1]+r[1]*Math.sin(v),c[2]+r[2]*Math.cos(v)*Math.sin(u)]);}rings.push(ring);}for(let j=1;j<rings.length;j++)for(let i=0;i<18;i++){const k=(i+1)%18,p=[rings[j-1][i],rings[j][i],rings[j][k],rings[j-1][k]];surface(m,p,color,normal(p,c),.14);}}
+ function rod(m,a,b,r,color=metal){const d=b.map((v,i)=>v-a[i]),len=Math.hypot(...d),n=d.map(v=>v/len),basis=Math.abs(n[1])<.8?[0,1,0]:[1,0,0],u=[n[1]*basis[2]-n[2]*basis[1],n[2]*basis[0]-n[0]*basis[2],n[0]*basis[1]-n[1]*basis[0]],l=Math.hypot(...u);u.forEach((v,i)=>u[i]=v/l);const v=[n[1]*u[2]-n[2]*u[1],n[2]*u[0]-n[0]*u[2],n[0]*u[1]-n[1]*u[0]];const ends=[a,b].map(c=>Array.from({length:8},(_,i)=>c.map((x,j)=>x+r*(Math.cos(i/8*TAU)*u[j]+Math.sin(i/8*TAU)*v[j]))));for(let i=0;i<8;i++){const k=(i+1)%8,p=[ends[0][i],ends[1][i],ends[1][k],ends[0][k]];surface(m,p,color,normal(p,a.map((x,i)=>(x+b[i])/2)),.1);}}
+ function car(suv){const m=new E.Mesh(),L=suv?4.65:4.5,W=suv?2.02:1.9,half=L/2;
+ const xs=[-half,-half+.16,-1.5,-.8,.4,1.35,half-.18,half],widths=[.78,.93,1,1,1,.97,.88,.72],heights=suv?[.2,.34,.38,.38,.37,.32,.22,.1]:[-.03,.15,.24,.26,.25,.21,.1,-.07];
+ const sections=xs.map((x,i)=>{const z=W/2*widths[i],t=heights[i];return [[x,t,0],[x,t-.04,z*.84],[x,t-.18,z],[x,-.39,z*.96],[x,-.52,z*.75],[x,-.52,-z*.75],[x,-.39,-z*.96],[x,t-.18,-z],[x,t-.04,-z*.84]];});loft(m,sections,shell);
+ const roof=suv?[[-1.85,.39,.87],[-1.48,1.25,.77],[.35,1.22,.76],[1.02,.35,.85]]:[[-1.35,.28,.85],[-.92,.95,.65],[.31,.94,.64],[.92,.25,.83]];
+ const cabin=roof.map(([x,y,z])=>[[x,.22,z],[x,y,z*.92],[x,y,-z*.92],[x,.22,-z]]);loft(m,cabin,shell);
+ for(const s of [-1,1]){for(let k=1;k<3;k++){const a=roof[k-1],b=roof[k],p=[[a[0]+.06,.33,s*a[2]*1.005],[b[0]-.04,.33,s*b[2]*1.005],[b[0]-.04,b[1]-.06,s*b[2]*.925],[a[0]+.06,a[1]-.06,s*a[2]*.925]];surface(m,p,glass,[0,.1,s],.17);}const a=roof[1],b=roof[2];m.stroke([(a[0]+b[0])/2,.33,s*.86],[(a[0]+b[0])/2,(a[1]+b[1])/2-.03,s*.69],.95,.22);
+ for(const x of [-.7,.6]){m.stroke([x,-.38,s*W/2],[x,.23,s*W/2],.5,.22);P.box(m,x-.14,.09,s*(W/2+.015)-.012,x+.08,.125,s*(W/2+.015)+.012,metal,{lvl:.25});}
+ P.box(m,.64,.47,s*.94-.045,.85,.56,s*1.12+.045,shell,{lvl:.22});}
+ for(const k of [0,2]){const a=roof[k],b=roof[k+1],p=[[a[0],a[1]-.02,-a[2]*.9],[a[0],a[1]-.02,a[2]*.9],[b[0],b[1]-.02,b[2]*.9],[b[0],b[1]-.02,-b[2]*.9]];surface(m,p,glass,normal(p),.16);}
+ for(const x of [-1.43,1.43])for(const s of [-1,1]){const z=s*(W/2+.04);P.wheel(m,x,-.4,z,z-s*.28,suv?.45:.41,suv?.33:.30,.24);const pts=Array.from({length:25},(_,i)=>{const a=i/24*Math.PI;return[x+Math.cos(a)*.49,-.4+Math.sin(a)*.49,s*(W/2+.012)];});for(let i=1;i<pts.length;i++)m.stroke(pts[i-1],pts[i],.75,.2);}
+ for(const s of [-1,1]){P.box(m,half-.025,-.015,s*.65-.18,half+.018,.11,s*.65+.18,metal,{lvl:.19});P.box(m,-half-.018,-.04,s*.67-.15,-half+.025,.08,s*.67+.15,metal,{lvl:.19});}
+ for(let i=0;i<10;i++)m.stroke([half+.025,-.36+i*.022,-.47],[half+.025,-.36+i*.022,.47],.4,.24);
+ for(const z of [-.61,.61])m.stroke([.87,.245,z],[half-.25,.15,z*.65],.7,.18);
+ if(suv)for(const z of [-.61,.61])rod(m,[-1.4,1.3,z],[.4,1.27,z],.025,metal);
+ m.size={w:L+.15,h:suv?2.15:1.8,d:W+.35};m.ground=suv?-.87:-.82;m.detailKind='vehicle';return m;}
+ function rider(cargo){const m=new E.Mesh();for(const x of [-.68,.68])for(const s of [-1,1])P.wheel(m,x,-.55,s*.12,s*.045,.31,.22,.12);rod(m,[-.68,-.55,0],[.61,-.32,0],.05);rod(m,[.68,-.55,0],[.43,.44,0],.04);rod(m,[.43,.44,-.24],[.43,.44,.24],.035);P.box(m,-.43,-.36,-.14,.28,-.04,.14,shell,{lvl:.1});ellipse(m,[-.28,.22,0],[.36,.075,.18],rubber);rod(m,[-.25,-.1,0],[-.28,.2,0],.05);
+ ellipse(m,[-.23,.58,0],[.21,.32,.18],shell);ellipse(m,[-.29,1.03,0],[.15,.19,.145],metal);ellipse(m,[-.29,1.12,0],[.17,.13,.155],shell);for(const s of [-1,1]){rod(m,[-.22,.78,s*.17],[.1,.48,s*.2],.055,shell);rod(m,[.1,.48,s*.2],[.43,.44,s*.23],.038);rod(m,[-.28,.3,s*.12],[.07,-.03,s*.24],.075,shell);rod(m,[.07,-.03,s*.24],[-.08,-.35,s*.19],.05);ellipse(m,[-.02,-.37,s*.19],[.16,.06,.075],rubber);}if(cargo){P.box(m,-.95,.2,-.25,-.53,.8,.25,shell,{lvl:.13});for(const y of [.28,.72])m.stroke([-.96,y,.251],[-.52,y,.251],.65,.22);}m.size={w:2.05,h:2.2,d:.68};m.ground=-.86;m.detailKind='rider';return m;}
+ window.ArchiveModels={build(category,subtype){if(category==='vehicle'&&(subtype==='sedan'||subtype==='suv'))return car(subtype==='suv');if(category==='person')return rider(subtype==='delivery');return null;}};
+})();

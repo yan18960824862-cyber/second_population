@@ -1,0 +1,64 @@
+@font-face{font-family:ArchivePixel;src:url('../ac-archive/assets/fonts/VT323-Regular.ttf') format('truetype');font-display:swap}
+#objArchive{--ap:ArchivePixel,'Courier New',monospace;color:var(--ink);background:#000}
+#objArchive .oa-dossier{overflow-y:auto;align-items:stretch;display:block}
+#objArchive .dossier-shell{max-width:1660px;min-height:100dvh;height:auto;overflow:visible;padding:28px 4%;margin:auto;display:block}
+#objArchive .dossier-header{border:1px solid var(--ink-50);padding:10px 15px;min-height:51px;position:relative}
+#objArchive .dossier-header strong{font:30px var(--ap);letter-spacing:1px}
+#objArchive .dossier-header>span{font:16px var(--ap);letter-spacing:.5px}
+#objArchive .dossier-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);overflow:visible;padding-top:16px;gap:16px}
+#objArchive .info-column{overflow:visible;padding:0;gap:14px}
+#objArchive .dossier-box{padding:0;flex-shrink:0;border-color:var(--ink-50);background:#020607;position:relative}
+#objArchive .dossier-box:before,#objArchive .dossier-box:after{content:'';position:absolute;width:3px;height:3px;background:var(--ink);z-index:2}
+#objArchive .dossier-box:before{left:-2px;top:-2px}#objArchive .dossier-box:after{right:-2px;bottom:-2px}
+#objArchive .object-visual{min-height:380px;flex:1;position:relative}
+#objArchive .mini-heading{border:0;margin:0;padding:10px 12px;font:15px var(--ap);letter-spacing:.4px;color:var(--ink-70)}
+#objArchive .approved-object{min-height:330px;height:100%;background:#000}
+#objArchive .visual-caption{font:10px var(--ap);padding:7px 12px;letter-spacing:.6px}
+#objArchive .insets{height:180px;gap:12px}
+#objArchive .approved-detail{height:130px;min-height:100px;background:#000}
+#objArchive .record-name{padding:12px 15px}
+#objArchive .record-name h2{font:42px/1 var(--ap);letter-spacing:1px;color:var(--ink)}
+#objArchive .record-name p{font:17px var(--ap);letter-spacing:.7px;color:var(--ink-70);margin-top:5px}
+#objArchive .identity-table{margin:0}
+#objArchive .id-row{display:grid;grid-template-columns:43% 57%;gap:0;padding:0;border:0;border-top:1px solid var(--ink-30);min-height:31px}
+#objArchive .id-row dt,#objArchive .id-row dd{padding:7px 12px;font:17px/1.05 var(--ap);letter-spacing:.25px;text-align:left;min-width:0;margin:0;overflow-wrap:anywhere}
+#objArchive .id-row dd{border-left:1px solid var(--ink-30)}
+#objArchive .id-group{padding:5px 12px;font:12px var(--ap);margin:0;background:var(--ink-08);border-top:1px solid var(--ink-30);letter-spacing:1.4px}
+#objArchive .id-group:before{display:none}
+#objArchive .archive-boundary{font:12px/1.25 var(--ap);padding:8px 12px;border-top:1px solid var(--ink-30);color:var(--ink-70);margin:0}
+#objArchive .carbon-box h3,#objArchive .resource-box h3{font:22px var(--ap);letter-spacing:.6px;color:var(--ink);margin:0}
+#objArchive .carbon-box>h3{border-bottom:1px solid var(--ink-30);padding:8px 12px}
+#objArchive .carbon-body{margin:0;gap:0;grid-template-columns:1fr 1.1fr;min-height:160px}
+#objArchive .carbon-value{border-right:1px solid var(--ink-30);padding:12px}
+#objArchive .carbon-value>span{font:18px var(--ap);letter-spacing:.3px}
+#objArchive .carbon-value strong{font:40px/1 var(--ap);margin:9px 0 5px}
+#objArchive .carbon-value small{font:15px var(--ap);letter-spacing:.3px}
+#objArchive .carbon-value p{font:13px/1.25 var(--ap);color:var(--ink-70);margin:10px 0 0}
+#objArchive .carbon-diagram{padding:12px}
+#objArchive .carbon-diagram>span{font:12px var(--ap);letter-spacing:.4px;color:var(--ink-70)}
+#objArchive .carbon-chain{margin-top:18px;gap:6px}
+#objArchive .carbon-chain svg{width:45px;height:45px}
+#objArchive .carbon-chain b{font:13px/1.1 var(--ap);letter-spacing:.1px}
+#objArchive .carbon-chain .arrow{font:22px var(--ap)}
+#objArchive .resource-box{padding:9px 12px 13px}
+#objArchive .resource-box header>span{font:10px/1.15 var(--ap);letter-spacing:.3px}
+#objArchive .resource-network{margin-top:15px;gap:9px}
+#objArchive .resource-inputs{flex:1.2;min-width:0}
+#objArchive .resource-inputs>div{font:13px var(--ap);letter-spacing:0;gap:7px}
+#objArchive .resource-unit{flex:.8;min-width:0}
+#objArchive .resource-unit span{font:12px var(--ap);max-width:120px;letter-spacing:.3px}
+#objArchive .resource-result{font:15px var(--ap);letter-spacing:.3px}
+#objArchive .dossier-footer{margin-top:0;min-height:44px;gap:14px;padding:9px 0;border-top:1px solid var(--ink-30)}
+#objArchive .dossier-footer button{font:15px var(--ap);letter-spacing:.3px;padding:5px 8px}
+#objArchive .dossier-footer>span{font:11px var(--ap);letter-spacing:.4px}
+#objArchive .obj-archive-close{font:13px var(--ap);right:12px;top:7px;padding:5px 9px}
+#objArchive .scan-header{justify-content:space-between;font:13px var(--ap);letter-spacing:.3px}
+#objArchive .scan-meter{font:17px var(--ap)}
+#objArchive .scan-drift{display:none}
+#objArchive .reveal{transform:none}
+#objArchive .oa-dossier.is-open .reveal{transition:none;opacity:1}
+#oaSourceDialog{width:min(560px,90vw);background:#020607;color:var(--ink);border:1px solid var(--ink-50);padding:28px;font:17px/1.5 ArchivePixel,monospace}
+#oaSourceDialog::backdrop{background:#000d}#oaSourceDialog button{float:right;color:var(--ink);background:transparent;border:1px solid var(--ink-50);cursor:pointer}
+#oaSourceDialog{max-height:85dvh;overflow:auto}#oaSourceText{white-space:pre-line;overflow-wrap:anywhere}#objArchive .archive-boundary{line-height:1.35}#objArchive .carbon-value strong{font-size:clamp(24px,2.3vw,38px)}
+@media(max-width:1050px){#objArchive .dossier-shell{padding:40px 3% 20px}#objArchive .dossier-header strong{font-size:24px}#objArchive .dossier-header>span{font-size:12px}#objArchive .id-row dt,#objArchive .id-row dd{font-size:15px}#objArchive .resource-inputs>div{font-size:11px}#objArchive .carbon-value strong{font-size:32px}}
+@media(max-width:760px){#objArchive .dossier-grid{grid-template-columns:1fr}#objArchive .object-visual{height:330px;min-height:330px;flex:none}#objArchive .approved-object{height:270px;min-height:250px}#objArchive .insets{height:155px}#objArchive .dossier-header{flex-wrap:wrap;gap:7px}#objArchive .dossier-header>span:nth-child(2){order:3;width:100%}#objArchive .dossier-footer{flex-wrap:wrap}#objArchive .dossier-footer>span{order:3;width:100%}#objArchive .dossier-footer>div{gap:5px}#objArchive .dossier-footer button{font-size:13px}#objArchive .id-row dt,#objArchive .id-row dd{font-size:17px}}

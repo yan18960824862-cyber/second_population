@@ -1,0 +1,687 @@
+{
+  "confirmed": [
+    {
+      "canonicalId": "SP-ST1-0001",
+      "sourceIds": [
+        "ST1-0001"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0002",
+      "sourceIds": [
+        "ST1-0002"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0003",
+      "sourceIds": [
+        "ST1-0003"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0004",
+      "sourceIds": [
+        "ST1-0004"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0005",
+      "sourceIds": [
+        "ST1-0005"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0006",
+      "sourceIds": [
+        "ST1-0006"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0007",
+      "sourceIds": [
+        "ST1-0007"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0008",
+      "sourceIds": [
+        "ST1-0008"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0009",
+      "sourceIds": [
+        "ST1-0009"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0010",
+      "sourceIds": [
+        "ST1-0010"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0011",
+      "sourceIds": [
+        "ST1-0011"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0012",
+      "sourceIds": [
+        "ST1-0012"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0013",
+      "sourceIds": [
+        "ST1-0013"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0014",
+      "sourceIds": [
+        "ST1-0014"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0015",
+      "sourceIds": [
+        "ST1-0015"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0016",
+      "sourceIds": [
+        "ST1-0016"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0017",
+      "sourceIds": [
+        "ST1-0017"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0018",
+      "sourceIds": [
+        "ST1-0018"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0019",
+      "sourceIds": [
+        "ST1-0019"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0020",
+      "sourceIds": [
+        "ST1-0020"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST1-0021",
+      "sourceIds": [
+        "ST1-0021"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0001",
+      "sourceIds": [
+        "ST3-0001"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0002",
+      "sourceIds": [
+        "ST3-0002"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0003",
+      "sourceIds": [
+        "ST3-0003"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0004",
+      "sourceIds": [
+        "ST3-0004"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0005",
+      "sourceIds": [
+        "ST3-0005"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0006",
+      "sourceIds": [
+        "ST3-0006"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0007",
+      "sourceIds": [
+        "ST3-0007"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0008",
+      "sourceIds": [
+        "ST3-0008"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0009",
+      "sourceIds": [
+        "ST3-0009"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0010",
+      "sourceIds": [
+        "ST3-0010"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0011",
+      "sourceIds": [
+        "ST3-0011"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0012",
+      "sourceIds": [
+        "ST3-0012"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST3-0013",
+      "sourceIds": [
+        "ST3-0013"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0001",
+      "sourceIds": [
+        "ST4-0001"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0002",
+      "sourceIds": [
+        "ST4-0002"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0003",
+      "sourceIds": [
+        "ST4-0003"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0004",
+      "sourceIds": [
+        "ST4-0004"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0005",
+      "sourceIds": [
+        "ST4-0005"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0006",
+      "sourceIds": [
+        "ST4-0006"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0007",
+      "sourceIds": [
+        "ST4-0007"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0008",
+      "sourceIds": [
+        "ST4-0008"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0009",
+      "sourceIds": [
+        "ST4-0009"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0010",
+      "sourceIds": [
+        "ST4-0010"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0011",
+      "sourceIds": [
+        "ST4-0011"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0012",
+      "sourceIds": [
+        "ST4-0012"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0013",
+      "sourceIds": [
+        "ST4-0013"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0014",
+      "sourceIds": [
+        "ST4-0014"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0015",
+      "sourceIds": [
+        "ST4-0015"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0016",
+      "sourceIds": [
+        "ST4-0016"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0017",
+      "sourceIds": [
+        "ST4-0017"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0018",
+      "sourceIds": [
+        "ST4-0018"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0019",
+      "sourceIds": [
+        "ST4-0019"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    },
+    {
+      "canonicalId": "SP-ST4-0020",
+      "sourceIds": [
+        "ST4-0020"
+      ],
+      "method": "exact-scene-id-and-complete-record",
+      "status": "confirmed-same-observation"
+    }
+  ],
+  "unresolved": [
+    {
+      "canonicalId": "SP-LEGACY-TRK-0001",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": [
+        "SP-ST2-0004"
+      ]
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0002",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0003",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0004",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0005",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0006",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0007",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0008",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0009",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0010",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0011",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0012",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0013",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0014",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0015",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0016",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0017",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0018",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0019",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0020",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0021",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0022",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": [
+        "SP-ST2-0014"
+      ]
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0023",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0024",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0025",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0026",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0027",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": [
+        "SP-ST2-0011"
+      ]
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0028",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0029",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0030",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0031",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0032",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0033",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0034",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": [
+        "SP-ST2-0011"
+      ]
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0035",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0036",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0037",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0038",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-TRK-0039",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    },
+    {
+      "canonicalId": "SP-LEGACY-SP-0004",
+      "status": "unresolved",
+      "reason": "Different non-overlapping capture interval; label/category alone do not establish identity.",
+      "candidates": []
+    }
+  ],
+  "policy": "Never merge across capture intervals without physical evidence; counts refer to annotations, not unique physical objects."
+}

@@ -1,0 +1,107 @@
+<header class="topbar"><div class="brand"><div class="brand-text"><h1>全局星图<span class="sub">SECOND POPULATION / GLOBAL SURVEY</span></h1></div></div><div class="top-read"><span class="read-cell"><b id="rdStars"></b>RECORDS</span><span class="read-cell"><b id="rdSectors"></b>SECTORS</span><button class="mini" id="closeSky">返回监控 ×</button><button class="rail-toggle" id="railToggle" type="button" aria-label="展开控制台">☰</button></div></header><main class="shell">
+
+  <!-- ══════════ 左控制台：历元 / 检索 / 图层 ══════════ -->
+  <aside class="rail" id="rail" aria-label="普查控制台">
+
+    <!-- 历元扫掠 -->
+    <section class="block">
+      <h2 class="block-title">历元扫掠 <em>EPOCH SWEEP</em></h2>
+      <div class="epoch">
+        <button class="epoch-play" id="epochPlay" type="button" aria-label="播放/暂停历元扫掠">▶</button>
+        <input id="epochRange" class="epoch-range" type="range" min="0" max="1000" value="0"
+               aria-label="历元位置" step="1">
+      </div>
+      <p class="epoch-read">
+        EPOCH <b id="epochPct">0.0%</b> · T+<b id="epochSec">0.0</b>s
+        <span id="epochScene">ZONE B</span>
+      </p>
+    </section>
+
+    <!-- 目标解析 -->
+    <section class="block">
+      <h2 class="block-title">目标解析 <em>RESOLVE TARGET</em></h2>
+      <div class="search">
+        <input id="searchInput" type="search" autocomplete="off" spellcheck="false"
+               placeholder="ST2-0007 / 路灯 / SEDAN" aria-label="按编号或名称检索">
+      </div>
+      <ul class="search-out" id="searchOut" aria-live="polite"></ul>
+    </section>
+
+    <!-- 图层栈 -->
+    <section class="block">
+      <h2 class="block-title">图层栈 <em>LAYER STACK</em></h2>
+      <div class="layers" id="layers"><!-- JS 注入 --></div>
+    </section>
+
+    <!-- 视图操作 -->
+    <section class="block">
+      <h2 class="block-title">视场操作 <em>VIEWPORT</em></h2>
+      <div class="btn-grid">
+        <button class="mini" id="btnZoomIn" type="button">放大 +</button>
+        <button class="mini" id="btnZoomOut" type="button">缩小 −</button>
+        <button class="mini" id="btnReset" type="button">复位视图</button>
+        <button class="mini" id="btnPrev" type="button">上一目标</button>
+        <button class="mini" id="btnNext" type="button">下一目标</button>
+        <button class="mini" id="btnSector" type="button">巡览区段</button>
+        <button class="mini" id="btnPalette" type="button">配色 · 冷调五色</button>
+      </div>
+    </section>
+
+    <div class="rail-foot">
+      <p>街 verge 影像层 · 识别层 · 星表层三层叠加<br>DESI / Gaia / Aladin 式普查口径</p>
+    </div>
+  </aside>
+
+  <!-- ══════════ 中央舞台 ══════════ -->
+  <section class="stage">
+
+    <!-- 视图 01：星图 -->
+    <div class="view is-active" id="view-sky" role="tabpanel" aria-label="星图">
+      <canvas id="sky" aria-label="街道对象星图"></canvas>
+
+      <div class="sky-hud" aria-hidden="true">
+        <span class="hud-l" id="hudCoord">α 00h 00m · δ +00°00′</span>
+        <span class="hud-r" id="hudFov">FOV 0.00° · ×0.00</span>
+      </div>
+
+      <div class="sky-scale" aria-hidden="true">
+        <div class="scale-bar"><i id="scaleBar"></i></div>
+        <span id="scaleTxt">100 u</span>
+      </div>
+
+      <div class="sky-legend" aria-hidden="true">
+        <span><i class="lg lg-vehicle"></i>车流主体</span>
+        <span><i class="lg lg-person"></i>骑手行人</span>
+        <span><i class="lg lg-industrial"></i>工业物</span>
+        <span><i class="lg lg-infrastructure"></i>基底设施</span>
+      </div>
+
+      <div class="sky-tip" id="skyTip" role="status"></div>
+
+      <div class="sky-hint">拖拽平移 · 滚轮缩放 · 点击星点调档 · 双击居中</div>
+    </div>
+
+  </section>
+
+  <!-- ══════════ 右档案面板 ══════════ -->
+  <aside class="dossier" id="dossier" aria-label="对象档案">
+    <div class="dossier-head">
+      <span class="dossier-tag">OBJECT DOSSIER</span>
+      <button class="dossier-close" id="dossierClose" type="button" aria-label="关闭档案">×</button>
+    </div>
+    <div class="dossier-body" id="dossierBody">
+      <p class="dossier-empty">点击星图中的任一颗星<br>或在左侧解析编号 / 名称<br>调取该街道对象的普查档案</p>
+    </div>
+  </aside>
+</main>
+
+<!-- ══════════ 底部统计带 ══════════ -->
+<footer class="tickerbar">
+  <div class="ticker-label">KEYUAN RD ×4 SECTORS · STREET SKY CENSUS</div>
+  <div class="ticker-stats">
+    <span>待核验候选 <b id="ftStars">0</b></span>
+    <span>运动目标 <b id="ftMoving">0</b></span>
+    <span class="ticker-note">75 条来源记录 · 12 条上下文单列 · 人造物总数待核验</span>
+  </div>
+</footer>
+

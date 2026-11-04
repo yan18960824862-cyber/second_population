@@ -1,0 +1,1016 @@
+[
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0001",
+    "canonicalId": "SP-ST1-0001"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0001",
+    "canonicalId": "SP-ST1-0001"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0002",
+    "canonicalId": "SP-ST1-0002"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0002",
+    "canonicalId": "SP-ST1-0002"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0003",
+    "canonicalId": "SP-ST1-0003"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0003",
+    "canonicalId": "SP-ST1-0003"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0004",
+    "canonicalId": "SP-ST1-0004"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0004",
+    "canonicalId": "SP-ST1-0004"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0005",
+    "canonicalId": "SP-ST1-0005"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0005",
+    "canonicalId": "SP-ST1-0005"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0006",
+    "canonicalId": "SP-ST1-0006"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0006",
+    "canonicalId": "SP-ST1-0006"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0007",
+    "canonicalId": "SP-ST1-0007"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0007",
+    "canonicalId": "SP-ST1-0007"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0008",
+    "canonicalId": "SP-ST1-0008"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0008",
+    "canonicalId": "SP-ST1-0008"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0009",
+    "canonicalId": "SP-ST1-0009"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0009",
+    "canonicalId": "SP-ST1-0009"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0010",
+    "canonicalId": "SP-ST1-0010"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0010",
+    "canonicalId": "SP-ST1-0010"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0011",
+    "canonicalId": "SP-ST1-0011"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0011",
+    "canonicalId": "SP-ST1-0011"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0012",
+    "canonicalId": "SP-ST1-0012"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0012",
+    "canonicalId": "SP-ST1-0012"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0013",
+    "canonicalId": "SP-ST1-0013"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0013",
+    "canonicalId": "SP-ST1-0013"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0014",
+    "canonicalId": "SP-ST1-0014"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0014",
+    "canonicalId": "SP-ST1-0014"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0015",
+    "canonicalId": "SP-ST1-0015"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0015",
+    "canonicalId": "SP-ST1-0015"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0016",
+    "canonicalId": "SP-ST1-0016"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0016",
+    "canonicalId": "SP-ST1-0016"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0017",
+    "canonicalId": "SP-ST1-0017"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0017",
+    "canonicalId": "SP-ST1-0017"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0018",
+    "canonicalId": "SP-ST1-0018"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0018",
+    "canonicalId": "SP-ST1-0018"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0019",
+    "canonicalId": "SP-ST1-0019"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0019",
+    "canonicalId": "SP-ST1-0019"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0020",
+    "canonicalId": "SP-ST1-0020"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0020",
+    "canonicalId": "SP-ST1-0020"
+  },
+  {
+    "project": "B",
+    "sceneId": "street1",
+    "sourceId": "ST1-0021",
+    "canonicalId": "SP-ST1-0021"
+  },
+  {
+    "project": "A",
+    "sceneId": "street1",
+    "sourceId": "ST1-0021",
+    "canonicalId": "SP-ST1-0021"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0001",
+    "canonicalId": "SP-ST2-0001"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0002",
+    "canonicalId": "SP-ST2-0002"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0003",
+    "canonicalId": "SP-ST2-0003"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0004",
+    "canonicalId": "SP-ST2-0004"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0005",
+    "canonicalId": "SP-ST2-0005"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0006",
+    "canonicalId": "SP-ST2-0006"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0007",
+    "canonicalId": "SP-ST2-0007"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0008",
+    "canonicalId": "SP-ST2-0008"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0009",
+    "canonicalId": "SP-ST2-0009"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0010",
+    "canonicalId": "SP-ST2-0010"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0011",
+    "canonicalId": "SP-ST2-0011"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0012",
+    "canonicalId": "SP-ST2-0012"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0013",
+    "canonicalId": "SP-ST2-0013"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0014",
+    "canonicalId": "SP-ST2-0014"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0015",
+    "canonicalId": "SP-ST2-0015"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0016",
+    "canonicalId": "SP-ST2-0016"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0017",
+    "canonicalId": "SP-ST2-0017"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0018",
+    "canonicalId": "SP-ST2-0018"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0019",
+    "canonicalId": "SP-ST2-0019"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0020",
+    "canonicalId": "SP-ST2-0020"
+  },
+  {
+    "project": "B",
+    "sceneId": "street2",
+    "sourceId": "ST2-0021",
+    "canonicalId": "SP-ST2-0021"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0001",
+    "canonicalId": "SP-ST3-0001"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0001",
+    "canonicalId": "SP-ST3-0001"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0002",
+    "canonicalId": "SP-ST3-0002"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0002",
+    "canonicalId": "SP-ST3-0002"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0003",
+    "canonicalId": "SP-ST3-0003"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0003",
+    "canonicalId": "SP-ST3-0003"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0004",
+    "canonicalId": "SP-ST3-0004"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0004",
+    "canonicalId": "SP-ST3-0004"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0005",
+    "canonicalId": "SP-ST3-0005"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0005",
+    "canonicalId": "SP-ST3-0005"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0006",
+    "canonicalId": "SP-ST3-0006"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0006",
+    "canonicalId": "SP-ST3-0006"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0007",
+    "canonicalId": "SP-ST3-0007"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0007",
+    "canonicalId": "SP-ST3-0007"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0008",
+    "canonicalId": "SP-ST3-0008"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0008",
+    "canonicalId": "SP-ST3-0008"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0009",
+    "canonicalId": "SP-ST3-0009"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0009",
+    "canonicalId": "SP-ST3-0009"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0010",
+    "canonicalId": "SP-ST3-0010"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0010",
+    "canonicalId": "SP-ST3-0010"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0011",
+    "canonicalId": "SP-ST3-0011"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0011",
+    "canonicalId": "SP-ST3-0011"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0012",
+    "canonicalId": "SP-ST3-0012"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0012",
+    "canonicalId": "SP-ST3-0012"
+  },
+  {
+    "project": "B",
+    "sceneId": "street3",
+    "sourceId": "ST3-0013",
+    "canonicalId": "SP-ST3-0013"
+  },
+  {
+    "project": "A",
+    "sceneId": "street3",
+    "sourceId": "ST3-0013",
+    "canonicalId": "SP-ST3-0013"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0001",
+    "canonicalId": "SP-ST4-0001"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0001",
+    "canonicalId": "SP-ST4-0001"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0002",
+    "canonicalId": "SP-ST4-0002"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0002",
+    "canonicalId": "SP-ST4-0002"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0003",
+    "canonicalId": "SP-ST4-0003"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0003",
+    "canonicalId": "SP-ST4-0003"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0004",
+    "canonicalId": "SP-ST4-0004"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0004",
+    "canonicalId": "SP-ST4-0004"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0005",
+    "canonicalId": "SP-ST4-0005"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0005",
+    "canonicalId": "SP-ST4-0005"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0006",
+    "canonicalId": "SP-ST4-0006"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0006",
+    "canonicalId": "SP-ST4-0006"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0007",
+    "canonicalId": "SP-ST4-0007"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0007",
+    "canonicalId": "SP-ST4-0007"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0008",
+    "canonicalId": "SP-ST4-0008"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0008",
+    "canonicalId": "SP-ST4-0008"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0009",
+    "canonicalId": "SP-ST4-0009"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0009",
+    "canonicalId": "SP-ST4-0009"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0010",
+    "canonicalId": "SP-ST4-0010"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0010",
+    "canonicalId": "SP-ST4-0010"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0011",
+    "canonicalId": "SP-ST4-0011"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0011",
+    "canonicalId": "SP-ST4-0011"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0012",
+    "canonicalId": "SP-ST4-0012"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0012",
+    "canonicalId": "SP-ST4-0012"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0013",
+    "canonicalId": "SP-ST4-0013"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0013",
+    "canonicalId": "SP-ST4-0013"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0014",
+    "canonicalId": "SP-ST4-0014"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0014",
+    "canonicalId": "SP-ST4-0014"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0015",
+    "canonicalId": "SP-ST4-0015"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0015",
+    "canonicalId": "SP-ST4-0015"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0016",
+    "canonicalId": "SP-ST4-0016"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0016",
+    "canonicalId": "SP-ST4-0016"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0017",
+    "canonicalId": "SP-ST4-0017"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0017",
+    "canonicalId": "SP-ST4-0017"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0018",
+    "canonicalId": "SP-ST4-0018"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0018",
+    "canonicalId": "SP-ST4-0018"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0019",
+    "canonicalId": "SP-ST4-0019"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0019",
+    "canonicalId": "SP-ST4-0019"
+  },
+  {
+    "project": "B",
+    "sceneId": "street4",
+    "sourceId": "ST4-0020",
+    "canonicalId": "SP-ST4-0020"
+  },
+  {
+    "project": "A",
+    "sceneId": "street4",
+    "sourceId": "ST4-0020",
+    "canonicalId": "SP-ST4-0020"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0001",
+    "canonicalId": "SP-LEGACY-TRK-0001"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0002",
+    "canonicalId": "SP-LEGACY-TRK-0002"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0003",
+    "canonicalId": "SP-LEGACY-TRK-0003"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0004",
+    "canonicalId": "SP-LEGACY-TRK-0004"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0005",
+    "canonicalId": "SP-LEGACY-TRK-0005"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0006",
+    "canonicalId": "SP-LEGACY-TRK-0006"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0007",
+    "canonicalId": "SP-LEGACY-TRK-0007"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0008",
+    "canonicalId": "SP-LEGACY-TRK-0008"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0009",
+    "canonicalId": "SP-LEGACY-TRK-0009"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0010",
+    "canonicalId": "SP-LEGACY-TRK-0010"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0011",
+    "canonicalId": "SP-LEGACY-TRK-0011"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0012",
+    "canonicalId": "SP-LEGACY-TRK-0012"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0013",
+    "canonicalId": "SP-LEGACY-TRK-0013"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0014",
+    "canonicalId": "SP-LEGACY-TRK-0014"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0015",
+    "canonicalId": "SP-LEGACY-TRK-0015"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0016",
+    "canonicalId": "SP-LEGACY-TRK-0016"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0017",
+    "canonicalId": "SP-LEGACY-TRK-0017"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0018",
+    "canonicalId": "SP-LEGACY-TRK-0018"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0019",
+    "canonicalId": "SP-LEGACY-TRK-0019"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0020",
+    "canonicalId": "SP-LEGACY-TRK-0020"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0021",
+    "canonicalId": "SP-LEGACY-TRK-0021"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0022",
+    "canonicalId": "SP-LEGACY-TRK-0022"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0023",
+    "canonicalId": "SP-LEGACY-TRK-0023"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0024",
+    "canonicalId": "SP-LEGACY-TRK-0024"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0025",
+    "canonicalId": "SP-LEGACY-TRK-0025"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0026",
+    "canonicalId": "SP-LEGACY-TRK-0026"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0027",
+    "canonicalId": "SP-LEGACY-TRK-0027"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0028",
+    "canonicalId": "SP-LEGACY-TRK-0028"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0029",
+    "canonicalId": "SP-LEGACY-TRK-0029"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0030",
+    "canonicalId": "SP-LEGACY-TRK-0030"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0031",
+    "canonicalId": "SP-LEGACY-TRK-0031"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0032",
+    "canonicalId": "SP-LEGACY-TRK-0032"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0033",
+    "canonicalId": "SP-LEGACY-TRK-0033"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0034",
+    "canonicalId": "SP-LEGACY-TRK-0034"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0035",
+    "canonicalId": "SP-LEGACY-TRK-0035"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0036",
+    "canonicalId": "SP-LEGACY-TRK-0036"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0037",
+    "canonicalId": "SP-LEGACY-TRK-0037"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0038",
+    "canonicalId": "SP-LEGACY-TRK-0038"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "TRK-0039",
+    "canonicalId": "SP-LEGACY-TRK-0039"
+  },
+  {
+    "project": "A",
+    "sceneId": "legacy",
+    "sourceId": "SP-0004",
+    "canonicalId": "SP-LEGACY-SP-0004"
+  }
+]

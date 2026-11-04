@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="科韵路段工业物第二人口普查 · 星云普查台 — 75 个街道对象被投影为一张城市星图：亮度=制造能耗，点亮=出现时段，轨迹=运动星轨。">
+<title>星云普查台 · 工业物第二人口普查 / STREET OBJECT SKY SURVEY</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
+<link rel="stylesheet" href="nebula/nebula.css">
+</head>
+<body>
+
+<!-- 氛围层：星云径向光斑 + 颗粒 -->
+<div class="atmosphere" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ══════════ 顶栏 ══════════ -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div class="brand-text">
+      <h1>工业物第二人口普查<span class="sub">SECOND POPULATION SURVEY</span></h1>
+      <p class="tagline">科韵路段 · 星云普查台 / KEYUAN RD · STREET SKY CATALOGUE</p>
+    </div>
+  </div>
+
+  <nav class="modes" role="tablist" aria-label="视图切换">
+    <button class="mode is-active" data-view="sky" role="tab" aria-selected="true" type="button">
+      <i aria-hidden="true">01</i><span class="m-cn">星图</span><em>SKY MAP</em>
+    </button>
+    <button class="mode" data-view="cat" role="tab" aria-selected="false" type="button">
+      <i aria-hidden="true">02</i><span class="m-cn">星表</span><em>CATALOGUE</em>
+    </button>
+    <button class="mode" data-view="field" role="tab" aria-selected="false" type="button">
+      <i aria-hidden="true">03</i><span class="m-cn">现场站</span><em>FIELD STATION</em>
+    </button>
+  </nav>
+
+  <div class="top-read">
+    <span class="read-cell"><b id="rdStars">0</b>STARS</span>
+    <span class="read-cell"><b id="rdSectors">0</b>SECTORS</span>
+    <span class="read-cell live"><i aria-hidden="true"></i>SURVEY ACTIVE</span>
+    <button class="rail-toggle" id="railToggle" type="button" aria-label="展开控制台">☰</button>
+  </div>
+</header>
+
+<main class="shell">
+
+  <!-- ══════════ 左控制台：历元 / 检索 / 图层 ══════════ -->
+  <aside class="rail" id="rail" aria-label="普查控制台">
+
+    <!-- 历元扫掠 -->
+    <section class="block">
+      <h2 class="block-title">历元扫掠 <em>EPOCH SWEEP</em></h2>
+      <div class="epoch">
+        <button class="epoch-play" id="epochPlay" type="button" aria-label="播放/暂停历元扫掠">▶</button>
+        <input id="epochRange" class="epoch-range" type="range" min="0" max="1000" value="0"
+               aria-label="历元位置" step="1">
+      </div>
+      <p class="epoch-read">
+        EPOCH <b id="epochPct">0.0%</b> · T+<b id="epochSec">0.0</b>s
+        <span id="epochScene">ZONE B</span>
+      </p>
+    </section>
+
+    <!-- 目标解析 -->
+    <section class="block">
+      <h2 class="block-title">目标解析 <em>RESOLVE TARGET</em></h2>
+      <div class="search">
+        <input id="searchInput" type="search" autocomplete="off" spellcheck="false"
+               placeholder="ST2-0007 / 路灯 / SEDAN" aria-label="按编号或名称检索">
+      </div>
+      <ul class="search-out" id="searchOut" aria-live="polite"></ul>
+    </section>
+
+    <!-- 图层栈 -->
+    <section class="block">
+      <h2 class="block-title">图层栈 <em>LAYER STACK</em></h2>
+      <div class="layers" id="layers"><!-- JS 注入 --></div>
+    </section>
+
+    <!-- 视图操作 -->
+    <section class="block">
+      <h2 class="block-title">视场操作 <em>VIEWPORT</em></h2>
+      <div class="btn-grid">
+        <button class="mini" id="btnZoomIn" type="button">放大 +</button>
+        <button class="mini" id="btnZoomOut" type="button">缩小 −</button>
+        <button class="mini" id="btnReset" type="button">复位视图</button>
+        <button class="mini" id="btnPrev" type="button">上一目标</button>
+        <button class="mini" id="btnNext" type="button">下一目标</button>
+        <button class="mini" id="btnSector" type="button">巡览区段</button>
+      </div>
+    </section>
+
+    <div class="rail-foot">
+      <p>街 verge 影像层 · 识别层 · 星表层三层叠加<br>DESI / Gaia / Aladin 式普查口径</p>
+    </div>
+  </aside>
+
+  <!-- ══════════ 中央舞台 ══════════ -->
+  <section class="stage">
+
+    <!-- 视图 01：星图 -->
+    <div class="view is-active" id="view-sky" role="tabpanel" aria-label="星图">
+      <canvas id="sky" aria-label="街道对象星图"></canvas>
+
+      <div class="sky-hud" aria-hidden="true">
+        <span class="hud-l" id="hudCoord">α 00h 00m · δ +00°00′</span>
+        <span class="hud-r" id="hudFov">FOV 0.00° · ×0.00</span>
+      </div>
+
+      <div class="sky-scale" aria-hidden="true">
+        <div class="scale-bar"><i id="scaleBar"></i></div>
+        <span id="scaleTxt">100 u</span>
+      </div>
+
+      <div class="sky-legend" aria-hidden="true">
+        <span><i class="lg lg-vehicle"></i>车流主体</span>
+        <span><i class="lg lg-person"></i>骑手行人</span>
+        <span><i class="lg lg-industrial"></i>工业物</span>
+        <span><i class="lg lg-infrastructure"></i>基底设施</span>
+      </div>
+
+      <div class="sky-tip" id="skyTip" role="status"></div>
+
+      <div class="sky-hint">拖拽平移 · 滚轮缩放 · 点击星点调档 · 双击居中</div>
+    </div>
+
+    <!-- 视图 02：星表 -->
+    <div class="view" id="view-cat" role="tabpanel" aria-label="星表">
+      <div class="cat-head">
+        <h2>星表 · CATALOGUE<span class="sub">SECOND POPULATION / MASTER TABLE</span></h2>
+        <div class="cat-tools">
+          <input id="catFilter" type="search" placeholder="过滤：区段 / 类别 / 名称" aria-label="过滤星表">
+          <span class="cat-count" id="catCount">0 / 0</span>
+        </div>
+      </div>
+      <div class="cat-wrap">
+        <table class="cat-table">
+          <thead>
+            <tr>
+              <th class="sortable" data-sort="objectId">编号 <em>ID</em></th>
+              <th class="sortable" data-sort="label">名称 <em>NAME</em></th>
+              <th class="sortable" data-sort="category">类别 <em>CLASS</em></th>
+              <th class="sortable" data-sort="scene">区段 <em>SECTOR</em></th>
+              <th class="sortable num" data-sort="mag">星等 <em>MAG</em></th>
+              <th class="sortable num" data-sort="energyKwh">能耗 <em>kWh</em></th>
+              <th class="sortable num" data-sort="t0">出现 <em>EPOCH</em></th>
+              <th class="sortable num" data-sort="conf">置信 <em>CONF</em></th>
+            </tr>
+          </thead>
+          <tbody id="catBody"><!-- JS 注入 --></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 视图 03：现场站（原普查站原样嵌入） -->
+    <div class="view" id="view-field" role="tabpanel" aria-label="现场监控站">
+      <div class="field-bar">
+        <span class="fb-tag">SUB-SITE / 原位普查站</span>
+        <span class="fb-note" id="fieldNote">原站内容与逻辑完整保留 · 未经修改嵌入</span>
+        <a class="fb-link" href="site/index.html" target="_blank" rel="noopener">↗ 独立打开原站</a>
+      </div>
+      <div class="field-frame">
+        <div class="ff-host" id="ffHost">
+          <div class="ff-placeholder" id="ffPlaceholder">
+            <p>现场监控站尚未载入</p>
+            <button class="mini strong" id="ffLoad" type="button">载入 STREET 01 监控流</button>
+            <p class="ff-sub">载入后可与星图联动：点星 → 跳转到该对象出现的帧</p>
+          </div>
+        </div>
+        <i class="ff-corner tl" aria-hidden="true"></i><i class="ff-corner tr" aria-hidden="true"></i>
+        <i class="ff-corner bl" aria-hidden="true"></i><i class="ff-corner br" aria-hidden="true"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 右档案面板 ══════════ -->
+  <aside class="dossier" id="dossier" aria-label="对象档案">
+    <div class="dossier-head">
+      <span class="dossier-tag">OBJECT DOSSIER</span>
+      <button class="dossier-close" id="dossierClose" type="button" aria-label="关闭档案">×</button>
+    </div>
+    <div class="dossier-body" id="dossierBody">
+      <p class="dossier-empty">点击星图中的任一颗星<br>或在左侧解析编号 / 名称<br>调取该街道对象的普查档案</p>
+    </div>
+  </aside>
+</main>
+
+<!-- ══════════ 底部统计带 ══════════ -->
+<footer class="tickerbar">
+  <div class="ticker-label">KEYUAN RD ×4 SECTORS · STREET SKY CENSUS</div>
+  <div class="ticker-stats">
+    <span>已编录 <b id="ftStars">0</b></span>
+    <span>运动目标 <b id="ftMoving">0</b></span>
+    <span>累计制造能耗 <b id="ftEnergy">0</b> kWh</span>
+    <span>累计制造用水 <b id="ftWater">0</b> t</span>
+    <span>累计用钢 <b id="ftSteel">0</b> kg</span>
+    <span class="ticker-note">* 能耗 / 用水为模拟估算值</span>
+  </div>
+</footer>
+
+<script src="nebula/catalogue.js"></script>
+<script src="nebula/nebula.js"></script>
+</body>
+</html>

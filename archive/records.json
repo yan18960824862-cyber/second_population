@@ -1,0 +1,405 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "objectId": "TRK-0001",
+      "category": "person",
+      "name": "外卖骑手",
+      "nameEn": "DELIVERY RIDER",
+      "model": "delivery",
+      "description": "人体轮廓 · 骑行姿态 · 后置货箱",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0002",
+      "category": "vehicle",
+      "name": "厢式货车",
+      "nameEn": "BOX TRUCK",
+      "model": "truck",
+      "description": "反光条货厢 · 重型底盘",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0003",
+      "category": "vehicle",
+      "name": "公交巴士",
+      "nameEn": "CITY BUS A",
+      "model": "bus",
+      "description": "深色车身 · 橙色 LED 线路牌",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0004",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN A",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0005",
+      "category": "vehicle",
+      "name": "黑色SUV",
+      "nameEn": "BLACK SUV A",
+      "model": "suv",
+      "description": "LED 贯穿式日行灯",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0006",
+      "category": "vehicle",
+      "name": "深色SUV",
+      "nameEn": "DARK SUV A",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0007",
+      "category": "vehicle",
+      "name": "白色轿车",
+      "nameEn": "WHITE SEDAN A",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0008",
+      "category": "vehicle",
+      "name": "白色SUV",
+      "nameEn": "WHITE SUV A",
+      "model": "suv",
+      "description": "浅色车身 · SUV 轮廓",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0009",
+      "category": "vehicle",
+      "name": "旅游巴士",
+      "nameEn": "LIGHT COACH A",
+      "model": "coach",
+      "description": "浅色车身 · 高窗线",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0010",
+      "category": "vehicle",
+      "name": "黑色SUV",
+      "nameEn": "BLACK SUV B",
+      "model": "suv",
+      "description": "高速通过 · 运动模糊",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0011",
+      "category": "vehicle",
+      "name": "厢式货车",
+      "nameEn": "BOX TRUCK B",
+      "model": "truck",
+      "description": "白色货厢",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0012",
+      "category": "vehicle",
+      "name": "黑色SUV",
+      "nameEn": "BLACK SUV C",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0013",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN B",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0014",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN C",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0015",
+      "category": "vehicle",
+      "name": "深色SUV",
+      "nameEn": "DARK SUV B",
+      "model": "suv",
+      "description": "高速通过 · 运动模糊",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0016",
+      "category": "vehicle",
+      "name": "公交巴士",
+      "nameEn": "CITY BUS B",
+      "model": "bus",
+      "description": "黄色车顶 · 橙色 LED 线路牌",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0017",
+      "category": "vehicle",
+      "name": "深色SUV",
+      "nameEn": "DARK SUV C",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0018",
+      "category": "vehicle",
+      "name": "黑色SUV",
+      "nameEn": "BLACK SUV D",
+      "model": "suv",
+      "description": "近景高速通过 · 运动模糊",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0019",
+      "category": "vehicle",
+      "name": "黑色SUV",
+      "nameEn": "BLACK SUV E",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0020",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN D",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0021",
+      "category": "vehicle",
+      "name": "白色SUV",
+      "nameEn": "WHITE SUV B",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0022",
+      "category": "vehicle",
+      "name": "长途大巴",
+      "nameEn": "COACH BUS",
+      "model": "coach",
+      "description": "白色车身 · 高窗线 · 无线路牌",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0023",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN E",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0024",
+      "category": "vehicle",
+      "name": "黑色SUV",
+      "nameEn": "BLACK SUV F",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0025",
+      "category": "vehicle",
+      "name": "白色轿车",
+      "nameEn": "WHITE SEDAN B",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0026",
+      "category": "vehicle",
+      "name": "深色SUV",
+      "nameEn": "DARK SUV D",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0027",
+      "category": "person",
+      "name": "电动车骑手",
+      "nameEn": "E-BIKE RIDER A",
+      "model": "ebike",
+      "description": "人体轮廓 · 骑行姿态",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0028",
+      "category": "vehicle",
+      "name": "黑色SUV",
+      "nameEn": "BLACK SUV G",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0029",
+      "category": "vehicle",
+      "name": "白色SUV",
+      "nameEn": "WHITE SUV C",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0030",
+      "category": "vehicle",
+      "name": "白色轿车",
+      "nameEn": "WHITE SEDAN C",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0031",
+      "category": "vehicle",
+      "name": "深色SUV",
+      "nameEn": "DARK SUV E",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0032",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN F",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0033",
+      "category": "vehicle",
+      "name": "深色SUV",
+      "nameEn": "DARK SUV F",
+      "model": "suv",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0034",
+      "category": "person",
+      "name": "电动车骑手",
+      "nameEn": "E-BIKE RIDER B",
+      "model": "ebike",
+      "description": "人体轮廓 · 骑行姿态",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0035",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN G",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0036",
+      "category": "vehicle",
+      "name": "厢式货车",
+      "nameEn": "BOX TRUCK C",
+      "model": "truck",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0037",
+      "category": "vehicle",
+      "name": "白色SUV",
+      "nameEn": "WHITE SUV D",
+      "model": "suv",
+      "description": "近景高速通过",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0038",
+      "category": "vehicle",
+      "name": "银色轿车",
+      "nameEn": "SILVER SEDAN H",
+      "model": "sedan",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "TRK-0039",
+      "category": "infrastructure",
+      "name": "路灯",
+      "nameEn": "STREET LIGHT",
+      "model": "streetlight",
+      "description": "",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    },
+    {
+      "objectId": "SP-0004",
+      "category": "appliance",
+      "name": "空调外机",
+      "nameEn": "OUTDOOR UNIT",
+      "model": "outdoorunit",
+      "description": "建筑立面固定安装 · 室外机",
+      "descriptionSource": "tracks.json / project annotation; not independently verified",
+      "details": []
+    }
+  ]
+}

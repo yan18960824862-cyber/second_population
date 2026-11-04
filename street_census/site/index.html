@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="科韵路段 · 工业物第二人口普查 — 以车流为主体、路灯与路障等工业物为辅助的识别与追踪模拟">
+<title>工业物第二人口普查 — 科韵路段 / VEHICLE TRAFFIC CENSUS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════ 顶栏 ══════════ -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark"></span>
+    <div class="brand-text">
+      <h1>工业物第二人口普查<span class="sub">SECOND POPULATION · TRAFFIC FIRST</span></h1>
+    </div>
+  </div>
+  <div class="top-meta">
+    <span class="meta-item" id="camLabel">CAM 01 / STREET 01</span>
+    <span class="meta-item live-dot">LIVE</span>
+    <span class="meta-item" id="recTime">REC 00:00:00:00</span>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- ══════════ 左侧：场景导航 + 进度 + 目标清单（浮层） ══════════ -->
+  <aside class="sidebar">
+    <nav class="scene-nav" id="sceneNav">
+      <button class="scene active" data-scene="street1" type="button"><i>▤</i><span class="sc-body"><b>Street 01</b><em>站前交叉口</em></span></button>
+      <button class="scene" data-scene="street2" type="button"><i>▙</i><span class="sc-body"><b>Street 02</b><em>夜间主路 · 车流</em></span></button>
+      <button class="scene" data-scene="street3" type="button"><i>▞</i><span class="sc-body"><b>Street 03</b><em>南段慢行道</em></span></button>
+      <button class="scene" data-scene="street4" type="button"><i>▦</i><span class="sc-body"><b>Street 04</b><em>辅道停靠带</em></span></button>
+    </nav>
+
+    <div class="detect-counter">
+      <span class="count" id="detectCount">00</span><span class="total" id="detectTotal">/ 21</span>
+      <span class="count-label">OBJECTS DETECTED / TRACKED</span>
+    </div>
+
+    <!-- 识别跟踪进度 -->
+    <div class="track-progress">
+      <div class="tp-head">
+        <span>TRACKING PROGRESS</span>
+        <span class="tp-pct" id="tpPct">0%</span>
+      </div>
+      <div class="tp-bar"><i id="tpBar"></i></div>
+      <div class="tp-sub">已识别 <b id="tpCount">0</b> / <span id="tpTotal">21</span> · 扫描 <span id="tpScan">0.0 / 21.1 s</span></div>
+    </div>
+
+    <section class="target-list">
+      <h2>标注清单 · TARGETS</h2>
+      <ul id="targetList"><!-- JS 注入 --></ul>
+    </section>
+
+    <div class="sidebar-foot">
+      <p>点击清单可跳转至目标出现时刻<br>车辆 / 骑手为主 · 工业物为辅</p>
+    </div>
+  </aside>
+
+  <!-- ══════════ 中央：监控画面（全幅） ══════════ -->
+  <section class="stage">
+    <div class="viewport" id="viewport">
+      <video id="cam" preload="auto" playsinline loop muted></video>
+
+      <!-- 网格 / 扫描线 / 角标 -->
+      <div class="grid-overlay" aria-hidden="true"></div>
+      <div class="scanline" aria-hidden="true"></div>
+      <div class="corner tl" aria-hidden="true"></div>
+      <div class="corner tr" aria-hidden="true"></div>
+      <div class="corner bl" aria-hidden="true"></div>
+      <div class="corner br" aria-hidden="true"></div>
+      <div class="viewport-hud" aria-hidden="true">
+        <span id="hudClock">T+0.0s</span>
+        <span id="zoneLabel">ZONE A · 科韵路站 K0+780 交叉口</span>
+        <span id="hudFps">TRACKING @ 25 FPS</span>
+      </div>
+
+      <!-- 识别框层（JS 注入） -->
+      <div class="track-layer" id="trackLayer"></div>
+
+      <!-- 点击反馈 toast -->
+      <div class="id-toast" id="idToast">objectId → TRK-0000</div>
+    </div>
+
+    <div class="transport">
+      <button id="playBtn" type="button" aria-label="播放/暂停">❚❚</button>
+      <div class="timeline" id="timeline"><div class="timeline-fill" id="timelineFill"></div></div>
+      <span class="timecode" id="timecode">00:00 / 00:30</span>
+    </div>
+  </section>
+
+  <!-- ══════════ 右侧：物品档案面板（浮层） ══════════ -->
+  <aside class="dossier" id="dossier">
+    <div class="dossier-head">
+      <span class="dossier-tag">OBJECT DOSSIER</span>
+      <button class="dossier-close" id="dossierClose" type="button" aria-label="关闭">×</button>
+    </div>
+    <div class="dossier-body" id="dossierBody">
+      <p class="dossier-empty">点击画面中的识别框<br>查看该物品的能耗档案</p>
+    </div>
+  </aside>
+
+</main>
+
+<!-- ══════════ 底部：滚动统计 ══════════ -->
+<footer class="tickerbar">
+  <div class="ticker-label">TRAFFIC CENSUS · KEYUN RD ×4</div>
+  <div class="ticker-stats">
+    <span>已识别目标 <b id="statObjects">0</b></span>
+    <span>累计制造能耗 <b id="statEnergy">0</b> kWh</span>
+    <span>累计制造用水 <b id="statWater">0</b> t</span>
+    <span>在册工业物 <b id="statPersons">0</b></span>
+    <span class="ticker-note">* 能耗数据为模拟估算值</span>
+  </div>
+</footer>
+
+<script src="tracker.js"></script>
+</body>
+</html>

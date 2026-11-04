@@ -3,10 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="看见另一种人口 — 物品能耗人口普查 · 城市道路监控识别模拟">
-<title>SECOND POPULATION — 看见另一种人口 / OBJECT ARCHIVE</title>
+<meta name="description" content="第二人口：从摄像头进入四段街道影像，发现、追踪与登记城市中的人造物。">
+<title>第二人口｜THE SECOND POPULATION</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='5' y='11' width='22' height='3' fill='%23A8D3E0'/%3E%3Crect x='9' y='18' width='15' height='3' fill='%23A8D3E0'/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="glitch.css">
+<link rel="stylesheet" href="archive/dossier.css">
+<link rel="stylesheet" href="archive/entry.css">
+<link rel="stylesheet" href="archive/ac-composition.css">
+<link rel="stylesheet" href="archive/reference-entry.css">
+<link rel="stylesheet" href="archive/inspection.css">
+<style>
+  /* 非「原版」场景：仅保留识别，隐藏档案 / 可视化面板 */
+  body:not(.on-legacy) .dataviz,
+  body:not(.on-legacy) .deck { display: none !important; }
+  .scene-nav .scene { cursor: pointer; }
+  .scene-nav .scene.active { background: rgba(168,211,224,.16); color: #A8D3E0; box-shadow: inset 0 0 0 1px #A8D3E0; }
+</style>
+<link rel="stylesheet" href="integration/master.css">
+<link rel="stylesheet" href="integration/monitor-entry.css">
+<link rel="stylesheet" href="integration/entry-narrative.css">
+<link rel="stylesheet" href="integration/monitor-layout.css">
+<link rel="stylesheet" href="integration/object-universe.css">
 </head>
 <body class="is-booting">
 
@@ -15,7 +33,7 @@
 <section class="boot" id="bootScreen" aria-label="系统启动">
   <!-- 视觉主体：视频纹理 + 实时损坏处理 -->
   <canvas id="bootCanvas" class="boot-canvas" aria-hidden="true"></canvas>
-  <video id="bootVideo" src="traffic_clip.mp4" preload="auto" muted playsinline loop hidden></video>
+  <video id="bootVideo" data-src="traffic_clip.mp4" preload="none" muted playsinline loop hidden></video>
 
   <!-- 视差层：随鼠标微移 -->
   <div class="boot-parallax" id="bootParallax" aria-hidden="true">
@@ -43,13 +61,17 @@
   <div class="boot-ui">
     <header class="boot-head">
       <span class="bh-l"><i class="bh-dot"></i>SECOND POPULATION OS</span>
-      <span class="bh-r">BUILD 2.4.1 · CHANNEL LOCKED</span>
+      <span class="bh-r">
+        <button id="sfxBtn" class="sfx-btn" type="button" aria-label="切换音效">SFX <b id="sfxState">ON</b></button>
+        <span class="bh-build">BUILD 2.5.0 · CHANNEL NOISY</span>
+      </span>
     </header>
 
-    <div class="boot-title-wrap">
-      <h2 class="boot-title glitch-split" data-text="看见另一种人口">看见另一种人口</h2>
+    <div class="boot-title-wrap" id="bootTitleWrap">
+      <h2 class="boot-title" id="bootTitle" data-text="第二人口">第二人口</h2>
       <p class="boot-sub glitch-split-sm" data-text="SECOND POPULATION">SECOND POPULATION</p>
-      <p class="boot-tag">物品能耗人口普查 · 城市道路监控识别模拟</p>
+      <p class="boot-tag">人类之外，还有一群人。他们由钢铁、塑料与电流构成。</p>
+      <p class="boot-tag2">城市道路监控 · 物品能耗人口普查</p>
     </div>
 
     <div class="boot-bottom">
@@ -76,9 +98,10 @@
     <footer class="boot-foot">
       <span>CHANNEL DESYNC — <b id="bootErr">ERR_NONE</b></span>
       <span>CORRUPTION <b id="bootLvl">00%</b></span>
-      <span class="boot-foot-r">© MMXXVI · 40 OBJECTS</span>
+      <span class="boot-foot-r">© MMXXVI · 4 SCENES / 75 RECORDS</span>
     </footer>
   </div>
+
 </section>
 
 <!-- ══════════ 顶栏 ══════════ -->
@@ -86,11 +109,11 @@
   <div class="brand">
     <span class="brand-mark"></span>
     <div class="brand-text">
-      <h1>看见另一种人口<span class="sub">SECOND POPULATION</span></h1>
+      <h1>第二人口<span class="sub">SECOND POPULATION</span></h1>
     </div>
   </div>
-  <div class="top-meta">
-    <span class="meta-item">CAM 01 / STREET</span>
+  <div class="top-meta"><button type="button" id="chooseScene" class="survey-entry">选择监控场景</button><button type="button" id="openGlobalSurvey" class="survey-entry">全局星图 ↗</button>
+    <span class="meta-item" id="camLabel">CAM 01 / STREET</span>
     <span class="meta-item live-dot">LIVE</span>
     <span class="meta-item" id="recTime">REC 00:00:00:00</span>
   </div>
@@ -100,11 +123,11 @@
 
   <!-- ══════════ 左侧：场景导航 + 进度 + 目标清单（浮层） ══════════ -->
   <aside class="sidebar">
-    <nav class="scene-nav">
-      <button class="scene active" type="button"><i>▙</i>STREET</button>
-      <button class="scene" type="button" disabled><i>▞</i>SIDEWALK</button>
-      <button class="scene" type="button" disabled><i>▦</i>INTERIOR</button>
-      <button class="scene" type="button" disabled><i>▟</i>PUBLIC SPACE</button>
+    <nav class="scene-nav" id="sceneNav">
+      <button class="scene" data-scene="street1" type="button"><i>▤</i>STREET 01</button>
+      <button class="scene active" data-scene="street2" type="button"><i>▙</i>STREET 02</button>
+      <button class="scene" data-scene="street3" type="button"><i>▞</i>STREET 03</button>
+      <button class="scene" data-scene="street4" type="button"><i>▦</i>STREET 04</button>
     </nav>
 
     <div class="detect-counter">
@@ -135,7 +158,7 @@
   <!-- ══════════ 中央：监控画面 ══════════ -->
   <section class="stage">
     <div class="viewport" id="viewport">
-      <video id="cam" src="traffic_clip.mp4" preload="auto" playsinline loop muted></video>
+      <video id="cam" preload="metadata" playsinline loop muted></video>
 
       <!-- 网格 / 扫描线 / 角标 -->
       <div class="grid-overlay" aria-hidden="true"></div>
@@ -156,7 +179,7 @@
 
       <div class="viewport-hud" aria-hidden="true">
         <span id="hudClock">T+0.0s</span>
-        <span>ZONE A · 深南大道东向</span>
+        <span id="zoneLabel">ZONE A · 深南大道东向</span>
         <span id="hudFps">TRACKING @ 25 FPS</span>
       </div>
 
@@ -188,38 +211,53 @@
     </div>
   </section>
 
-  <!-- ══════════ 右侧：数据可视化（制成品 vs 世界人口） ══════════ -->
-  <aside class="dataviz" id="dataviz" aria-label="数据可视化：工业制成品与世界人口">
-    <header class="dv-head">
-      <span class="dv-title">工业制成品 vs 世界人口</span>
-      <span class="dv-range">1950 — 2025</span>
-    </header>
-
-    <div class="dv-lanes">
-      <div class="dv-lane dv-objects">
-        <div class="dv-label"><i class="swatch"></i>工业制成品</div>
-        <div class="dv-value" id="dvObjectsValue">0.80B</div>
-        <div class="dv-unit">累计制造量 · 示意</div>
-      </div>
-      <div class="dv-lane dv-people">
-        <div class="dv-label"><i class="swatch"></i>世界人口</div>
-        <div class="dv-value" id="dvPeopleValue">2.50B</div>
-        <div class="dv-unit">人口 · 示意模型</div>
-      </div>
+  <!-- ══════════ 右侧：目标蛛网（第二人口 · 道路物品模型网络） ══════════
+       视觉规格对齐参考稿 road-scene-model-hover-preview-v2：
+       viewBox 0 0 900 820 · 圆心 450,410 · 六个 60° 扇形 · 点位 g.map-point -->
+  <aside class="webviz" id="objectWeb" aria-label="目标蛛网：识别目标按类别分布在蛛网扇区上">
+    <div class="ow-heading">
+      <span class="ow-eyebrow">SECOND POPULATION · ROAD OBJECT MODEL NETWORK</span>
+      <h3 class="ow-title">目标蛛网</h3>
+      <p class="ow-sub">六类第二人口关系编码为蜘蛛网 · 悬停点位查看模型或取证帧</p>
     </div>
 
-    <div class="dv-plot">
-      <canvas id="dvCanvas" role="img" aria-label="两列下落粒子分别累积工业制成品与世界人口"></canvas>
-      <div class="dv-axis" aria-hidden="true">
-        <span>1950</span><span id="dvYearValue">1950</span><span>2025</span>
+    <section class="ow-panel">
+      <div class="ow-help">
+        <span>PROPERTY NETWORK · SELECT A NODE</span>
+        <span id="owCount">00 / 00 OBJECTS</span>
       </div>
-    </div>
 
-    <div class="dv-controls">
-      <button id="dvToggle" type="button" aria-pressed="true">暂停</button>
-      <input id="dvRange" type="range" min="1950" max="2025" step="1" value="1950" aria-label="选择年份">
-    </div>
-    <div class="dv-foot">粒子密度表示相对量级，非一一对应计数</div>
+      <div class="ow-map">
+        <!-- 静态网：241 条手绘抖动路径（原稿同几何），做底图避免上千节点拖慢渲染 -->
+        <img class="ow-net" src="assets/web-net.svg" alt="" aria-hidden="true" />
+        <svg class="ow-overlay" id="owSvg" viewBox="0 0 900 820" role="group" aria-label="识别目标蛛网">
+          <g id="owLabels" class="zone-labels" aria-hidden="true"></g>
+          <g id="owDots" class="overview-points"></g>
+        </svg>
+
+        <!-- 悬停读出：有模型的类别出三维模型，工业小件出高清取证帧 -->
+        <div class="ow-spot" id="owSpot" aria-hidden="true">
+          <div class="ow-spot-head"><span id="owSpotName">—</span><small id="owSpotId">—</small></div>
+          <canvas id="owSpotCanvas"></canvas>
+          <img id="owSpotImg" alt="" />
+          <div class="ow-spot-foot"><span id="owSpotFoot">—</span><span id="owSpotWedge">—</span></div>
+        </div>
+      </div>
+
+      <div class="ow-caption">点位由当前场景识别结果实时生成 · 悬停查看模型或取证帧，点击跳转并跟踪</div>
+    </section>
+
+    <!-- 六分类条（色点与名称沿用参考稿） -->
+    <div class="ow-strip" id="owStrip"></div>
+
+    <!-- 四路监控：卡片可切换场景 -->
+    <section class="ow-band">
+      <div class="ow-band-head">
+        <b>02 四路监控 <small>FOUR CAMERA SCENES</small></b>
+        <small id="owBandMeta">切换场景即重建网络</small>
+      </div>
+      <div class="ow-cards" id="owCards"></div>
+    </section>
   </aside>
 
   <!-- ══════════ 底部：3D 人群 + 档案库 + 实时代码 ══════════ -->
@@ -263,33 +301,35 @@
 
 <!-- ══════════ 底部：滚动统计 ══════════ -->
 <footer class="tickerbar">
-  <div class="ticker-label">ENERGY CENSUS · 实时普查</div>
+  <div class="ticker-label">OBSERVATION LOG · 当前片段</div>
   <div class="ticker-stats">
-    <span>已识别目标 <b id="statObjects">0</b></span>
-    <span>累计制造能耗 <b id="statEnergy">0</b> kWh</span>
-    <span>累计制造用水 <b id="statWater">0</b> t</span>
+    <span>已识别记录 <b id="statObjects">0</b></span>
+    <span hidden>候选能耗注记 <b id="statEnergy">0</b> kWh</span>
+    <span hidden>候选用水注记 <b id="statWater">0</b> t</span>
     <span>画面人流 <b id="statPersons">0</b></span>
-    <span class="ticker-note">* 能耗数据为模拟估算值</span>
+    <span class="ticker-note">原始标注观察 · 人造物数量待核验 · 框为示意框（已按画面内容收紧）</span>
   </div>
 </footer>
 
 <!-- 空调档案模块（v7 handoff）同源 iframe 承载层 -->
-<iframe id="acArchive" class="ac-archive" src="./ac-archive/index.html" title="空调档案 · SP-0004" hidden></iframe>
+<iframe id="acArchive" class="ac-archive" data-src="./ac-archive/index.html" title="空调档案 · SP-0004" hidden></iframe>
 <button id="acArchiveClose" class="ac-archive-close" type="button" hidden aria-label="返回主监控">← 返回监控</button>
 
 <!-- ══════════ 通用 OBJECT ARCHIVE（全屏两段式：扫描 → 档案） ══════════ -->
 <section class="obj-archive" id="objArchive" hidden aria-hidden="true">
-  <button id="objArchiveClose" class="obj-archive-close" type="button">← 返回监控</button>
+  <button id="objArchiveClose" class="obj-archive-close" type="button">← BACK TO MONITOR</button>
 
   <!-- 阶段一：几何扫描 -->
   <div class="oa-stage oa-scan" id="oaScan">
     <div class="scan-shell" id="oaScanShell">
       <div class="scan-header">
-        <span id="oaScanId">SP-0000</span><span>AC / 01</span><span>GEOMETRY</span><span>ROTATION</span><span>SECOND POPULATION</span>
+        <span id="oaScanId">SP-0000</span><span id="oaScanType">OBJECT / 01</span><span>GEOMETRY</span><span>ROTATION</span><span>SECOND POPULATION</span>
       </div>
       <div class="scan-window">
         <div class="scan-crosses" id="oaCrosses" aria-hidden="true"></div>
         <canvas id="oaModelCanvas" class="scan-canvas" aria-label="目标三维模型旋转扫描"></canvas>
+        <div class="scan-study-label" aria-hidden="true">ENGINEERING STUDY / ILLUSTRATIVE</div>
+        <div class="scan-parts" id="oaScanParts" aria-hidden="true"></div>
         <span class="scan-corner sc-tl" aria-hidden="true"></span>
         <span class="scan-corner sc-br" aria-hidden="true"></span>
         <div class="scan-drift" aria-hidden="true"></div>
@@ -326,15 +366,15 @@
               <span id="oaViewLabel">VIEW 01/01</span>
             </div>
             <canvas id="oaSolidCanvas" class="approved-object" aria-label="目标实体模型"></canvas>
-            <span class="visual-caption">OPERATION SIMULATION / NOT LIVE TELEMETRY</span>
+            <span class="visual-caption"><span>STRUCTURAL STUDY / ILLUSTRATIVE RECONSTRUCTION</span><button id="oaInspect" type="button">3D VIEW ↗</button></span>
           </section>
           <div class="insets">
             <section class="dossier-box anatomy reveal r3">
-              <div class="mini-heading">GEOMETRY / 线框结构</div>
+              <div class="mini-heading"><span id="oaInsetOne">WHEEL / GEOMETRY</span></div>
               <canvas id="oaWireCanvas" class="approved-detail" aria-label="目标线框结构图"></canvas>
             </section>
             <section class="dossier-box anatomy reveal r4">
-              <div class="mini-heading">PROFILE / 侧影视图</div>
+              <div class="mini-heading"><span id="oaInsetTwo">THERMAL / ASSEMBLY</span></div>
               <canvas id="oaProfileCanvas" class="approved-detail" aria-label="目标侧影视图"></canvas>
             </section>
           </div>
@@ -344,34 +384,36 @@
         <div class="info-column">
           <section class="dossier-box identity-box reveal r2">
             <div class="record-name">
-              <h2 id="oaName" tabindex="-1">目标名称</h2>
+              <h2 id="oaName" tabindex="-1">TARGET</h2>
               <p id="oaNameEn">TARGET LABEL</p>
             </div>
             <dl class="identity-table" id="oaIdentity"></dl>
+            <p class="archive-description" id="oaDescription"></p>
           </section>
 
           <section class="dossier-box carbon-box reveal r4">
-            <h3>CARBON RECORD · 碳记录</h3>
+            <h3>CARBON RECORD</h3>
             <div class="carbon-body">
               <div class="carbon-value">
-                <span>USE-PHASE CO₂e</span>
+                <span>ANNUAL USE-PHASE CO₂e</span>
                 <strong id="oaCarbonValue">DATA PENDING</strong>
-                <small>kg CO₂e</small>
+                <span id="oaCarbonExpression"></span>
+                <small id="oaCarbonUnit">kg CO₂e / year</small>
                 <p id="oaCarbonNote">MODEL, ENERGY USE AND GRID<br>FACTOR REQUIRED.</p>
               </div>
               <div class="carbon-diagram">
-                <span>SCHEMATIC / NOT MEASURED</span>
+                <span>IF ELECTRIC / METHOD ONLY</span>
                 <div class="carbon-chain">
                   <div>
                     <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M32 5 16 32h13l-4 23 21-33H32Z" class="filled-wire"/></svg>
-                    <b>INPUT<br>ENERGY</b>
+                    <b>CHARGING<br>kWh / YEAR</b>
                   </div>
-                  <span class="arrow">→</span>
+                  <span class="arrow">×</span>
                   <div>
                     <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M8 51V34l12-8v9l12-9v25M32 51V9h8v42M9 51h44M14 42v4m8-4v4"/></svg>
-                    <b>EMISSION<br>FACTOR</b>
+                    <b>GRID FACTOR<br>kg CO₂e / kWh</b>
                   </div>
-                  <span class="arrow">→</span>
+                  <span class="arrow">=</span>
                   <div>
                     <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M14 44a12 12 0 0 1 0-24 17 17 0 0 1 32 0 12 12 0 0 1 0 24Z"/><text x="30" y="35" text-anchor="middle">CO₂</text></svg>
                     <b>CO₂e</b>
@@ -383,13 +425,13 @@
 
           <section class="dossier-box resource-box reveal r5">
             <header>
-              <h3>RESOURCE CONNECTION · 资源连接</h3>
-              <span>SOURCE VERIFICATION PENDING<br>BOUNDARY / USE PHASE</span>
+              <h3>RESOURCE CONNECTION</h3>
+              <span>OPERATION BOUNDARY ONLY<br>PRODUCTION ACCOUNTED SEPARATELY</span>
             </header>
             <div class="resource-network">
               <div class="resource-inputs">
-                <div><span>MATERIALS</span><b>→</b><span>MANUFACTURE</span></div>
-                <div><span>ELECTRICITY</span><b>→</b><span>OPERATION</span></div>
+                <div><span>ENERGY RECORD</span><b>+</b><span>PERIOD</span></div>
+                <div><span>REGION / YEAR</span><b>→</b><span>FACTOR</span></div>
               </div>
               <b class="network-arrow">→</b>
               <div class="resource-unit">
@@ -408,11 +450,12 @@
       </div>
 
       <footer class="dossier-footer reveal r6">
-        <button id="oaBackToScene" type="button">◀ 返回监控</button>
+        <button id="oaBackToScene" type="button">◀ BACK TO SCENE</button>
         <span id="oaFooterNote">MODEL-SPECIFIC DATA NOT YET VERIFIED.</span>
         <div>
-          <button id="oaPrev" type="button">‹ 上一目标</button>
-          <button id="oaNext" type="button">下一目标 ›</button>
+          <button id="oaPrev" type="button">‹ PREVIOUS</button>
+          <button id="oaNext" type="button">NEXT ›</button>
+          <button id="oaSource" type="button">SOURCE NOTES ↗</button>
           <button id="oaReplay" type="button">REPLAY ↻</button>
         </div>
       </footer>
@@ -420,10 +463,40 @@
   </div>
 </section>
 
+<dialog id="oaInspectionDialog" aria-labelledby="oaInspectionTitle">
+  <header><strong id="oaInspectionTitle" data-inspection-title>3D VIEW</strong><button type="button" data-action="close">BACK TO RECORD ×</button></header>
+  <canvas tabindex="0" aria-label="三维模型，拖动或用左右方向键旋转"></canvas>
+  <footer><button type="button" data-turn="-.22" aria-label="向左旋转">↶ TURN LEFT</button><button type="button" data-turn=".22" aria-label="向右旋转">TURN RIGHT ↷</button><button type="button" data-action="rotate" aria-pressed="false">AUTO ROTATE</button><button type="button" data-action="reset">RESET VIEW</button></footer>
+  <p>DRAG / ← → ROTATE · SCROLL TO ZOOM · ESC BACK · ILLUSTRATIVE MODEL</p>
+</dialog>
+<dialog id="oaSourceDialog"><button id="oaSourceClose" type="button">CLOSE ×</button><h2>SOURCE NOTES</h2><p id="oaSourceText"></p><p>Manufacturing energy, manufacturing water and use-phase carbon have different boundaries. Energy class is not a carbon value.</p></dialog>
+<script src="integration/visual-rules.js"></script>
+<script src="integration/census-store.js"></script>
+<script src="integration/lifecycle.js"></script>
+<script src="integration/camera-prelude.js"></script>
 <script src="glitch.js"></script>
 <script src="model-loader/cam.js"></script>
-<script src="model-loader/model-engine.js"></script>
+  <script src="archive/sequence.js"></script>
+  <script src="model-loader/model-engine.js"></script>
+  <script src="archive/models.js"></script>
+  <script src="archive/rider-geometry.js"></script>
+  <script src="archive/rider-approved.js"></script>
+  <script src="archive/rider-gpu.js"></script>
+<script src="archive/engineering.js"></script>
+<script src="archive/scan-assets.js"></script>
+<script src="archive/mechanisms.js"></script>
+  <script src="archive/motion.js"></script>
+<script src="archive/visuals.js"></script>
+<script src="archive/data.js"></script>
+<script src="archive/catalog.js"></script>
+<script src="archive/inspection.js"></script>
+<script src="archive/entry.js"></script>
 <script src="panels.js"></script>
+<script src="objectweb.js"></script>
 <script src="tracker.js"></script>
+<script src="integration/universe-palette.js"></script>
+<script src="integration/master.js"></script>
+<script src="integration/monitor-layout.js"></script>
+<script src="integration/universe-controller.js"></script>
 </body>
 </html>

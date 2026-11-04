@@ -1,0 +1,59 @@
+/* 叙事七章：只有排版层级，没有卡片、容器、边框、投影。
+   文字逐句浮现；画面里的图像/群像逐件生长；所有位置由滚动进度决定。 */
+#cameraPrelude .entry-story{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none;color:#b9c8d2;font-family:"Noto Sans SC","PingFang SC",system-ui,sans-serif;font-variant-numeric:tabular-nums}
+#cameraPrelude .story-ch{position:absolute;left:0;top:0;width:1200px;height:676px;transform-origin:50% 50%;opacity:0;visibility:hidden;contain:layout style}
+#cameraPrelude .story-copy{position:absolute;left:6.2%;top:7.4%;width:40%;z-index:2}
+#cameraPrelude .story-copy::before{content:'';position:absolute;left:-24%;top:-16%;width:178%;height:136%;z-index:-1;background:radial-gradient(ellipse at 36% 46%,#02080be6 0%,#02080b90 46%,#02080b00 76%)}
+#cameraPrelude .entry-story.is-story::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 54% 46%,#02080b00 38%,#02080b66 100%)}
+#cameraPrelude .story-kicker{display:block;font:400 10px/1.4 Consolas,monospace;letter-spacing:.24em;color:#74858f}
+/* 同一段文字里的短句逐句浮现；字号只分三级：章节号 < 正文 < 结论。 */
+#cameraPrelude .story-line{margin:12px 0 0;max-width:100%;font:400 13px/1.86 "Noto Sans SC","PingFang SC",sans-serif;letter-spacing:.03em;color:#8294a0;opacity:0}
+#cameraPrelude .story-line.is-lead{margin-top:28px;max-width:100%;font:300 22px/1.62 "Noto Sans SC","PingFang SC",sans-serif;letter-spacing:.02em;color:#c6d3db}
+#cameraPrelude .story-line.is-concl{margin-top:28px;max-width:100%;font:300 30px/1.36 "Noto Sans SC","PingFang SC",sans-serif;letter-spacing:.01em;color:#dde5ea}
+#cameraPrelude .story-figure{margin-top:30px;opacity:0}
+#cameraPrelude .story-figure b{display:block;font:200 68px/1 "Helvetica Neue",Arial,sans-serif;letter-spacing:.02em;color:#e7edf1}
+#cameraPrelude .story-figure small{display:block;margin-top:12px;font:400 11px/1.6 "Noto Sans SC",sans-serif;letter-spacing:.12em;color:#7b8d99}
+#cameraPrelude .story-ch[data-ch="crowd"] .story-figure b{font-size:40px;letter-spacing:.03em;white-space:nowrap}
+#cameraPrelude .story-media{position:absolute;inset:0;z-index:1}
+#cameraPrelude .story-img{position:absolute;display:block;height:auto;opacity:0;filter:saturate(.24) brightness(.7) contrast(1.04);transform-origin:50% 50%}
+#cameraPrelude .story-img.is-evidence{opacity:0;filter:saturate(.16) brightness(.84) contrast(1.02)}
+#cameraPrelude .story-cap{position:absolute;display:block;font:400 9px/1.5 Consolas,monospace;letter-spacing:.1em;color:#6d7f8b;white-space:nowrap;opacity:0}
+#cameraPrelude .story-cap.is-big{font-size:11px;letter-spacing:.12em;color:#9fb1bd}
+/* 06 的取景角标：四段细线，不是容器。 */
+#cameraPrelude .story-bracket{position:absolute;opacity:0;pointer-events:none}
+#cameraPrelude .story-bracket span{position:absolute;width:13px;height:13px;border:1px solid #93a7b266}
+#cameraPrelude .story-bracket span:nth-child(1){left:0;top:0;border-right:0;border-bottom:0}
+#cameraPrelude .story-bracket span:nth-child(2){right:0;top:0;border-left:0;border-bottom:0}
+#cameraPrelude .story-bracket span:nth-child(3){left:0;bottom:0;border-right:0;border-top:0}
+#cameraPrelude .story-bracket span:nth-child(4){right:0;bottom:0;border-left:0;border-top:0}
+/* 02 档案逐项：左标签右值，没有底板。 */
+#cameraPrelude .story-row{position:absolute;display:flex;align-items:baseline;gap:14px;white-space:nowrap;opacity:0}
+#cameraPrelude .story-row i{font:400 9px/1.5 Consolas,monospace;font-style:normal;letter-spacing:.16em;color:#6b7d88}
+#cameraPrelude .story-row b{font:400 11px/1.5 Consolas,monospace;font-weight:400;letter-spacing:.06em;color:#c2d0d9}
+#cameraPrelude .story-lines{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible}
+#cameraPrelude .story-lines path{fill:none;stroke:#6f8794;stroke-width:1;opacity:0}
+#cameraPrelude .story-cat{position:absolute;display:block;transform:translate(-50%,-50%);font:400 10px/1.5 "Noto Sans SC",sans-serif;letter-spacing:.08em;color:#b1c1cb;white-space:nowrap;opacity:0}
+#cameraPrelude .story-cat b{font:300 17px/1 "Helvetica Neue",Arial,sans-serif;color:#d3dee5;margin-right:6px}
+#cameraPrelude .story-credit{position:absolute;left:4vw;bottom:30px;z-index:3;font:400 9px/1.5 "Noto Sans SC",sans-serif;letter-spacing:.1em;color:#6c7f8a;opacity:0;transition:opacity .2s}
+#cameraPrelude .entry-story.is-story .story-credit{opacity:.82}
+/* 00 开场：两句问句在坠落途中分两次出现，放左侧避让下坠的机身。 */
+#cameraPrelude .story-open{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:26px;padding-left:15vw;z-index:3}
+#cameraPrelude .story-open p{margin:0;font:300 26px/1.6 "Noto Sans SC","PingFang SC",sans-serif;letter-spacing:.06em;color:#dbe4e9;opacity:0;text-shadow:0 3px 34px #02080b}
+/* 最终卡：0.94–1.00 */
+#cameraPrelude .story-final{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;z-index:3;opacity:0}
+#cameraPrelude .story-final small{font:400 10px/1 Consolas,monospace;letter-spacing:.32em;color:#7d8f9a}
+#cameraPrelude .story-final b{font:200 44px/1.2 "Noto Sans SC","PingFang SC",sans-serif;letter-spacing:.16em;color:#e3ebef}
+#cameraPrelude .story-final p{margin:0;font:400 12px/1.6 "Noto Sans SC",sans-serif;letter-spacing:.2em;color:#93a5af}
+/* 叙事期间收起页头与进度条，只保留右上角的退出入口；画面里不出现仪表盘构件。 */
+#cameraPrelude.in-story .entry-header{opacity:0}
+#cameraPrelude.in-story .entry-header span:last-child{opacity:0}
+#cameraPrelude.in-story .entry-footer .entry-progress{opacity:0;visibility:hidden}
+#cameraPrelude.in-story #entrySkip{position:fixed;right:4vw;top:24px;bottom:auto;padding:9px 13px;border:1px solid #8fa2ad44;background:#03080b66;color:#a9bac4;font:400 9px/1 Consolas,monospace;letter-spacing:.14em;pointer-events:auto}
+#cameraPrelude.in-story .entry-footer{inset:auto 0 0;pointer-events:none;opacity:1}
+#cameraPrelude.in-story .entry-footer .entry-progress{pointer-events:none}
+@media(max-width:900px){
+ #cameraPrelude .story-ch{width:820px;height:720px}
+ #cameraPrelude .story-copy{width:46%}
+ #cameraPrelude .story-line.is-concl{font-size:27px}
+ #cameraPrelude .story-figure b{font-size:52px}
+}

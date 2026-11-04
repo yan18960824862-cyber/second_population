@@ -13,6 +13,8 @@
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const rnd = (a, b) => a + Math.random() * (b - a);
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const TAU = Math.PI * 2;
+  let gfxActive = false, gfxRaf = 0;
 
   /* ═══════════════════════════════════════════════════════════════════
      1. 全屏 GLITCH 视觉引擎
@@ -42,6 +44,15 @@
       nctx.putImageData(nimg, 0, 0);
     })();
 
+    /* 扫描线瓦片（1×4，半透明黑行）→ 一次 pattern 填充替代每帧数百次 fillRect */
+    const scanTile = document.createElement("canvas");
+    scanTile.width = 1;
+    scanTile.height = 4;
+    const sctx = scanTile.getContext("2d");
+    sctx.fillStyle = "rgba(0,0,0,.42)";
+    sctx.fillRect(0, 2, 1, 2);
+    const scanPattern = ctx.createPattern(scanTile, "repeat");
+
     /* 鼠标状态：位置 + 平滑后的位置 + 是否悬停可交互元素 */
     const mouse = { x: -999, y: -999, sx: -999, sy: -999, hot: false, active: false };
 
@@ -50,7 +61,15 @@
     let baseIntensity = 0.35;
 
     function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      /* 开场背景只是噪声质感，1x 像素足够；dpr 1 比 1.5 省掉 55% 像素运算 */
+      dpr = 1;
+      /* 同时硬性限制 backing store 长边，避免 4K 屏每帧数百万像素运算 */
+      const maxDim = 1280;
+      let bw = Math.round(W * dpr), bh = Math.round(H * dpr);
+      if (Math.max(bw, bh) > maxDim) {
+        const s = maxDim / Math.max(bw, bh);
+        dpr *= s;
+      }
       W = Math.max(1, canvas.clientWidth);
       H = Math.max(1, canvas.clientHeight);
       canvas.width = Math.round(W * dpr);
@@ -220,12 +239,14 @@
       ctx.drawImage(noiseTile, nOffX, nOffY, W + 160, H + 160);
       ctx.restore();
 
-      /* ── 9) 扫描线 ── */
+      /* ── 9) 扫描线（pattern 一次填充） ── */
       ctx.save();
       ctx.globalAlpha = 0.3;
-      ctx.fillStyle = "#000";
-      for (let y = 0; y < H; y += 3) ctx.fillRect(0, y, W, 1);
+      ctx.fillStyle = scanPattern;
+      ctx.fillRect(0, 0, W, H);
       ctx.restore();
+
+      /* ── 9.5) 原「唤醒协议」鼠标扫描小游戏已移除：开场不再跑物体轮廓与粒子 ── */
 
       /* ── 10) 偶发整帧信号丢失 ── */
       if (Math.random() < 0.004 + I * 0.006) {
@@ -266,9 +287,80 @@
       frame: frame,
       boost: boost,
       mouse: mouse,
-      video: video
+      video: video,
+      size: function () { return { w: W, h: H }; }
     };
   })();
+
+  /* ═══════════════════════════════════════════════════════════════════
+     2. 音效合成器 —— 纯 WebAudio，无外部音频文件
+     ═══════════════════════════════════════════════════════════════════ */
+  const Sfx = {
+    ctx: null,
+    on: true,
+    ensure: function () {
+      if (!this.on) return null;
+      try {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) { this.on = false; return null; }
+          this.ctx = new AC();
+        }
+        if (this.ctx.state === "suspended") this.ctx.resume();
+        return this.ctx;
+      } catch (e) { this.on = false; return null; }
+    },
+    tone: function (f0, f1, dur, type, vol, delay) {
+      const ac = this.ensure();
+      if (!ac) return;
+      const t0 = ac.currentTime + (delay || 0);
+      const o = ac.createOscillator();
+      const g = ac.createGain();
+      o.type = type || "sine";
+      o.frequency.setValueAtTime(Math.max(1, f0), t0);
+      if (f1 && f1 !== f0) o.frequency.exponentialRampToValueAtTime(Math.max(1, f1), t0 + dur);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(vol || 0.05, t0 + 0.014);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g);
+      g.connect(ac.destination);
+      o.start(t0);
+      o.stop(t0 + dur + 0.03);
+    },
+    noiseBurst: function (dur, vol, freq) {
+      const ac = this.ensure();
+      if (!ac) return;
+      const t0 = ac.currentTime;
+      const n = Math.max(1, Math.floor(ac.sampleRate * dur));
+      const buf = ac.createBuffer(1, n, ac.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+      const lp = ac.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.value = freq || 900;
+      const g = ac.createGain();
+      g.gain.setValueAtTime(vol || 0.05, t0);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      src.connect(lp);
+      lp.connect(g);
+      g.connect(ac.destination);
+      src.start(t0);
+    },
+    wake: function () {
+      this.tone(620, 1180, 0.17, "sine", 0.05, 0);
+      this.tone(1240, 1560, 0.12, "triangle", 0.018, 0.035);
+    },
+    scan: function () { this.tone(920, 920, 0.028, "square", 0.010, 0); },
+    pop: function () { this.noiseBurst(0.09, 0.05, 720); },
+    fanfare: function () {
+      const seq = [523.25, 659.25, 783.99, 1046.5];
+      for (let i = 0; i < seq.length; i++) {
+        this.tone(seq[i], seq[i], 0.34, "sine", 0.042, i * 0.085);
+      }
+    }
+  };
 
   /* ═════════════ 2. 自定义准星光标 ═════════════ */
   const cursor = $("bootCursor");
@@ -276,7 +368,6 @@
 
   function trackMouse(e) {
     if (!Gfx) return;
-    const r = cursor.getBoundingClientRect();
     Gfx.mouse.x = e.clientX;
     Gfx.mouse.y = e.clientY;
     Gfx.mouse.active = true;
@@ -290,7 +381,48 @@
     if (cursor) cursor.classList.toggle("is-hot", !!hot);
   }
 
-  /* ═════════════ 3. 启动序列 ═════════════ */
+  /* ═════════════ 3.5 标题拆字（唤醒后逐字砸下） ═════════════ */
+  (function splitTitle() {
+    const el = document.getElementById("bootTitle");
+    if (!el) return;
+    const chars = Array.from(el.textContent.trim());
+    el.textContent = "";
+    chars.forEach(function (ch) {
+      const s = document.createElement("span");
+      s.className = "bt-ch glitch-split";
+      s.textContent = ch;
+      s.setAttribute("data-text", ch);
+      el.appendChild(s);
+    });
+  })();
+
+  /* ═════════════ 4. 交互：点击故障爆发 + 音效开关 ═════════════ */
+  const _bootScreen = $("bootScreen");
+  if (_bootScreen) {
+    _bootScreen.addEventListener("pointerdown", function (e) {
+      /* 按钮 / 跳过链接不触发爆发 */
+      if (e.target.closest && e.target.closest("button, .boot-skip, .be-label")) return;
+      Sfx.pop();
+      if (Gfx) {
+        Gfx.boost(0.4);
+        setTimeout(function () { if (!bootDone) Gfx.boost(0); }, 240);
+      }
+    });
+  }
+
+  const sfxBtn = document.getElementById("sfxBtn");
+  const sfxState = document.getElementById("sfxState");
+  if (sfxBtn) {
+    sfxBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      Sfx.on = !Sfx.on;
+      sfxBtn.classList.toggle("is-off", !Sfx.on);
+      if (sfxState) sfxState.textContent = Sfx.on ? "ON" : "OFF";
+      if (Sfx.on) Sfx.tone(880, 1180, 0.08, "sine", 0.03, 0);
+    });
+  }
+
+  /* ═════════════ 5. 启动序列 ═════════════ */
   const bootScreen = $("bootScreen");
   const bootLog = $("bootLog");
   const bootFill = $("bootFill");
@@ -306,14 +438,20 @@
     { t: "DECODING CHANNEL R", s: "ok" },
     { t: "DECODING CHANNEL G — DRIFT", s: "warn" },
     { t: "DECODING CHANNEL B", s: "ok" },
-    { t: "SYNC 40 TRACK SIGNATURES", s: "ok" },
-    { t: "LOADING tracks.json — 40 OBJECTS", s: "ok" },
+    { t: "SYNC FOUR OBSERVATION SECTORS", s: "ok" },
+    { t: "LOADING UNIFIED CENSUS — 75 SOURCE RECORDS", s: "ok" },
     { t: "3 SIGNATURES UNVERIFIED", s: "warn" },
     { t: "BUFFERING DATAMOSH ENGINE", s: "ok" },
     { t: "GEOMETRY ENGINE — 9 SUBTYPES", s: "ok" },
     { t: "ALIGNING CHANNEL OFFSET ±3px", s: "ok" },
     { t: "SIGNAL LOCKED", s: "ok" }
   ];
+
+  /* 标题揭示：原先由「唤醒玩法」集齐 9 个后解锁，玩法移除后在这里直接完成 */
+  function markTitleReady() {
+    const wrap = document.getElementById("bootTitleWrap");
+    if (wrap) wrap.classList.add("is-locked");
+  }
 
   function setProgress(p) {
     if (!bootFill || !bootPct) return;
@@ -356,6 +494,7 @@
 
   function finishBoot() {
     setProgress(100);
+    markTitleReady();
     if (bootEnter) {
       bootEnter.disabled = false;
       bootEnter.focus();
@@ -370,7 +509,7 @@
     document.body.classList.remove("is-booting");
 
     /* 转场期：canvas 故障强度爆表，逐帧衰减 */
-    if (Gfx && !reduced) {
+    if (Gfx && !reduced && !window.CameraPrelude.directEntry) {
       let b = 1;
       const decay = setInterval(function () {
         b -= 0.07;
@@ -382,10 +521,18 @@
     }
 
     setTimeout(function () {
+      /* 干净卸载开场视频，避免移除节点时仍在缓冲 → 控制台 requestfailed 噪声 */
+      if (Gfx && Gfx.video) {
+        try { Gfx.video.pause(); Gfx.video.removeAttribute("src"); Gfx.video.load(); } catch (e) {}
+      }
+      /* 开场画布已离场 → 停止 glitch 主循环，把 CPU 还给主站交互 */
+      gfxActive = false;
+      cancelAnimationFrame(gfxRaf);
+      window.removeEventListener('mousemove',trackMouse);
       if (bootScreen && bootScreen.parentNode) bootScreen.parentNode.removeChild(bootScreen);
       startDegrade();
       window.dispatchEvent(new CustomEvent("boot:entered"));
-    }, reduced ? 60 : 640);
+    }, window.CameraPrelude.directEntry ? 0 : reduced ? 60 : 640);
   }
 
   if (bootEnter) bootEnter.addEventListener("click", enterSite);
@@ -429,7 +576,7 @@
 
   function scheduleSlice() {
     clearTimeout(sliceTimer);
-    if (!sliceHost || level === 0) return;
+    if (!sliceHost || level === 0 || document.hidden || !window.RenderLifecycle.stageVisible()) return;
     const base = level === 1 ? [2600, 5400] : [700, 2100];
     sliceTimer = setTimeout(function () {
       spawnSlice();
@@ -457,54 +604,28 @@
     });
   }
 
-  /* ═════════════ 6. 启动 ═════════════ */
-  if (Gfx && !reduced) {
-    Gfx.init();
-
-    /* 视频静音自动播放（浏览器策略兜底） */
-    Gfx.video.muted = true;
-    const tryPlay = function () {
-      const pr = Gfx.video.play();
-      if (pr && pr.catch) pr.catch(function () {
-        /* 被拦截 → 等首次交互再播 */
-        document.addEventListener("pointerdown", function once() {
-          document.removeEventListener("pointerdown", once);
-          Gfx.video.play().catch(function () {});
-        });
-      });
-    };
-    if (Gfx.video.readyState >= 2) tryPlay();
-    else Gfx.video.addEventListener("loadeddata", tryPlay, { once: true });
-
-    /* 主循环 */
-    (function loop(now) {
-      if (!lastT) lastT = now;
-      const dt = Math.min(48, now - lastT);
-      lastT = now;
-      Gfx.frame(dt);
-      requestAnimationFrame(loop);
-    })(performance.now());
-
-    /* 鼠标交互 */
-    window.addEventListener("mousemove", trackMouse, { passive: true });
-    window.addEventListener("mouseleave", function () {
-      Gfx.mouse.active = false;
-      if (cursor) cursor.classList.remove("is-on");
-    });
-
+  /* Prelude hands off the same video texture into the original glitch renderer. */
+  function startGlitch() {
+    if (bootDone) return;
+    if (Gfx) Gfx.init();
+    if (Gfx && !reduced) {
+      Gfx.video.muted = true;
+      Gfx.video.play().catch(function(){});
+      gfxActive = true;
+      const loop = now => {
+        gfxRaf = 0;
+        if (!gfxActive || document.hidden) return;
+        if (!lastT || now-lastT>=33) { const dt=lastT?now-lastT:33;lastT=now;Gfx.frame(Math.min(64,dt)); }
+        gfxRaf=requestAnimationFrame(loop);
+      };
+      const sync=()=>{if(document.hidden){cancelAnimationFrame(gfxRaf);gfxRaf=0;Gfx.video.pause();}else if(gfxActive&&!gfxRaf){lastT=0;Gfx.video.play().catch(()=>{});gfxRaf=requestAnimationFrame(loop)}};
+      document.addEventListener('visibilitychange',sync);
+      gfxRaf=requestAnimationFrame(loop);
+      window.addEventListener('mousemove',trackMouse,{passive:true});
+    } else markTitleReady();
     runBootSequence();
-  } else {
-    /* reduced-motion 或缺少 canvas：退化为纯文字序列 */
-    document.body.classList.remove("is-booting");
-    if (Gfx) { Gfx.init(); runBootSequence(); }
-    else { runBootSequence(); }
-    if (bootEnter) bootEnter.disabled = false;
-    /* 无动画时也要能进主站 */
-    if (bootEnter) bootEnter.addEventListener("click", function () {
-      document.body.classList.remove("is-booting");
-      if (bootScreen && bootScreen.parentNode) bootScreen.parentNode.removeChild(bootScreen);
-      startDegrade();
-    });
-    startDegrade();
   }
+  window.CameraPrelude.finished.then(result=>{if(result?.integrated)enterSite();else startGlitch();});
+  window.addEventListener('sp:viewchange',()=>{if(bootDone)startDegrade();});
+  document.addEventListener('visibilitychange',()=>{if(bootDone)startDegrade();});
 })();

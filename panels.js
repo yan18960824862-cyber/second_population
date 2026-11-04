@@ -31,10 +31,10 @@
     const peopleValue = el("dvPeopleValue");
 
     const START = 1950, END = 2025, YEARS = END - START;
-    const MAX_DOTS = 520, BASE_DOTS = 8;
-    let currentYear = START, playing = true, lastFrame = 0;
+    const MAX_DOTS = 1500, BASE_DOTS = 8;
+    let currentYear = START, playing = true, lastFrame = 0, elapsed = 0, lastDraw = 0;
     let W = 0, H = 0, dpr = 1;
-    let objectPile = [], peoplePile = [];
+    let objectDots = [], peopleDots = [];
 
     // 人口曲线：先快后慢；制成品曲线：后段加速
     const popCurve = t => 1.4 * t - 0.4 * t * t;
@@ -48,45 +48,25 @@
         obj: 0.8 + 5.7 * objCurve(t)
       };
     }
-    function inverseCurve(curve, p) {
-      let lo = 0, hi = 1;
-      for (let i = 0; i < 24; i++) {
-        const mid = (lo + hi) / 2;
-        if (curve(mid) < p) lo = mid; else hi = mid;
-      }
-      return (lo + hi) / 2;
+    function mix(a, b, t) {
+      const hx = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+      const x = hx(a), y = hx(b), f = clamp(t, 0, 1);
+      return "rgb(" + x.map((v, i) => Math.round(v + (y[i] - v) * f)).join(",") + ")";
     }
 
-    function buildPile(laneStart, laneW, seed) {
-      let state = seed >>> 0;
-      const rnd = () => { state = (state * 1664525 + 1013904223) >>> 0; return state / 4294967296; };
-      const bins = Math.max(28, Math.floor(laneW / 5));
-      const binW = laneW / bins;
-      const heights = new Float32Array(bins);
-      const points = [];
-      for (let i = 0; i < MAX_DOTS + BASE_DOTS; i++) {
-        const radius = 2.6 + rnd() * 1.5;
-        const reach = Math.max(1, Math.ceil((radius * 1.6) / binW));
-        let best = 0, bestScore = Infinity;
-        for (let a = 0; a < 6; a++) {
-          const cand = Math.floor(rnd() * bins);
-          let local = 0;
-          for (let k = Math.max(0, cand - reach); k <= Math.min(bins - 1, cand + reach); k++) local = Math.max(local, heights[k]);
-          const score = local + rnd() * 9;
-          if (score < bestScore) { bestScore = score; best = cand; }
-        }
-        const x = laneStart + (best + 0.5 + (rnd() - 0.5) * 0.7) * binW;
-        let support = 0;
-        for (let k = Math.max(0, best - reach); k <= Math.min(bins - 1, best + reach); k++) support = Math.max(support, heights[k]);
-        const y = H - 6 - support - radius;
-        for (let k = Math.max(0, best - reach); k <= Math.min(bins - 1, best + reach); k++) {
-          const dx = (k - best) * binW;
-          const profile = Math.sqrt(Math.max(0, radius * radius - dx * dx * 0.58)) * 1.7;
-          heights[k] = Math.max(heights[k], support + profile);
-        }
-        points.push({ x: x, y: y, r: radius, sx: laneStart + rnd() * laneW, ph: rnd() * Math.PI * 2 });
-      }
-      return points;
+    /* 粒子场：u=水平位置 v=列内高度（与序号相关→随年份自下而上生长）
+       side/r/p/h=抖动幅度/半径/相位/色相档位（industrial-growth 同源算法） */
+    function dots(seed) {
+      let s = seed >>> 0;
+      const rand = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+      return Array.from({ length: MAX_DOTS }, (_, i) => ({
+        u: rand(),
+        v: clamp(Math.pow(i / (MAX_DOTS - 1), 0.76) + (rand() - 0.5) * 0.055, 0, 1),
+        side: (rand() - 0.5) * 2,
+        r: 0.8 + Math.pow(rand(), 1.15) * 2.1,
+        p: rand() * TAU,
+        h: rand()
+      }));
     }
 
     function resize() {
@@ -96,60 +76,59 @@
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // 两条泳道各占 46%，中间留 8% 空隙 → 视觉上明确分成两列
-      const laneW = W * 0.46;
-      const gap = (W - laneW * 2) / 2;
-      objectPile = buildPile(gap, laneW, 2);
-      peoplePile = buildPile(gap * 2 + laneW, laneW, 9);
+      // 粒子全用相对坐标，resize 只需补种
+      if (!objectDots.length) { objectDots = dots(22); peopleDots = dots(91); }
       draw();
     }
 
-    function drawLane(targets, curve, color, t, filled) {
-      const count = countAt(curve, t);
-      // filled=实心点（工业制成品）；否则画空心圈（世界人口）
-      for (let i = 0; i < count; i++) {
-        const p = targets[i];
-        const birth = i < BASE_DOTS ? 0 : (i - BASE_DOTS + 1) / MAX_DOTS;
-        const bornAt = i < BASE_DOTS ? 0 : inverseCurve(curve, birth) * YEARS;
-        const age = currentYear - (START + bornAt);
-        const fall = clamp(age / 1.6, 0, 1);
-        const eased = 1 - Math.pow(1 - fall, 3);
-        const x1 = p.sx, y1 = -10 - (i % 9) * 3;
-        const x = lerp(x1, p.x, eased) + Math.sin(age * 3.4 + p.ph) * (1 - eased) * 4;
-        const y = lerp(y1, p.y, eased);
-        const r = Math.max(filled ? 1.0 : 1.3, p.r * 0.5);
+    /* 上升粒子流：随年份密度增长，整体 + 个体双向摆动，screen 叠加发光 */
+    function stream(arr, curve, t, isObject) {
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const n = countAt(curve, t);
+      const globalSway = Math.sin(elapsed * 0.34) * (W * 0.012);
+      const x0 = isObject ? W * 0.035 : W * 0.535;
+      const x1 = isObject ? W * 0.465 : W * 0.965;
+      const regionW = x1 - x0;
+      const baseline = H - 6;
+      const maxH = H - 24;
+      for (let i = 0; i < n; i++) {
+        const p = arr[i];
+        const u = p.u;
+        const rise = 1 - Math.pow(1 - u, 1.82);
+        const height = maxH * rise;
+        const sway = Math.sin(elapsed * 0.72 + p.p + u * 4.5) * (1 + 5 * u);
+        const x = clamp(x0 + u * regionW + globalSway + sway + p.side * (0.6 + u * 2), x0 + 2, x1 - 2);
+        const y = baseline - (4 + p.v * height) + Math.cos(elapsed * 0.48 + p.p) * 1.6;
+        // 制成品：深蓝→亮蓝；人口：青→近白青（同参考配色，冷调一致）
+        const color = isObject ? mix("#1766f5", "#55a4ff", p.h * 0.68) : mix("#67c2ff", "#d3f0ff", p.h);
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.48 + p.h * 0.45;
         ctx.beginPath();
-        ctx.arc(x, y, r, 0, TAU);
-        if (filled) {
-          ctx.fillStyle = color;
-          ctx.globalAlpha = 0.9;
-          ctx.fill();
-        } else {
-          ctx.strokeStyle = color;
-          ctx.globalAlpha = 0.72;
-          ctx.lineWidth = 0.9;
-          ctx.stroke();
-        }
+        ctx.arc(x, y, p.r * (0.76 + 0.55 * u), 0, TAU);
+        ctx.fill();
       }
+      ctx.restore();
       ctx.globalAlpha = 1;
     }
 
     function draw() {
-      if (!W || !H) return;
+      if (!W || !H || !objectDots.length) return;
       ctx.clearRect(0, 0, W, H);
       const t = clampT((currentYear - START) / YEARS);
-      const laneW = W * 0.46;
-      const gap = (W - laneW * 2) / 2;
-      // 制成品：实心点；人口：空心圈 —— 视觉上区分两条曲线
-      drawLane(objectPile, objCurve, "rgba(168,211,224,.92)", t, true);
-      drawLane(peoplePile, popCurve, "rgba(168,211,224,.72)", t, false);
+      // 顶部微弱辉光（参考稿的 radial 氛围）
+      const g = ctx.createRadialGradient(W / 2, H * 0.3, 2, W / 2, H * 0.3, H * 0.9);
+      g.addColorStop(0, "rgba(90,170,235,.07)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
       // 两条泳道基线
       ctx.strokeStyle = "rgba(168,211,224,.22)";
       ctx.lineWidth = 1;
-      [gap, gap * 2 + laneW].forEach(function (x0) {
+      [W * 0.035, W * 0.535].forEach(function (x0) {
         ctx.beginPath();
         ctx.moveTo(x0, H - 4);
-        ctx.lineTo(x0 + laneW, H - 4);
+        ctx.lineTo(x0 + W * 0.43, H - 4);
         ctx.stroke();
       });
       // 中轴分隔（虚线）
@@ -160,6 +139,15 @@
       ctx.lineTo(W / 2, H);
       ctx.stroke();
       ctx.setLineDash([]);
+      // 泳道顶部标签
+      ctx.font = "8px ui-monospace, Consolas, monospace";
+      ctx.fillStyle = "rgba(85,164,255,.85)";
+      ctx.fillText("OBJECTS", W * 0.035 + 2, 12);
+      ctx.fillStyle = "rgba(103,194,255,.85)";
+      ctx.fillText("POPULATION", W * 0.535 + 2, 12);
+      // 两股粒子流
+      stream(objectDots, objCurve, t, true);
+      stream(peopleDots, popCurve, t, false);
     }
 
     function updateLabels() {
@@ -176,13 +164,14 @@
       if (!lastFrame) lastFrame = now;
       const dt = Math.min(0.05, (now - lastFrame) / 1000);
       lastFrame = now;
+      elapsed += dt;   // 粒子摆动时钟：暂停年份推进也保持流动
       if (playing) {
         currentYear += dt * 2.6;
         if (currentYear >= END) { currentYear = END; setPlaying(false); }
         updateLabels();
       }
-      draw();
-      requestAnimationFrame(tick);
+      // 限到 ~30fps：摆动极慢，肉眼无差，省下一半 canvas 重绘开销
+      if (now - lastDraw >= 33) { lastDraw = now; draw(); }
     }
 
     function setPlaying(v) {
@@ -206,7 +195,7 @@
     window.addEventListener("resize", resize);
     updateLabels();
     resize();
-    requestAnimationFrame(tick);
+    window.RenderLifecycle.loop("population-panel",tick,()=>window.RenderLifecycle.stageVisible() && canvas.getBoundingClientRect().width>0);
 
     return { update() { updateLabels(); } };
   })();
@@ -226,7 +215,7 @@
 
     function getModel(category, subtype) {
       const key = category + "|" + subtype;
-      if (!models[key]) models[key] = window.ModelEngine.buildModel(category, subtype);
+      if (!models[key]) models[key] = window.ArchiveEngineering?.previewModel(category,subtype) || window.ModelEngine.buildModel(category, subtype);
       return models[key];
     }
 
@@ -265,7 +254,13 @@
         const n = it.f.n ? window.Cam.rotate(it.f.n, yaw, -0.1) : [0, 0, 1];
         const l = Math.hypot(n[0], n[1], n[2]) || 1;
         const lam = Math.max(0, (n[0] * LIGHT[0] + n[1] * LIGHT[1] + n[2] * LIGHT[2]) / l);
-        const k = 0.5 + lam * 0.8;
+        let k = 0.5 + lam * 0.8;
+        // 与档案视图一致：顶面高光 + fresnel 轮廓增亮
+        if (it.f.n) {
+          if (it.f.n[1] > 0.25) k += 0.18 * it.f.n[1];
+          const facing = Math.abs(n[2]);
+          if (facing < 0.4) k += (0.4 - facing) * 0.45;
+        }
         const c = it.f.c;
         ctx.beginPath();
         ctx.moveTo(pts[0][0], pts[0][1]);
@@ -284,16 +279,20 @@
       ctx.globalAlpha = 1;
     }
 
+    let lastDraw = 0;
     function tick(time) {
       if (!t0) t0 = time;
       if (!W || !H) { resize(); }
+      /* 限到 ~30fps：队列动作极慢，重投影+双层辉光每帧全画纯属浪费 */
+      if (time - lastDraw < 33) {  return; }
+      lastDraw = time;
       ctx.clearRect(0, 0, W, H);
       const n = items.length;
       if (!n) {
         ctx.fillStyle = "rgba(168,211,224,.22)";
         ctx.font = '10px "JetBrains Mono", monospace';
         ctx.fillText("AWAITING TARGETS…", 12, H / 2);
-        requestAnimationFrame(tick);
+        
         return;
       }
       // 目标少 → 单排大图；目标多 → 两排错落的透视队列（后排小而淡）
@@ -349,7 +348,7 @@
           drawItem(it.model, x, gy, scale, row.yaw + sway, 0.95 * row.dim);
         }
       });
-      requestAnimationFrame(tick);
+      
     }
 
     function setTargets(list) {
@@ -372,7 +371,10 @@
 
     window.addEventListener("resize", resize);
     resize();
-    requestAnimationFrame(tick);
+    
+    /* 入口穿梭时群像被搬进站点：此时主监控 view 是 entry，stageVisible() 为 false，
+       但画布确实有尺寸，按可见性放行即可，仍是同一条 lifecycle 循环，不新增 rAF。 */
+    window.RenderLifecycle.loop("crowd-panel",tick,()=>{const r=canvas.getBoundingClientRect();return (window.RenderLifecycle.stageVisible()||!!window.CameraPrelude?.active)&&r.width>0&&r.height>0;});
     return { update: setTargets };
   })();
 
@@ -394,7 +396,9 @@
       const ctx = canvas.getContext("2d");
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const model = window.ModelEngine.buildModel(category, subtype);
-      window.ModelEngine.renderSolid(ctx, model, { w: w, h: h, yaw: -0.5, time: 0 });
+      if(category==='person'&&window.RiderGeometry){window.RiderGeometry.thumbnail(ctx,{w,h});return;}
+      if(window.ArchiveEngineering?.thumbnail(ctx,category,subtype,{w,h,yaw:-.62,time:0}))return;
+      window.ModelEngine.renderSolid(ctx, model, { w: w, h: h, yaw: -0.62, time: 0, archive:true });
     }
 
     function build(objects) {
@@ -502,6 +506,7 @@
         html += '<span class="cl ' + cls + '">' + escapeHtml(raw) + "</span>";
       }
       code.innerHTML = html;
+      body.scrollTop = body.scrollHeight;
     }
 
     function escapeHtml(s) {
@@ -518,7 +523,8 @@
     }
 
     build();
-    return { update: logEvent, push: push };
+    function reset(scene){lastPush=0;lines=['// '+(scene.cam||scene.key)+' · 原始标注回放','// 视频时间驱动；按 canonicalId 登记一次','const sceneId = "'+(scene.key||'legacy')+'";'];render();}
+    return { update: logEvent, push: push, reset:reset };
   })();
 
   /* ═══════════════════════════════════════════════════

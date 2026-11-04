@@ -1,0 +1,1345 @@
+{
+ "version": 2,
+ "generatedAt": "2026-11-04",
+ "basis": "一次能源（制造为 cradle-to-gate；使用侧电力按 ×2.47 折算）",
+ "factor": 2.47,
+ "sourceTable": "制造能耗与使用能耗对照表.md（S1–S35）",
+ "count": 63,
+ "counts": {
+  "embodied": {
+   "verified": 0,
+   "estimated": 48,
+   "pending": 15
+  },
+  "daily": {
+   "verified": 18,
+   "estimated": 39,
+   "pending": 6
+  }
+ },
+ "items": [
+  {
+   "objectId": "SP-ST1-0001",
+   "label": "地铁站标志",
+   "labelEn": "METRO SIGN",
+   "category": "signage",
+   "embodiedKwh": 1518,
+   "embodiedRange": [
+    760,
+    2280
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.416,
+   "dailyKwh": 0.37,
+   "dailyRange": [
+    0.15,
+    0.59
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "估算",
+   "source": "铝板 + LED 模组 2kg/m²（假设系数）；S3、S21",
+   "sourceKey": "LED_SIGN"
+  },
+  {
+   "objectId": "SP-ST1-0002",
+   "label": "指路牌·高架",
+   "labelEn": "GANTRY SIGN",
+   "category": "signage",
+   "embodiedKwh": 1384,
+   "embodiedRange": [
+    900,
+    1870
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.379,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "铝板 2m²：13.4kg/m² × 186 MJ/kg（S3、S21）",
+   "sourceKey": "SIGN"
+  },
+  {
+   "objectId": "SP-ST1-0003",
+   "label": "监控立杆",
+   "labelEn": "CAMERA POLE",
+   "category": "lighting",
+   "embodiedKwh": 147,
+   "embodiedRange": [
+    94,
+    235
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.057,
+   "dailyKwh": 0.98,
+   "dailyRange": [
+    0.53,
+    1.42
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "估算（9–24W ×24h）",
+   "source": "球机 3kg + 支架 3kg，混合系数 150 MJ/kg（假设）；S26",
+   "sourceKey": "CAMERA"
+  },
+  {
+   "objectId": "SP-ST1-0004",
+   "label": "防撞桶·黄黑",
+   "labelEn": "BARRIER",
+   "category": "street-equipment",
+   "embodiedKwh": 37,
+   "embodiedRange": [
+    20,
+    54
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.034,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "PVC 锥桶 2.3kg × 56.1 MJ/kg 同类制品代理，非同一物件（S4、S11–S13）",
+   "sourceKey": "CONE_PROXY"
+  },
+  {
+   "objectId": "SP-ST1-0005",
+   "label": "金属护栏",
+   "labelEn": "GUARDRAIL",
+   "category": "street-equipment",
+   "embodiedKwh": 173,
+   "embodiedRange": [
+    120,
+    225
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.032,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "热镀锌钢 25.9 MJ/kg × 24kg/m（S14、S15）",
+   "sourceKey": "GUARDRAIL"
+  },
+  {
+   "objectId": "SP-ST1-0006",
+   "label": "路灯·路口",
+   "labelEn": "LUMINAIRE",
+   "category": "lighting",
+   "embodiedKwh": 995,
+   "embodiedRange": [
+    600,
+    1400
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.124,
+   "dailyKwh": 3.4,
+   "dailyRange": [
+    2.72,
+    4.08
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "估算（终端 ×2.47）",
+   "source": "钢杆 105kg + 铝 26% + 电子；S22–S25",
+   "sourceKey": "LUMINAIRE"
+  },
+  {
+   "objectId": "SP-ST1-0007",
+   "label": "隔离岛路缘",
+   "labelEn": "KERB",
+   "category": "ground",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "路缘石/标线/箭头，对照表仅有沥青路面口径，未逐项核算",
+   "sourceKey": "GROUND_PENDING"
+  },
+  {
+   "objectId": "SP-ST1-0008",
+   "label": "导向箭头",
+   "labelEn": "ARROW",
+   "category": "ground",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "路缘石/标线/箭头，对照表仅有沥青路面口径，未逐项核算",
+   "sourceKey": "GROUND_PENDING"
+  },
+  {
+   "objectId": "SP-ST1-0009",
+   "label": "雨水井盖",
+   "labelEn": "MANHOLE",
+   "category": "ground",
+   "embodiedKwh": 613,
+   "embodiedRange": [
+    500,
+    800
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.168,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "球墨铸铁 21 MJ/kg × 105kg；质量区间 85–145kg（S5、S8–S10）",
+   "sourceKey": "MANHOLE"
+  },
+  {
+   "objectId": "SP-ST1-0010",
+   "label": "隔离栏·左侧",
+   "labelEn": "FENCE",
+   "category": "street-equipment",
+   "embodiedKwh": 173,
+   "embodiedRange": [
+    120,
+    225
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.032,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "热镀锌钢 25.9 MJ/kg × 24kg/m（S14、S15）",
+   "sourceKey": "GUARDRAIL"
+  },
+  {
+   "objectId": "SP-ST1-0011",
+   "label": "深色 SUV",
+   "labelEn": "SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST1-0012",
+   "label": "白色轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST1-0013",
+   "label": "面包车",
+   "labelEn": "VAN",
+   "category": "vehicles",
+   "embodiedKwh": 41400,
+   "embodiedRange": [
+    30600,
+    52200
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 7.5,
+   "dailyKwh": 43.9,
+   "dailyRange": [
+    43.9,
+    43.9
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "按乘用车 24.4–41.8 MJ/kg 质量外推，误差 ±50%（S29）",
+   "sourceKey": "VAN"
+  },
+  {
+   "objectId": "SP-ST1-0016",
+   "label": "公交巴士·远端",
+   "labelEn": "BUS",
+   "category": "vehicles",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": null,
+   "dailyRange": null,
+   "dailyStatus": "pending",
+   "dailyNote": "未核",
+   "source": "重型客运车辆无公开单车 LCA，未做质量外推",
+   "sourceKey": "BUS"
+  },
+  {
+   "objectId": "SP-ST1-0017",
+   "label": "白色 SUV · 贯穿灯",
+   "labelEn": "WHITE SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST1-0018",
+   "label": "深色轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST1-0019",
+   "label": "黑色 SUV",
+   "labelEn": "BLACK SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST1-0020",
+   "label": "白色轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST1-0021",
+   "label": "远处轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0001",
+   "label": "深色轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0002",
+   "label": "白色 SUV",
+   "labelEn": "WHITE SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0003",
+   "label": "白色 SUV · 二号",
+   "labelEn": "WHITE SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0005",
+   "label": "出租车 · 黄",
+   "labelEn": "TAXI",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0006",
+   "label": "深色轿车 · 二号",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0007",
+   "label": "白色 SUV · 三号",
+   "labelEn": "WHITE SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0008",
+   "label": "深色轿车 · 三号",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0009",
+   "label": "黑色 SUV",
+   "labelEn": "BLACK SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0010",
+   "label": "白色面包车",
+   "labelEn": "WHITE VAN",
+   "category": "vehicles",
+   "embodiedKwh": 41400,
+   "embodiedRange": [
+    30600,
+    52200
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 7.5,
+   "dailyKwh": 43.9,
+   "dailyRange": [
+    43.9,
+    43.9
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "按乘用车 24.4–41.8 MJ/kg 质量外推，误差 ±50%（S29）",
+   "sourceKey": "VAN"
+  },
+  {
+   "objectId": "SP-ST2-0012",
+   "label": "白色 SUV · 四号",
+   "labelEn": "WHITE SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0013",
+   "label": "深色 SUV · 五号",
+   "labelEn": "BLACK SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0014",
+   "label": "长途大巴",
+   "labelEn": "COACH",
+   "category": "vehicles",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": null,
+   "dailyRange": null,
+   "dailyStatus": "pending",
+   "dailyNote": "未核",
+   "source": "重型客运车辆无公开单车 LCA，未做质量外推",
+   "sourceKey": "BUS"
+  },
+  {
+   "objectId": "SP-ST2-0015",
+   "label": "黑色 MPV",
+   "labelEn": "MPV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST2-0016",
+   "label": "主路路灯 · 双臂",
+   "labelEn": "LUMINAIRE",
+   "category": "lighting",
+   "embodiedKwh": 995,
+   "embodiedRange": [
+    600,
+    1400
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.124,
+   "dailyKwh": 3.4,
+   "dailyRange": [
+    2.72,
+    4.08
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "估算（终端 ×2.47）",
+   "source": "钢杆 105kg + 铝 26% + 电子；S22–S25",
+   "sourceKey": "LUMINAIRE"
+  },
+  {
+   "objectId": "SP-ST2-0017",
+   "label": "蓝色指路牌",
+   "labelEn": "SIGN",
+   "category": "signage",
+   "embodiedKwh": 1384,
+   "embodiedRange": [
+    900,
+    1870
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.379,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "铝板 2m²：13.4kg/m² × 186 MJ/kg（S3、S21）",
+   "sourceKey": "SIGN"
+  },
+  {
+   "objectId": "SP-ST2-0018",
+   "label": "中央隔离护栏",
+   "labelEn": "GUARDRAIL",
+   "category": "street-equipment",
+   "embodiedKwh": 173,
+   "embodiedRange": [
+    120,
+    225
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.032,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "热镀锌钢 25.9 MJ/kg × 24kg/m（S14、S15）",
+   "sourceKey": "GUARDRAIL"
+  },
+  {
+   "objectId": "SP-ST2-0019",
+   "label": "路缘石 · 人行道",
+   "labelEn": "KERB",
+   "category": "ground",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "路缘石/标线/箭头，对照表仅有沥青路面口径，未逐项核算",
+   "sourceKey": "GROUND_PENDING"
+  },
+  {
+   "objectId": "SP-ST2-0020",
+   "label": "车道标线",
+   "labelEn": "LANE MARK",
+   "category": "ground",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "路缘石/标线/箭头，对照表仅有沥青路面口径，未逐项核算",
+   "sourceKey": "GROUND_PENDING"
+  },
+  {
+   "objectId": "SP-ST3-0001",
+   "label": "路灯·南段 01",
+   "labelEn": "LUMINAIRE",
+   "category": "lighting",
+   "embodiedKwh": 995,
+   "embodiedRange": [
+    600,
+    1400
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.124,
+   "dailyKwh": 3.4,
+   "dailyRange": [
+    2.72,
+    4.08
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "估算（终端 ×2.47）",
+   "source": "钢杆 105kg + 铝 26% + 电子；S22–S25",
+   "sourceKey": "LUMINAIRE"
+  },
+  {
+   "objectId": "SP-ST3-0002",
+   "label": "道旗·东侧",
+   "labelEn": "BANNER",
+   "category": "signage",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "道旗为织物制品，对照表未覆盖",
+   "sourceKey": "BANNER"
+  },
+  {
+   "objectId": "SP-ST3-0003",
+   "label": "共享单车排",
+   "labelEn": "BIKE RACK",
+   "category": "street-equipment",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "共享单车排，对照表未覆盖",
+   "sourceKey": "BIKE_RACK"
+  },
+  {
+   "objectId": "SP-ST3-0005",
+   "label": "隔离岛路缘石",
+   "labelEn": "KERB",
+   "category": "ground",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "路缘石/标线/箭头，对照表仅有沥青路面口径，未逐项核算",
+   "sourceKey": "GROUND_PENDING"
+  },
+  {
+   "objectId": "SP-ST3-0006",
+   "label": "雨水井盖",
+   "labelEn": "MANHOLE",
+   "category": "ground",
+   "embodiedKwh": 613,
+   "embodiedRange": [
+    500,
+    800
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.168,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "球墨铸铁 21 MJ/kg × 105kg；质量区间 85–145kg（S5、S8–S10）",
+   "sourceKey": "MANHOLE"
+  },
+  {
+   "objectId": "SP-ST3-0010",
+   "label": "城市公交",
+   "labelEn": "CITY BUS",
+   "category": "vehicles",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": null,
+   "dailyRange": null,
+   "dailyStatus": "pending",
+   "dailyNote": "未核",
+   "source": "重型客运车辆无公开单车 LCA，未做质量外推",
+   "sourceKey": "BUS"
+  },
+  {
+   "objectId": "SP-ST3-0011",
+   "label": "白色面包车",
+   "labelEn": "WHITE VAN",
+   "category": "vehicles",
+   "embodiedKwh": 41400,
+   "embodiedRange": [
+    30600,
+    52200
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 7.5,
+   "dailyKwh": 43.9,
+   "dailyRange": [
+    43.9,
+    43.9
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "按乘用车 24.4–41.8 MJ/kg 质量外推，误差 ±50%（S29）",
+   "sourceKey": "VAN"
+  },
+  {
+   "objectId": "SP-ST3-0012",
+   "label": "长途大巴 · 红色",
+   "labelEn": "COACH",
+   "category": "vehicles",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": null,
+   "dailyRange": null,
+   "dailyStatus": "pending",
+   "dailyNote": "未核",
+   "source": "重型客运车辆无公开单车 LCA，未做质量外推",
+   "sourceKey": "BUS"
+  },
+  {
+   "objectId": "SP-ST3-0013",
+   "label": "深色轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0003",
+   "label": "路缘石·绿化带",
+   "labelEn": "KERB",
+   "category": "ground",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "路缘石/标线/箭头，对照表仅有沥青路面口径，未逐项核算",
+   "sourceKey": "GROUND_PENDING"
+  },
+  {
+   "objectId": "SP-ST4-0004",
+   "label": "雨水井盖",
+   "labelEn": "MANHOLE",
+   "category": "ground",
+   "embodiedKwh": 613,
+   "embodiedRange": [
+    500,
+    800
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 0.168,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "球墨铸铁 21 MJ/kg × 105kg；质量区间 85–145kg（S5、S8–S10）",
+   "sourceKey": "MANHOLE"
+  },
+  {
+   "objectId": "SP-ST4-0005",
+   "label": "白色面包车·背景",
+   "labelEn": "VAN",
+   "category": "vehicles",
+   "embodiedKwh": 41400,
+   "embodiedRange": [
+    30600,
+    52200
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 7.5,
+   "dailyKwh": 43.9,
+   "dailyRange": [
+    43.9,
+    43.9
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "按乘用车 24.4–41.8 MJ/kg 质量外推，误差 ±50%（S29）",
+   "sourceKey": "VAN"
+  },
+  {
+   "objectId": "SP-ST4-0006",
+   "label": "轿车·右缘",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0007",
+   "label": "车道虚线",
+   "labelEn": "LANE MARK",
+   "category": "ground",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": 0,
+   "dailyRange": [
+    0,
+    0
+   ],
+   "dailyStatus": "verified",
+   "dailyNote": "0（无电源，物理结论）",
+   "source": "路缘石/标线/箭头，对照表仅有沥青路面口径，未逐项核算",
+   "sourceKey": "GROUND_PENDING"
+  },
+  {
+   "objectId": "SP-ST4-0008",
+   "label": "背景车辆·灯带",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0009",
+   "label": "深色轿车·首车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0010",
+   "label": "白色面包车",
+   "labelEn": "VAN",
+   "category": "vehicles",
+   "embodiedKwh": 41400,
+   "embodiedRange": [
+    30600,
+    52200
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 7.5,
+   "dailyKwh": 43.9,
+   "dailyRange": [
+    43.9,
+    43.9
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "按乘用车 24.4–41.8 MJ/kg 质量外推，误差 ±50%（S29）",
+   "sourceKey": "VAN"
+  },
+  {
+   "objectId": "SP-ST4-0011",
+   "label": "白色轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0012",
+   "label": "黑色 SUV·近景",
+   "labelEn": "SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0013",
+   "label": "出租车",
+   "labelEn": "TAXI",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0014",
+   "label": "城市公交",
+   "labelEn": "CITY BUS",
+   "category": "vehicles",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": null,
+   "dailyRange": null,
+   "dailyStatus": "pending",
+   "dailyNote": "未核",
+   "source": "重型客运车辆无公开单车 LCA，未做质量外推",
+   "sourceKey": "BUS"
+  },
+  {
+   "objectId": "SP-ST4-0015",
+   "label": "白色面包车·右",
+   "labelEn": "VAN",
+   "category": "vehicles",
+   "embodiedKwh": 41400,
+   "embodiedRange": [
+    30600,
+    52200
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 7.5,
+   "dailyKwh": 43.9,
+   "dailyRange": [
+    43.9,
+    43.9
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "按乘用车 24.4–41.8 MJ/kg 质量外推，误差 ±50%（S29）",
+   "sourceKey": "VAN"
+  },
+  {
+   "objectId": "SP-ST4-0016",
+   "label": "白色 MPV",
+   "labelEn": "MPV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0017",
+   "label": "红色轿车",
+   "labelEn": "SEDAN",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0019",
+   "label": "白色 SUV",
+   "labelEn": "WHITE SUV",
+   "category": "vehicles",
+   "embodiedKwh": 19550,
+   "embodiedRange": [
+    19200,
+    19900
+   ],
+   "embodiedStatus": "estimated",
+   "amortizedKwh": 3.55,
+   "dailyKwh": 20.8,
+   "dailyRange": [
+    20.8,
+    20.8
+   ],
+   "dailyStatus": "estimated",
+   "dailyNote": "仅工况估算",
+   "source": "两项生产阶段研究 69.1/71.6 GJ/辆（S28、S29）",
+   "sourceKey": "CAR"
+  },
+  {
+   "objectId": "SP-ST4-0020",
+   "label": "长途大巴",
+   "labelEn": "COACH",
+   "category": "vehicles",
+   "embodiedKwh": null,
+   "embodiedRange": null,
+   "embodiedStatus": "pending",
+   "amortizedKwh": null,
+   "dailyKwh": null,
+   "dailyRange": null,
+   "dailyStatus": "pending",
+   "dailyNote": "未核",
+   "source": "重型客运车辆无公开单车 LCA，未做质量外推",
+   "sourceKey": "BUS"
+  }
+ ]
+}

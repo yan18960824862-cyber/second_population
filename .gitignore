@@ -26,3 +26,15 @@ _g/
 
 # 注意：traffic_clip.mp4（23MB）是运行必需的素材，
 # 按组员要求直接提交，不使用 Git LFS，因此不要在此忽略。
+# 本地备份与临时工具（不入库）
+thumbs_backup_old/
+push_via_api.py
+
+# 审计与临时工具目录（发布版不入库）
+audit/
+audit-v1/
+.tools/
+tools/
+_qa/
+qa/
+nocache_server.py
