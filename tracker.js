@@ -191,19 +191,20 @@
           "<em>" + (obj.energyKwh || 0).toLocaleString("en-US") + "</em></div>" +
       "</div>";
 
-    // 只有移动主体（车辆 / 骑手）画框；静态物默认完全不画，仅悬停给极淡细框
+    // 动态主体（车辆 / 骑手）2px 实线框；静态工业物 1px 淡框（数据仍用原标注，位置固定更准）
     const moving = obj.category === "vehicle" || obj.category === "person";
     box.classList.add(moving ? "subject" : "static");
+    // 静态标注过松（bbox 覆盖 >40% 画面）→ 跳过不画，避免一个巨框罩住整片
+    const kfs0 = obj.keyframes || [];
+    obj._staticTooLarge = !moving && kfs0.some((k) => (k.w || 0) * (k.h || 0) > 0.40);
 
     box.addEventListener("click", (e) => {
       e.stopPropagation();
-      // 静态物（车道线/灯杆等）的框不可点：悬停才淡出，点击无反应
-      if (!moving && !obj.isAc) return;
       selectObject(obj.objectId);
     });
     box.addEventListener("mouseenter", () => {
       window.Census.emit('hover',{canonicalId:obj.canonicalId,active:true});
-      // 静态物只靠 CSS :hover 显示极淡细框，不弹证据卡、不参与琥珀色追踪
+      // 静态物只靠 CSS :hover 提亮细框并显示短编号，不弹证据卡、不参与琥珀色追踪
       if (!moving) return;
       focusId = obj.objectId;
       manualFocus = true;
@@ -412,7 +413,14 @@
 
     window.Census.emit('select',{canonicalId:obj.canonicalId,sourceId:obj.objectId,sceneId:currentScene});
     const supported = ['vehicle','person','appliance'].includes(obj.category) || /LUMINAIRE|STREETLIGHT/.test(obj.labelEn);
-    if (!supported) { window.openEvidenceRecord(obj,returnSnapshot); return; }
+    if (!supported) {
+      // 静态工业物（护栏 / 指示牌 / 井盖 / 路缘等）：框位置来自原标注，可测量 → 走同一套取出→旋转→档案
+      // 工业物沿用既有档案映射（industrial → infrastructure），避免落回车辆占位模型
+      const openObj = obj.category === 'industrial' ? {...obj, category:'infrastructure', sourceCategory: obj.category} : obj;
+      if (returnSnapshot) { openObjectArchive(openObj); return; }
+      startTurntable(openObj, () => openObjectArchive(openObj, { skipScan: true }));
+      return;
+    }
     if(obj.category==='industrial' && /LUMINAIRE|STREETLIGHT/.test(obj.labelEn)){startTurntable(obj,()=>openObjectArchive({...obj,category:'infrastructure',sourceCategory:obj.category}));return;}
 
     // 空调目标：打开全屏 v7 专用档案模块
@@ -649,6 +657,25 @@
     document.getElementById('oaInsetOne').textContent=obj.category==='infrastructure'?'STRUCTURE / GEOMETRY':'WHEEL / CONSTRUCTION';
     document.getElementById('oaInsetTwo').textContent=window.ArchiveMechanisms.title(obj);
     document.getElementById('oaSourceText').textContent=A.sourceNotes(obj);
+    // 人工补充的静态设施：档案里标「补充观察」，并用当前帧裁切图做临时证据占位
+    let ex = document.getElementById('oaExtraEvidence');
+    if (obj._extra) {
+      const idBox = document.querySelector('#objArchive .identity-box');
+      if (!ex && idBox) {
+        ex = document.createElement('figure');
+        ex.id = 'oaExtraEvidence';
+        ex.className = 'oa-extra-evidence';
+        ex.innerHTML = '<img alt="补充观察帧裁切"><figcaption>FRAME CROP · 补充观察（人工补充，未入主账）</figcaption>';
+        idBox.appendChild(ex);
+      }
+      if (ex) {
+        const img = ex.querySelector('img');
+        if (img) img.src = obj._thumbCrop || obj.thumb || '';
+        ex.hidden = false;
+      }
+      oaNameEn.textContent = obj.label + ' / ' + A.type(obj) + ' · 补充观察';
+      oaFooterNote.textContent = 'MANUAL SUPPLEMENT / 补充观察：人工补充静态设施，未纳入 63 条候选主账。';
+    } else if (ex) ex.hidden = true;
   }
 
   /* 缩略图：线框结构 + 侧影视图（一次性静态渲染） */
@@ -1032,21 +1059,28 @@
       const b0 = kfs.length ? interpolate(kfs, t) : null;
 
       // 标注框各边等比内缩 12%：直边、无阶梯毛边；宁可略松也不做像素收紧
-      let bb;
-      if (detData) {
-        // 已切检测的段：只画烘焙框；没绑上 recordId 的记录不再拿手写框凑数
+      const moving = obj.category === "vehicle" || obj.category === "person";
+      const fit = b0 ? {
+        x: b0.x + b0.w * 0.12,
+        y: b0.y + b0.h * 0.12,
+        w: b0.w * 0.76,
+        h: b0.h * 0.76,
+      } : null;
+      let bb = null, visible = false;
+      if (!detData) {
+        // legacy：仍用手写标注
+        bb = obj._staticTooLarge ? null : fit;
+        visible = inWindow && !!bb;
+      } else if (moving) {
+        // 动态主体：只画烘焙检测框；没绑上 recordId 的用淡细 ghost，不拿手写框凑数
         bb = detBox ? { x: detBox.x, y: detBox.y, w: detBox.w, h: detBox.h } : null;
+        visible = !!bb;
       } else {
-        bb = b0 ? {
-          x: b0.x + b0.w * 0.12,
-          y: b0.y + b0.h * 0.12,
-          w: b0.w * 0.76,
-          h: b0.h * 0.76,
-        } : null;
+        // 静态工业物：位置固定，沿用原标注框（比 YOLO 更准）；过大标注跳过
+        bb = (inWindow && !obj._staticTooLarge) ? fit : null;
+        visible = !!bb;
       }
       if (bb) obj._fit = bb;
-
-      const visible = detData ? !!bb : inWindow;
       if (!visible) { obj._fit = null; obj._density = null; }
       const target = visible ? 1 : 0;
       if (obj._pres == null) obj._pres = 0;
@@ -1063,7 +1097,8 @@
       if (visible && bb) {
         onscreen++;
         const b = bb;
-        visObjs.push({ el, box: b, cls: useDet ? ((detData.trk.get(obj._detTrackId) || {}).cls || "vehicle") : (obj.category === "person" ? "person" : "vehicle") });
+        // 只把动态主体交给 ghost 去重（静态物不参与叠框判定）
+        if (moving) visObjs.push({ el, box: b, cls: useDet ? ((detData.trk.get(obj._detTrackId) || {}).cls || "vehicle") : (obj.category === "person" ? "person" : "vehicle") });
         // 位置改走 GPU 合成（transform:translate），不再写 left/top —— 消除每帧 layout 重排（卡顿主因）
         if (layerW && layerH) {
           obj._tx = Math.round(b.x * layerW * 100) / 100;
@@ -1095,8 +1130,8 @@
         }
       }
 
-      // presence → 透明度；位移+缩放合并为一次 transform 写入（composite-only，不触发重排）
-      const op = obj._pres.toFixed(3);
+      // presence → 透明度；静态物基础透明度 0.55（2px 常驻冷蓝灰框），悬停由 CSS 提亮到 0.9
+      const op = (obj._pres * (moving ? 1 : 0.55)).toFixed(3);
       if (obj._op !== op) { el.style.opacity = op; obj._op = op; }
       const sc = (0.90 + 0.10 * obj._pres).toFixed(3);
       const tf = "translate(" + (obj._tx || 0) + "px," + (obj._ty || 0) + "px) scale(" + sc + ")";
@@ -1186,6 +1221,69 @@
      - street1–4 使用 B 的原始采样，legacy 单独保留 A 的旧片段。
      - 所有对象共用档案入口，已有模型族进入扫描，其余显示来源取证档案。
      ───────────────────────────────────────────────────────────── */
+  /* ── 补充静态标注（data/static-extra.json）：独立于主账，不计入 63/115 与「已识别记录」── */
+  let staticExtra = null, staticExtraPromise = null;
+  function loadStaticExtra() {
+    if (!staticExtraPromise) {
+      staticExtraPromise = fetch("data/static-extra.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : []))
+        .catch(() => []);
+    }
+    return staticExtraPromise;
+  }
+  // 用当前帧按归一化 bbox 裁一张图，作为补充观察的临时证据占位
+  function openExtraObject(rec, el) {
+    const b = rec.bbox || [0, 0, 0.1, 0.1];
+    let crop = "";
+    try {
+      const vw = video.videoWidth, vh = video.videoHeight;
+      if (vw && vh) {
+        const cv = document.createElement("canvas");
+        cv.width = 240; cv.height = 150;
+        cv.getContext("2d").drawImage(video, b[0] * vw, b[1] * vh, b[2] * vw, b[3] * vh, 0, 0, 240, 150);
+        crop = cv.toDataURL("image/jpeg", 0.72);
+      }
+    } catch (e) { crop = ""; }
+    const obj = {
+      objectId: rec.id, canonicalId: rec.id, sourceId: rec.id,
+      category: "infrastructure", label: rec.label, labelEn: rec.labelEn || rec.label,
+      function: "STATIC FACILITY · MANUAL SUPPLEMENT", conf: 1,
+      appear: 0, disappear: video.duration || duration || 30,
+      keyframes: [{ t: 0, x: b[0], y: b[1], w: b[2], h: b[3] }],
+      info: "补充观察：人工补充的静态工业设施，未纳入主账",
+      energyKwh: 0, _extra: true, _thumbCrop: crop, thumb: crop
+    };
+    boxEls.set(rec.id, el);
+    startTurntable(obj, () => openObjectArchive(obj, { skipScan: true }));
+  }
+  async function buildExtraUI(key) {
+    try {
+      if (!staticExtra) staticExtra = await loadStaticExtra();
+      if (currentScene !== key || !Array.isArray(staticExtra)) return;
+      const list = staticExtra.filter((e) => e.scene === key && Array.isArray(e.bbox) && e.bbox.length === 4);
+      list.forEach((rec, i) => {
+        const b = rec.bbox;
+        const box = document.createElement("div");
+        box.className = "track-box static extra" + (b[1] < 0.05 ? " tag-in" : "") + (b[0] + b[2] > 0.94 ? " tag-r" : "");
+        box.dataset.id = rec.id;
+        box.dataset.seq = String(i + 1);
+        box.style.display = "block";
+        box.style.left = (b[0] * 100).toFixed(3) + "%";
+        box.style.top = (b[1] * 100).toFixed(3) + "%";
+        box.style.width = (b[2] * 100).toFixed(3) + "%";
+        box.style.height = (b[3] * 100).toFixed(3) + "%";
+        box.style.opacity = "0.55";
+        box.innerHTML = '<div class="box-tag"><span class="tid">#' + (i + 1) + "</span></div>";
+        box.addEventListener("click", (ev) => { ev.stopPropagation(); openExtraObject(rec, box); });
+        box.addEventListener("mouseenter", () => { window.Census.emit('hover', { canonicalId: rec.id, active: true }); });
+        box.addEventListener("mouseleave", () => { window.Census.emit('hover', { canonicalId: rec.id, active: false }); });
+        layer.appendChild(box);
+        boxEls.set(rec.id, box);
+      });
+      console.info("[STATIC-EXTRA] loaded", JSON.stringify({ scene: key, added: list.length }));
+    } catch (e) { console.warn("[STATIC-EXTRA] 补充标注不可用", e); }
+  }
+
   async function loadScene(key) {
     const scene = SCENES[key];
     if (!scene) return;
@@ -1230,6 +1328,7 @@
         // 识别框 / 清单 / 标签必须先于任何异步依赖生成：
         // 档案文案层只是文字补充，绝不能阻塞「实时识别」这一主功能
         buildSceneUI();
+        buildExtraUI(key);   // 补充静态标注：独立于主账，不参与 63/115 与「已识别记录」统计
         // 离线检测：四段街道全部读烘焙 JSON（street3 优先 hi）；legacy 仍走手写标注
         if (DET_FILES[key]) {
           detData = await loadDetData(key);

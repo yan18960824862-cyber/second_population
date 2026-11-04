@@ -1,0 +1,11 @@
+[
+  {"scene":"street1","id":"SP-ST1-X01","category":"照明与监测","label":"高杆路灯（右段）","bbox":[0.792,0.000,0.026,0.900],"note":"manual-supplement"},
+
+  {"scene":"street2","id":"SP-ST2-X01","category":"照明与监测","label":"大型灯杆","bbox":[0.059,0.000,0.038,0.980],"note":"manual-supplement"},
+  {"scene":"street2","id":"SP-ST2-X02","category":"照明与监测","label":"路灯（右段树间）","bbox":[0.778,0.076,0.021,0.042],"note":"manual-supplement"},
+  {"scene":"street2","id":"SP-ST2-X03","category":"导向与信息","label":"蓝底指示牌（竹韵路北）","bbox":[0.616,0.411,0.022,0.084],"note":"manual-supplement"},
+  {"scene":"street2","id":"SP-ST2-X04","category":"导向与信息","label":"圆形交通标志","bbox":[0.842,0.415,0.019,0.072],"note":"manual-supplement"},
+
+  {"scene":"street3","id":"SP-ST3-X01","category":"导向与信息","label":"灯杆道旗（左段）","bbox":[0.127,0.253,0.019,0.226],"note":"manual-supplement"},
+  {"scene":"street3","id":"SP-ST3-X02","category":"照明与监测","label":"路灯杆（右段）","bbox":[0.806,0.000,0.010,0.515],"note":"manual-supplement"}
+]
