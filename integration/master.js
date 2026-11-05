@@ -1,4 +1,4 @@
-/* Integration routes only. Monitoring, archive geometry and local-community rendering remain owned by A. */
+﻿/* Integration routes only. Monitoring, archive geometry and local-community rendering remain owned by A. */
 (function(){
  'use strict';
  const C=window.Census,video=document.getElementById('cam'),esc=window.ArchiveData.escape;
@@ -33,7 +33,7 @@
   overview.innerHTML='<span class="overview-title">四个观察现场<br><small>观察记录 · 物理身份待核验</small></span>'+data.scenes.filter(s=>s.key!=='legacy').map((s,i)=>'<button type="button" data-overview="'+s.key+'"><b>0'+(i+1)+'</b><span>'+esc(s.alias)+'<small>'+s.count+' 条来源记录 · '+s.duration+'s</small></span></button>').join('')+'<button type="button" data-overview="global">63 条待核验候选<br>全局群落 ↗</button>';
   overview.addEventListener('click',safe(async e=>{const key=e.target.closest('[data-overview]')?.dataset.overview;if(!key)return;if(key==='global')await openGlobal();else await window.__switchScene(key);}));
   overview.querySelector('[data-overview="'+window.__activeScene()+'"]')?.classList.add('active');
-  selector.innerHTML='<header><small>OBSERVATION STATIONS / FOUR TAKES</small><button class="survey-entry" id="sceneSelectorClose" type="button">返回 ×</button></header><h2>选择一个观察入口</h2><div class="scene-choices">'+data.scenes.filter(s=>s.key!=='legacy').map((s,i)=>{const r=data.records.find(r=>r.sceneId===s.key&&r.category==='vehicle')||data.records.find(r=>r.sceneId===s.key);return '<button type="button" class="scene-choice" data-select="'+s.key+'"><img src="'+r.thumb+'" alt="'+esc(s.alias)+'场景取证帧"><div><b>0'+(i+1)+' / '+esc(s.cam)+'</b><span>'+esc(s.alias)+'</span><em>'+s.count+' SOURCE RECORDS · '+s.duration+'s</em></div></button>';}).join('')+'</div><footer><span>四段影像，75 条原始观察记录。<br>63 条待核验候选，12 条上下文另列于来源资料。</span></footer>';
+  selector.innerHTML='<header><small>OBSERVATION STATIONS / FOUR TAKES</small><button class="survey-entry" id="sceneSelectorClose" type="button">返回 ×</button></header><h2>选择一个观察入口</h2><div class="scene-choices">'+data.scenes.filter(s=>s.key!=='legacy').map((s,i)=>{const r=data.records.find(r=>r.sceneId===s.key&&r.category==='vehicle')||data.records.find(r=>r.sceneId===s.key);return '<button type="button" class="scene-choice" data-select="'+s.key+'"><img src="'+r.thumb+'" alt="'+esc(s.alias)+'场景取证帧"><div><b>0'+(i+1)+' / '+esc(s.cam)+'</b><span>'+esc(s.alias)+'</span><em>'+s.count+' SOURCE RECORDS · '+s.duration+'s</em></div></button>';}).join('')+'</div><footer><span>四段影像，70 条原始观察记录。<br>63 条待核验候选，7 条上下文另列于来源资料。</span></footer>';
   selector.querySelector('#sceneSelectorClose').onclick=()=>selector.close();
   selector.addEventListener('click',safe(async e=>{const button=e.target.closest('[data-select]');if(!button)return;button.disabled=true;try{await window.__switchScene(button.dataset.select);selectorPlaying=true;selector.close();}finally{button.disabled=false;}}));
  }).catch(console.error);
@@ -95,8 +95,8 @@
 
  const sourceButton=document.createElement('button');sourceButton.id='openSourceMaterials';sourceButton.type='button';sourceButton.className='survey-entry';sourceButton.textContent='来源资料 ↗';document.getElementById('openGlobalSurvey').after(sourceButton);
  function renderSources(all=false){
-  const records=all?C.records.filter(r=>r.sky):C.contextRecords;
-  sources.innerHTML='<header><small>SOURCE RECORDS / 原始标注保留</small><button type="button" class="survey-entry sources-close">返回监控 ×</button></header><h2>来源资料</h2><p>75 条原始记录完整保留。63 条为待核验候选，另有 12 条人员、骑手或自然对象等上下文；跨片段物理身份尚未去重。</p><div class="source-controls"><button type="button" class="survey-entry '+(!all?'active':'')+'" data-source-view="context">上下文 12</button><button type="button" class="survey-entry '+(all?'active':'')+'" data-source-view="all">全部来源 75</button></div><div class="source-records">'+records.map(r=>'<button type="button" class="source-record" data-source-record="'+r.canonicalId+'"><img src="'+esc(r.thumb)+'" alt=""><span><b>'+esc(r.label)+'</b><small>'+r.canonicalId+' · '+camera(r)+' · '+r.appear+'–'+r.disappear+' s</small><small>'+status(r)+'</small></span><span>调档 ↗</span></button>').join('')+'</div><details class="legacy-materials"><summary>历史素材 · 原始档案片段（40 条观察）</summary><p>独立于 CAM01–04 的早期观察片段，未作为第五个正式机位；与四段片段的物理身份关系待核验。独立空调深度档案仍保留在这里。</p><button type="button" class="survey-entry" data-open-legacy>打开历史片段 ↗</button></details>';
+  const records=all?C.records.filter(r=>r.sky&&!/^\s*(TREE|HEDGE)\s*$/i.test(r.labelEn||'')):C.contextRecords;
+  sources.innerHTML='<header><small>SOURCE RECORDS / 原始标注保留</small><button type="button" class="survey-entry sources-close">返回监控 ×</button></header><h2>来源资料</h2><p>70 条原始记录完整保留。63 条为待核验候选，另有 7 条人员或骑手上下文；跨片段物理身份尚未去重。</p><div class="source-controls"><button type="button" class="survey-entry '+(!all?'active':'')+'" data-source-view="context">上下文 7</button><button type="button" class="survey-entry '+(all?'active':'')+'" data-source-view="all">全部来源 70</button></div><div class="source-records">'+records.map(r=>'<button type="button" class="source-record" data-source-record="'+r.canonicalId+'"><img src="'+esc(r.thumb)+'" alt=""><span><b>'+esc(r.label)+'</b><small>'+r.canonicalId+' · '+camera(r)+' · '+r.appear+'–'+r.disappear+' s</small><small>'+status(r)+'</small></span><span>调档 ↗</span></button>').join('')+'</div><details class="legacy-materials"><summary>历史素材 · 原始档案片段（40 条观察）</summary><p>独立于 CAM01–04 的早期观察片段，未作为第五个正式机位；与四段片段的物理身份关系待核验。独立空调深度档案仍保留在这里。</p><button type="button" class="survey-entry" data-open-legacy>打开历史片段 ↗</button></details>';
   sources.querySelector('.sources-close').onclick=()=>sources.close();
  }
  sourceButton.onclick=()=>{sourcesReturn=window.Monitor.snapshot();pause('sources');renderSources();sources.showModal();};
@@ -125,3 +125,4 @@
   select:canonicalId=>window.__openCanonical(canonicalId),getScene:()=>window.__activeScene?.(),get records(){return C.records;}
  };
 })();
+

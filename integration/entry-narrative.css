@@ -37,8 +37,8 @@
 #cameraPrelude .story-credit{position:absolute;left:4vw;bottom:30px;z-index:3;font:400 9px/1.5 "Noto Sans SC",sans-serif;letter-spacing:.1em;color:#6c7f8a;opacity:0;transition:opacity .2s}
 #cameraPrelude .entry-story.is-story .story-credit{opacity:.82}
 /* 00 开场：两句问句在坠落途中分两次出现，放左侧避让下坠的机身。 */
-#cameraPrelude .story-open{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:26px;padding-left:15vw;z-index:3}
-#cameraPrelude .story-open p{margin:0;font:300 26px/1.6 "Noto Sans SC","PingFang SC",sans-serif;letter-spacing:.06em;color:#dbe4e9;opacity:0;text-shadow:0 3px 34px #02080b}
+#cameraPrelude .story-open{position:absolute;inset:0;display:block;z-index:3}
+#cameraPrelude .story-open p{position:absolute;left:var(--entry-gutter,6.5vw);top:53%;max-width:10.3em;margin:0;font:400 clamp(30px,2.8vw,46px)/1.5 var(--entry-sans,system-ui,sans-serif);letter-spacing:-.015em;color:#e0e7e9;opacity:0;text-shadow:none;text-wrap:balance}
 /* 最终卡：0.94–1.00 */
 #cameraPrelude .story-final{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;z-index:3;opacity:0}
 #cameraPrelude .story-final small{font:400 10px/1 Consolas,monospace;letter-spacing:.32em;color:#7d8f9a}
@@ -52,8 +52,10 @@
 #cameraPrelude.in-story .entry-footer{inset:auto 0 0;pointer-events:none;opacity:1}
 #cameraPrelude.in-story .entry-footer .entry-progress{pointer-events:none}
 @media(max-width:900px){
+ #cameraPrelude .story-open p{max-width:9.4em;top:56%;font-size:clamp(28px,3.3vw,36px)}
  #cameraPrelude .story-ch{width:820px;height:720px}
  #cameraPrelude .story-copy{width:46%}
  #cameraPrelude .story-line.is-concl{font-size:27px}
  #cameraPrelude .story-figure b{font-size:52px}
 }
+@media(max-width:700px){#cameraPrelude .story-open p{left:24px;right:24px;top:61%;max-width:11.5em;font-size:clamp(25px,7.1vw,32px);line-height:1.55}}

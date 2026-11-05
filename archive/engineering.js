@@ -99,10 +99,10 @@
     for(const x of [-2.38,-1.5,2.12])tube(m,[x,-.62,-.98],[x,-.62,.98],.07,10);
     return finish(m,'truck');
   }
-  function vehicle(st,previous){const m=new E.Mesh(),isSuv=st==='suv',width=isSuv?1.01:.95;
+  function vehicle(st,previous){const m=new E.Mesh(),isSuv=['suv','van','mpv'].includes(st),width=isSuv?1.01:.95;
     const xs=[-2.28,-2.14,-1.68,-.9,.22,1.25,1.93,2.2,2.28],widths=[.68,.91,1,1,1,.98,.9,.75,.66],tops=isSuv?[.12,.28,.38,.4,.39,.36,.26,.13,.06]:[.02,.16,.26,.29,.28,.24,.17,.06,0];
     const body=xs.map((x,i)=>{const z=width*widths[i],y=tops[i];return[[x,y,0],[x,y-.012,z*.62],[x,y-.065,z*.9],[x,y-.2,z],[x,-.34,z*.98],[x,-.46,z*.81],[x,-.5,0],[x,-.46,-z*.81],[x,-.34,-z*.98],[x,y-.2,-z],[x,y-.065,-z*.9],[x,y-.012,-z*.62]];});shell(m,body,[3,3]);
-    const roof=isSuv?[[-1.72,.45,.88],[-1.43,1.13,.79],[-1.12,1.25,.76],[.24,1.23,.76],[.53,1.08,.8],[.96,.42,.9]]:[[-1.48,.29,.84],[-1.15,.69,.73],[-.88,.98,.67],[.19,.98,.67],[.48,.81,.74],[1.02,.27,.84]];
+    const roof=st==='van'?[[-2.17,.43,.91],[-2.13,1.37,.89],[-1.98,1.52,.84],[-.85,1.52,.85],[.28,1.5,.84],[.56,1.37,.83],[1.37,.41,.89]]:st==='mpv'?[[-2.06,.4,.9],[-1.89,1.13,.84],[-1.52,1.32,.8],[-.62,1.34,.8],[.31,1.31,.79],[.64,1.14,.8],[1.38,.4,.9]]:isSuv?[[-1.72,.45,.88],[-1.43,1.13,.79],[-1.12,1.25,.76],[.24,1.23,.76],[.53,1.08,.8],[.96,.42,.9]]:[[-1.48,.29,.84],[-1.15,.69,.73],[-.88,.98,.67],[.19,.98,.67],[.48,.81,.74],[1.02,.27,.84]];
     shell(m,roof.map(([x,y,z])=>[[x,.25,-width*.93],[x,y-.09,-z],[x,y,-z*.68],[x,y,z*.68],[x,y-.09,z],[x,.25,width*.93]]),[3,4]);
     for(const s of [-1,1]){const n=[0,0,s];for(let k=1;k<roof.length-1;k++){const a=roof[k-1],b=roof[k];if(k===1||k===roof.length-1)continue;
       face(m,[[a[0]+.03,.36,s*width*.94],[b[0]-.025,.36,s*width*.94],[b[0]-.025,b[1]-.13,s*(b[2]+.008)],[a[0]+.03,a[1]-.13,s*(a[2]+.008)]],n,[3,3],dark);}
@@ -113,9 +113,17 @@
     face(m,[[rear[0],rear[1]-.015,-rear[2]],[rear[0],rear[1]-.015,rear[2]],[rearTop[0],rearTop[1]-.01,rearTop[2]],[rearTop[0],rearTop[1]-.01,-rearTop[2]]],unit([-.6,.4,0]),[7,4],dark);
     for(const s of [-1,1]){box(m,[2.21,-.035,s*.65-.2],[2.29,.085,s*.65+.2],[1,6]);box(m,[-2.3,-.03,s*.65-.18],[-2.26,.11,s*.65+.18],[1,5]);
       path(m,[[.97,.31,s*.62],[.82,.51,s*.31],[.67,.53,s*.54]],.85,[1,1,0]);}
-    if(isSuv)for(const z of [-.59,.59])tube(m,[-1.33,1.29,z],[.3,1.27,z],.023,8);
+    if(st==='van'||st==='mpv'){
+      for(const side of [-1,1]){
+        const z=side*width*.965;
+        box(m,[-1.91,.21,z-.012],[-.24,.25,z+.012],3);
+        box(m,[-.44,.39,z-.019],[-.24,.44,z+.019],3);
+      }
+      for(const y of [.47,.99])for(const z of [-.7,.7])box(m,[-2.17,y,z-.04],[-2.11,y+.12,z+.04],2);
+    }
+    if(st==='suv')for(const z of [-.59,.59])tube(m,[-1.33,1.29,z],[.3,1.27,z],.023,8);
     for(const f of m.faces){f.grids=[];f.gridLevel=.2;if(f.p.length===4){const p=f.p;for(let i=1;i<5;i++)f.grids.push([mix(p[0],p[1],i/5),mix(p[3],p[2],i/5)]);for(let j=1;j<4;j++)f.grids.push([mix(p[0],p[3],j/4),mix(p[1],p[2],j/4)]);}}
-    const suv=st==='suv',W=suv?2.02:1.9,R=suv?.45:.41;
+    const suv=isSuv,W=suv?2.02:1.9,R=suv?.45:.41;
     for(const x of [-1.43,1.43])for(const s of [-1,1]){wheel(m,x,-.4,s*(W/2+.04),R);const n=[0,0,s],z=s*(W/2+.075);
       path(m,Array.from({length:29},(_,i)=>{const a=i/28*Math.PI;return[x+Math.cos(a)*(R+.055),-.4+Math.sin(a)*(R+.055),z];}),1,n);}
     for(const s of [-1,1]){const z=s*(W/2+.018),n=[0,0,s];
@@ -206,6 +214,46 @@
     }}ctx.restore();
     function path2d(q){ctx.beginPath();ctx.moveTo(q[0][0],q[0][1]);ctx.lineTo(q[1][0],q[1][1]);}
   }
+  function streetModel(kind){
+    const m=new E.Mesh();
+    const beam=(a,b,r=.035)=>tube(m,a,b,r,12);
+    const block=(x,y,z,w,h,d)=>box(m,[x-w/2,y-h/2,z-d/2],[x+w/2,y+h/2,z+d/2],[5,4]);
+    const mast=(x,h)=>{block(x,.06,0,.35,.12,.35);beam([x,0,0],[x,h,0],.068);
+      for(const dx of [-.11,.11])for(const dz of [-.11,.11])tube(m,[x+dx,.12,dz],[x+dx,.15,dz],.023,8);};
+    if(['sign','metro-sign','banner','gantry-sign','camera-pole'].includes(kind)){
+      const gantry=kind==='gantry-sign';mast(gantry?-1.6:0,2.8);
+      if(gantry){mast(1.6,2.8);beam([-1.6,2.7,0],[1.6,2.7,0],.085);}
+      if(kind==='camera-pole'){beam([0,2.7,0],[.84,2.7,0]);block(.77,2.58,0,.57,.27,.35);beam([.77,2.58,.17],[.77,2.58,.24],.10);}
+      else if(kind==='banner'){
+        for(const y of [1,2.62])beam([0,y,0],[.85,y,0],.023);
+        for(let i=0;i<12;i++){const x=.07+i*.062,z=Math.sin(i*.35)*.055,z2=Math.sin((i+1)*.35)*.055;
+          const p=[[x,1,z],[x+.062,1,z2],[x+.062,2.6,z2],[x,2.6,z]];face(m,p,[0,0,1],[1,12]);face(m,p.slice().reverse(),[0,0,-1],[1,12]);}
+      }else{const w=gantry?2.9:1.22;block(0,2.18,.10,w,.81,.095);
+        for(const y of [1.83,2.53])block(0,y,.159,w-.09,.025,.018);
+        for(const x of [-.39,.39])beam([x,2.18,.15],[x,2.18,.18],.026);}
+    }else if(kind==='bike-rack'){
+      for(const z of [-.86,0,.86]){
+        for(const x of [-.63,.63]){torus(m,x,.38,z,.355,.024,30,6);
+          for(let i=0;i<16;i++){const a=i*TAU/16;line(m,[x,.38,z],[x+.35*Math.cos(a),.38+.35*Math.sin(a),z]);}}
+        const a=[-.63,.38,z],b=[-.22,.91,z],c=[-.07,.37,z],d=[.4,.89,z];
+        for(const [p,q] of [[a,b],[b,c],[a,c],[b,d],[c,d],[d,[.63,.38,z]]])beam(p,q,.023);
+        block(-.22,.97,z,.26,.052,.13);beam(d,[.39,1.05,z]);beam([.39,1.05,z-.15],[.39,1.05,z+.15]);
+      }block(.71,.035,0,.16,.07,2.45);
+    }else if(kind==='guardrail'||kind==='fence'){
+      for(const x of [-1.45,0,1.45])mast(x,1.13);
+      for(const y of [.32,.94])block(0,y,.085,3.22,kind==='fence'?.068:.19,.085);
+      if(kind==='fence')for(let i=0;i<18;i++)beam([-1.47+i*.173,.31,.08],[-1.47+i*.173,.96,.08],.02);
+    }else if(kind==='manhole'||kind==='barrier'){
+      const cover=kind==='manhole',r=cover?.89:.44,h=cover?.09:1.08;
+      tube(m,[0,0,0],[0,h,0],r,40);tube(m,[0,h,0],[0,h+.04,0],r*1.025,40);
+      for(let i=-4;i<=4;i++){const x=i*r/5,z=Math.sqrt(r*r-x*x)*.88;block(x,h+.047,0,.025,.014,2*z);}
+      if(!cover)for(const y of [.71,.81])tube(m,[0,y,0],[0,y+.032,0],r+.014,40);
+    }else if(kind==='kerb'){for(let i=0;i<4;i++)block(i*.81,.16,0,.79,.32,.46);}
+    else{block(0,-.05,0,3.2,.09,1.3);
+      if(kind==='arrow'){block(-.22,.012,0,1.68,.022,.16);for(const s of [-1,1])beam([.36,.025,s*.35],[1.07,.025,0],.075);}
+      else for(const x of [-1,0,1])block(x,.011,0,.62,.022,.14);}
+    m.streetStudy=true;return finish(m,kind);
+  }
   const previous=window.ArchiveModels.build,previews=new Map();
   // The monitoring crowd and tiny archive cards retain lightweight meshes.
   // Detailed models are reserved for the opened archive and 3D inspection.
@@ -215,6 +263,9 @@
     m.center=lo.map((v,k)=>(v+hi[k])/2);previews.set(category+'/'+st,m);
   }
   window.ArchiveModels.build=(category,subtype)=>{
+    if(['metro-sign','gantry-sign','camera-pole','barrier','guardrail','kerb','arrow','manhole','fence','sign','lane-mark','banner','bike-rack'].includes(subtype)){
+      if(!cache.has(subtype))cache.set(subtype,streetModel(subtype));return cache.get(subtype);
+    }
     if(category!=='vehicle'&&category!=='infrastructure')return previous(category,subtype);
     const key=category+'/'+subtype;if(cache.has(key))return cache.get(key);
     const m=subtype==='truck'?truck():subtype==='bus'||subtype==='coach'?bus(subtype==='coach'):category==='infrastructure'?streetlight():vehicle(subtype,previous);

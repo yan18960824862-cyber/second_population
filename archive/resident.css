@@ -1,0 +1,54 @@
+#oaDossier {--quiet:#334951;color:#c8e0e7}
+#oaDossier .dossier-box {border-color:var(--quiet);background:#060b0e}
+#oaDossier .record-name h2 {font:600 clamp(25px,3vw,40px)/1.3 system-ui;color:#dfedf0}
+#oaDossier .archive-description,#oaDossier #oaCarbonNote {font:14px/1.8 system-ui;color:#a8c1ca}
+#oaDossier h3 {font:600 17px/1.45 system-ui;padding:12px 18px}
+#oaDossier h3 small {margin-left:10px;color:#89a3ad;font:11px monospace;letter-spacing:.1em}
+.energy-reading,.resident-route {display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px}
+.energy-reading strong,.energy-reading small {display:block}.energy-reading strong {font:500 32px/1.4 monospace;color:#d7f5fd}
+#oaCarbonUnit,#oaCarbonExpression small,.resident-route {font:12px/1.6 system-ui;color:#9dbac3}
+.energy-figures{margin:0 20px;border-top:1px solid var(--quiet);padding:9px 0}
+.energy-row{display:grid;grid-template-columns:7em 1fr auto;align-items:baseline;gap:10px;padding:4px 0}
+.energy-row span{font:12px/1.6 system-ui;color:#9dbac3}
+.energy-row b{font:500 16px/1.5 monospace;color:#d7f5fd}
+.energy-row em{font:11px/1.4 system-ui;color:#9dbac3;border:1px solid var(--quiet);padding:1px 6px;font-style:normal;white-space:nowrap}
+.energy-row em[data-state=verified]{color:#d7f5fd}
+.energy-row em[data-state=none]{color:#89a3ad}
+#oaCarbonExpression {text-align:center;color:#a6deea}
+#oaDossier #oaCarbonNote {margin:0 20px}
+#energySource {display:inline-block;margin:9px 20px 19px;color:#9dc9d5;font:12px system-ui;text-underline-offset:3px}
+.resident-route i {flex:1;height:1px;background:var(--quiet)}.resident-route .resource-unit svg {max-width:80px;stroke:currentColor;fill:none}
+#oaDossier .dossier-footer button {font:13px/1.5 system-ui}
+@media(max-width:740px){#oaDossier .dossier-grid{display:flex;flex-direction:column}#oaDossier .dossier-footer{flex-wrap:wrap}}
+
+#objArchive #oaCarbonExpression{position:static;flex:none} #objArchive .resident-route .resource-unit{border:0}
+
+#evidenceRecord .street-spread{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;margin-top:20px;color:#c7e1e6}
+.street-spread section{min-width:0}.street-spread small,.street-spread h3{color:#8eafb9;font:12px/1.6 monospace;letter-spacing:.08em}.street-spread canvas{display:block;width:100%;height:clamp(230px,40vh,450px);background:radial-gradient(ellipse,#0f1c23,#050a0d 70%);border-block:1px solid #354d56;margin:12px 0}
+#evidenceRecord .street-spread h2{font:600 30px/1.3 system-ui;margin:12px 0}.street-spread p{line-height:1.75}.street-spread .street-role{color:#94bdc7}
+@media(max-width:720px){#evidenceRecord .street-spread{grid-template-columns:1fr}}
+
+#evidenceRecord.scanning-study[open]{position:fixed;inset:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;box-sizing:border-box;border:0;background:#010405;padding:clamp(16px,5vw,72px);display:grid;place-items:center;overflow:hidden}
+#evidenceRecord.scanning-study>.street-spread,#evidenceRecord.scanning-study>header{display:none}
+.study-intro{width:min(100%,1160px);color:#afd7e2;font:12px/1.5 monospace}
+.study-ident,.study-meter{display:flex;align-items:center;justify-content:space-between;gap:12px;letter-spacing:.07em}
+.study-ident{border:1px solid #49636a;border-radius:4px;padding:5px 10px}
+.study-screen{height:min(70dvh,760px);margin:10px 0;border:1px solid #6e909a;border-radius:12px;background:radial-gradient(ellipse at center,#081015,#010304 68%);overflow:hidden}
+.study-screen canvas{width:100%;height:100%;display:block}
+.study-meter progress{width:48%;height:7px;accent-color:#b5e3ee}.study-meter output{margin-right:auto}
+
+.population-journey{height:116vh;min-height:480px;position:relative;padding:8vh 4vw 0;box-sizing:border-box;color:#cbe7eb;background:radial-gradient(ellipse at 45% 42%,#112730,#03090d 70%);border-top:1px solid #506974;margin-top:36px}
+.journey-stage{position:sticky;top:5vh;max-width:960px;margin:auto}.journey-stage small,.journey-caption{font:12px/1.8 monospace;color:#88abb9;letter-spacing:.09em}.journey-stage h2{font:500 clamp(26px,4vw,52px)/1.25 system-ui;letter-spacing:.07em}.journey-stage svg{display:block;width:100%;max-height:44vh;fill:#b0dee6}.journey-stage svg text{font:10px monospace;fill:#789faa;text-anchor:middle}.journey-stage button{margin-top:12px;border:1px solid #53717b;background:#091319;color:#cde3eb;padding:9px 14px;cursor:pointer}
+.object-universe.is-expanded{background:#050d12;font-family:system-ui,'Microsoft YaHei',sans-serif}.object-universe.is-expanded .universe-heading h3{font:500 clamp(23px,2.4vw,38px)/1.2 system-ui;letter-spacing:.08em}.is-expanded .universe-category-nav button{background:transparent;border:0;border-bottom:1px solid #304750;text-align:left}.is-expanded .universe-category-nav button.active,.is-expanded .universe-category-nav button:hover{background:#10212a;border-color:#a0dbe8}.is-expanded .universe-selection{background:linear-gradient(150deg,#10212b,#060e14 65%);padding:clamp(14px,1.7vw,32px)}.is-expanded .universe-selection h4{font:500 clamp(22px,1.8vw,30px)/1.4 system-ui}.is-expanded .universe-category-list button{background:transparent;border:0;border-bottom:1px solid #354850}.is-expanded .universe-controls button{background:transparent;border-color:#28404a}.is-expanded .universe-surface{background:radial-gradient(ellipse at 44% 46%,#152531,#050c11 73%)}
+
+.journey-hint{display:block;margin:12px auto;padding:12px 24px;background:transparent;border:0;border-bottom:1px solid #547980;color:#a0cbd5;cursor:pointer;letter-spacing:.08em}
+.atlas-stations{display:grid;gap:16px;margin:28px 0}.atlas-stations>div{display:grid;grid-template-columns:50px 1fr 2ch;align-items:center;gap:10px;font:12px monospace;color:#9fbdc6}.atlas-stations i{height:3px;background:linear-gradient(to right,#99cad0 var(--amount),#23404a var(--amount))}
+@media(min-width:1180px){.object-universe.is-expanded{grid-template-columns:174px minmax(0,1fr);grid-template-rows:88px minmax(0,1fr) 54px}.object-universe.is-expanded .universe-heading,.object-universe.is-expanded .universe-summary{grid-area:1/1/2/3}.object-universe.is-expanded .universe-workspace{grid-area:2/2}.object-universe.is-expanded .universe-controls{grid-area:3/1/4/3}.object-universe.is-expanded .universe-category-nav{grid-area:2/1;display:flex;flex-direction:column;justify-content:center;border:0;border-right:1px solid #223945;padding:12px;gap:3px}.object-universe.is-expanded .universe-category-nav:before{content:'分类索引 / INDEX';font:10px monospace;letter-spacing:.12em;color:#80a2af;padding:0 6px 20px}.object-universe.is-expanded .universe-category-nav button{border:0;border-bottom:1px solid #243943;background:transparent;padding:14px 4px;font-size:13px}.object-universe.is-expanded .universe-category-nav button:hover,.object-universe.is-expanded .universe-category-nav button[aria-pressed=true]{background:#10222c;color:#dbf5ff}.object-universe.is-expanded .universe-category-nav button b{font-size:15px}.object-universe.is-expanded .universe-controls button{background:transparent;border:0;border-bottom:1px solid #37515d;min-height:32px}}
+
+#archiveEvidence summary{cursor:pointer;padding:9px 18px;color:#9fbac4;border-top:1px solid #334951;font:13px/1.5 system-ui}
+#archiveEvidence summary small{font:10px monospace;letter-spacing:.1em}
+#energySource[hidden]{display:none}
+
+/* 5.4 合并：档案页需要真实滚动容器，转场才能滚到底（A 原布局为 overflow:hidden 不可滚） */
+#objArchive .dossier-shell{height:100dvh;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+

@@ -88,7 +88,24 @@
     street4: ["data/detections/street_04.json"]
   };
   let detData = null;                 // {frames, binding: recordId→trackId, trk: Map(trackId→{cls,static,samples})}
-  const detGhostEls = new Map();      // trackId → 无档案的检测框 DOM（不可点击）
+  const detGhostEls = new Map();      // 5.4.2 起不再创建无档案 ghost，保留容器仅为兼容旧引用
+
+  /* ── 5.4.2 框色：按物理类别分组，取 8780 参考图星云五色（实测色相 184/97/268/49/341），
+     亮度提到糖果级；不透明度 1、3px 实线；标签与框同色。 ── */
+  const FRAME_HUES = { transit: 184, person: 184, equipment: 97, ground: 49, signage: 341, lighting: 268, other: 184 };
+  const FRAME_COLORS = {
+    transit: "#86e3ea", person: "#86e3ea", equipment: "#acea86",
+    ground: "#ead786", signage: "#ea86a5", lighting: "#b486ea", other: "#86e3ea"
+  };
+  function frameClassOf(obj) {
+    if (obj && obj.category === "appliance") return "equipment";
+    const up = window.UniversePalette;
+    if (up && typeof up.physicalClass === "function") {
+      const cls = up.physicalClass(obj);
+      if (FRAME_COLORS[cls]) return cls;
+    }
+    return "ground";
+  }
   let manualFocus = false;
   let toastTimer = null;
   const boxEls = new Map();   // objectId → DOM
@@ -164,8 +181,18 @@
     const energyPct = Math.min(100, Math.round(((obj.energyKwh || 0) / 45000) * 100));
     const midT = ((obj.appear + obj.disappear) / 2).toFixed(1);
 
+    // 5.4.2 类别色：同一类别同色（与星云同一色相），标签文字跟随框色
+    const fcls = frameClassOf(obj);
+    const fcol = FRAME_COLORS[fcls] || FRAME_COLORS.other;
+    box.dataset.fclass = fcls;
+    box.dataset.hue = String(FRAME_HUES[fcls]);
+    box.style.setProperty("--box-stroke", fcol);
+    box.style.setProperty("--box-tag", fcol);
+    box.style.setProperty("--box-track", fcol + "33");
+
     box.innerHTML =
-      '<div class="box-tag"><span class="tid">' + obj.objectId + "</span></div>" +
+      '<div class="box-tag"><span class="tid">' + en + " " + obj.objectId + "</span>" +
+      '<span class="box-meter"><i></i></span></div>' +
       '<div class="box-card">' +
         '<div class="card-leader"></div>' +
         '<div class="card-tag">' +
@@ -220,6 +247,7 @@
 
     layer.appendChild(box);
     boxEls.set(obj.objectId, box);
+    obj._meterEl = box.querySelector(".box-meter i");
     lockEls.set(obj.objectId, box.querySelector(".card-tag .lock i"));
   });
 
@@ -272,123 +300,6 @@
     };
   }
 
-  /* ── 点击 → 取出物体转一圈 → 推近 → 档案（约 1.1s；复用现有 2D 档案模型与既有 rAF，可逆） ── */
-  let turnStage = null, turnState = null;
-
-  function drawTurntable(t) {
-    if (!turnState) return;
-    const { ctx, cv, model, img } = turnState;
-    const w = cv.width, h = cv.height;
-    const p = Math.min(1, (t - turnState.start) / 1100);
-    const yaw = 0.35 + p * Math.PI * 2;      // 一圈
-    ctx.clearRect(0, 0, w, h);
-    // 标本板：把"取出的物体"和背后的实时画面分开（不做发光，只做底板 + 冷灰描边）
-    ctx.fillStyle = "rgba(5,10,14,.80)";
-    ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = "#9FB6C2";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(1.5, 1.5, w - 3, h - 3);
-    ctx.fillStyle = "#F5C451";
-    ctx.font = "bold 9px Consolas, monospace";
-    ctx.fillText("EXTRACTED · " + ((turnState.obj && turnState.obj.canonicalId) || "OBJECT"), 10, h - 9);
-    if (model && window.ModelEngine) {
-      window.ModelEngine.renderSolid(ctx, model, {
-        w: w * .78, h: h * .78, yaw, pitch: .28,
-        x: w / 2, y: h / 2,
-        tint: "#cfe6ef", line: "#9fb6c2", glow: false
-      });
-    } else if (img && img.complete) {
-      // 无模型：用真实裁切图做「转盘」示意（不伪造精细模型）
-      ctx.save();
-      ctx.translate(w / 2, h / 2);
-      ctx.rotate(Math.sin(p * Math.PI * 2) * .11);
-      const s = Math.min(w / img.width, h / img.height) * .82;
-      ctx.globalAlpha = .92;
-      ctx.drawImage(img, -img.width * s / 2, -img.height * s / 2, img.width * s, img.height * s);
-      ctx.restore();
-    } else {
-      ctx.save();
-      ctx.strokeStyle = "#9fb6c2"; ctx.lineWidth = 2;
-      ctx.strokeRect(w * .2, h * .24, w * .6, h * .52);
-      ctx.fillStyle = "#9fb6c2"; ctx.font = "12px monospace";
-      ctx.fillText((turnState.obj && turnState.obj.labelEn) || "OBJECT", w * .22, h * .9);
-      ctx.restore();
-    }
-    turnState.p = p;
-  }
-
-  function startTurntable(obj, done) {
-    if (turnState) return;
-    const el = boxEls.get(obj.objectId);
-    const vp = document.getElementById("viewport");
-    if (!vp) { done(); return; }
-    const vr = vp.getBoundingClientRect();
-    const er = el ? el.getBoundingClientRect() : null;
-    const usable = !!(er && er.width >= 6 && er.height >= 6 &&
-      er.bottom > vr.top && er.top < vr.bottom && er.right > vr.left && er.left < vr.right);
-    // 兜底：从清单点选 / 检测框此刻不在场时，框不可测量。
-    // 以前这里直接 done() → 跳过三段转场直开档案；改为在视口中心起转场，保证转场始终发生
-    const r = usable ? er : {
-      left: vr.left + vr.width / 2 - 48,
-      top: vr.top + vr.height / 2 - 36,
-      width: 96,
-      height: 72
-    };
-    if (vr.width < 40) { done(); return; }
-
-    const stage = document.createElement("div");
-    stage.className = "turn-stage";
-    const cv = document.createElement("canvas");
-    cv.width = 320; cv.height = 240;
-    stage.appendChild(cv);
-    vp.appendChild(stage);
-
-    const x = r.left, y = r.top;   // 视口坐标系（stage 用 position:fixed）
-    stage.style.left = x + "px";
-    stage.style.top = y + "px";
-    stage.style.width = Math.max(24, r.width) + "px";
-    stage.style.height = Math.max(18, r.height) + "px";
-    vp.classList.add("is-turning");
-
-    // 模型 / 真实裁切图（无模型的物件不伪造精细模型）
-    let model = null;
-    try {
-      // 人物/骑手同样有 2D 档案模型（model-engine 的 rider），此前被排除导致只剩裁切图"动一下"
-      if (window.ModelEngine) {
-        model = window.ModelEngine.buildModel(obj.category, window.ModelEngine.detectSubtype(obj.category, obj.labelEn));
-      }
-    } catch (e) { model = null; }
-    let img = null;
-    if (!model && obj.thumb) { img = new Image(); img.src = obj.thumb; }
-
-    turnStage = stage;
-    turnState = { ctx: cv.getContext("2d"), cv, model, img, start: performance.now(), p: 0, obj };
-
-    // 推近：CSS 只做合成（不重排），与视频画面同帧存在，不黑屏
-    const targetW = Math.min(420, vr.width * .40);
-    // 检测框比手写框小一半左右；给缩放设上限，避免推近变成"图片被放大"的观感
-    const sc = Math.max(1, Math.min(3.2, targetW / Math.max(24, r.width)));
-    const dx = (vr.left + vr.width / 2) - (x + Math.max(24, r.width) / 2);
-    const dy = (vr.top + vr.height / 2) - (y + Math.max(18, r.height) / 2);
-    stage.style.transition = "transform .78s cubic-bezier(.18,.72,.22,1), opacity .26s";
-    requestAnimationFrame(() => {
-      stage.style.transform = "translate(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px) scale(" + sc.toFixed(2) + ")";
-      stage.style.opacity = "1";
-    });
-
-    // 一轮转完 → 交回档案；此后 stage 由档案自己的扫描接手，不叠两层
-    const finish = () => {
-      if (!turnState) return;
-      if (img) { img.onload = null; }
-      stage.classList.add("done");
-      vp.classList.remove("is-turning");
-      setTimeout(() => { if (stage.parentNode) stage.parentNode.removeChild(stage); }, 220);
-      turnState = null; turnStage = null;
-      done();
-    };
-    setTimeout(finish, 1150);
-  }
-
   /* ── 点击选中 → 返回统一 objectId ── */
   function selectObject(objectId, idx, returnSnapshot) {
     const obj = objects.find((o) => o.objectId === objectId);
@@ -412,23 +323,15 @@
     showToast("objectId → " + obj.objectId);
 
     window.Census.emit('select',{canonicalId:obj.canonicalId,sourceId:obj.objectId,sceneId:currentScene});
-    const supported = ['vehicle','person','appliance'].includes(obj.category) || /LUMINAIRE|STREETLIGHT/.test(obj.labelEn);
-    if (!supported) {
-      // 静态工业物（护栏 / 指示牌 / 井盖 / 路缘等）：框位置来自原标注，可测量 → 走同一套取出→旋转→档案
-      // 工业物沿用既有档案映射（industrial → infrastructure），避免落回车辆占位模型
-      const openObj = obj.category === 'industrial' ? {...obj, category:'infrastructure', sourceCategory: obj.category} : obj;
-      if (returnSnapshot) { openObjectArchive(openObj); return; }
-      startTurntable(openObj, () => openObjectArchive(openObj, { skipScan: true }));
-      return;
-    }
-    if(obj.category==='industrial' && /LUMINAIRE|STREETLIGHT/.test(obj.labelEn)){startTurntable(obj,()=>openObjectArchive({...obj,category:'infrastructure',sourceCategory:obj.category}));return;}
+    // 树 / 绿篱不属于工业物：保留画面检测框，但不进档案、星图与模型
+    if (/\b(TREE|HEDGE)\b/i.test(obj.labelEn || '')) { showToast('自然对象 · 不纳入档案'); return; }
+    if(obj.category==='industrial' && /LUMINAIRE|STREETLIGHT/.test(obj.labelEn)){openObjectArchive({...obj,category:'infrastructure',sourceCategory:obj.category});return;}
 
     // 空调目标：打开全屏 v7 专用档案模块
     if (obj.isAc) { if (objArchiveOpen) closeObjectArchive(); openAcArchive(); return; }
 
-    // 其余目标：先取出旋转一圈（约 1.1s），再进全屏 OBJECT ARCHIVE（扫描 → 档案两段式）
-    if (returnSnapshot) { openObjectArchive(obj); return; }  // 叙事交班等自动化路径保持即时
-    startTurntable(obj, () => openObjectArchive(obj, { skipScan: true }));
+    // 其余目标：照搬 8780 版——点击即进整页加载（全屏扫描，进度 0→100 同时模型旋转），完成后落档案
+    openObjectArchive(obj);
   }
 
   // 上一个 / 下一个目标：按顺序跳转并把视频拉到该目标出现时刻
@@ -631,32 +534,105 @@
   inspection.onClose = () => {
     if (!objArchiveOpen || oaPhase !== "dossier" || !oaCurrent) return;
     oaSolidPlayer?.showSolid(oaCurrent.category, window.ArchiveCatalog.subtype(oaCurrent));
-    window.ArchiveMotion?.start(oaProfileCanvas, oaCurrent);
+    if(!window.ArchiveCatalog.studyKind(oaCurrent)||oaCurrent.category==='vehicle')window.ArchiveMotion?.start(oaProfileCanvas, oaCurrent);
   };
 
   if (oaCrosses) oaCrosses.innerHTML = "<span></span>".repeat(20);
 
-  /* 阶段二：档案内容填充 */
+  /* 能耗读数：只读取 energy-manifest.json（两份能耗报告的可核算数据），运行时不再生成任何数字 */
+  const energyManifest = { map: null, pending: null };
+  function loadEnergyManifest() {
+    if (!energyManifest.pending) {
+      energyManifest.pending = fetch("energy-manifest.json", { cache: "no-store" })
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null)
+        .then(j => {
+          const map = new Map();
+          (j && j.items || []).forEach(item => { if (item && item.objectId) map.set(item.objectId, item); });
+          energyManifest.map = map;
+          return map;
+        });
+    }
+    return energyManifest.pending;
+  }
+  function energyTag(item, field) {
+    if (!item) return { text: "未核算", state: "none" };
+    const status = field === "daily" ? item.dailyStatus : item.embodiedStatus;
+    if (status === "verified") {
+      if (field === "daily" && Number(item.dailyKwh) === 0) return { text: "无源", state: "verified" };
+      return { text: "可核算", state: "verified" };
+    }
+    if (status === "estimated") return { text: "估算", state: "estimate" };
+    return { text: "未核算", state: "none" };
+  }
+  function energyNumber(value, unit) {
+    const n = Number(value);
+    if (value === null || value === undefined || !Number.isFinite(n)) return "—";
+    let text;
+    const abs = Math.abs(n);
+    if (abs === 0) text = "0";
+    else if (abs >= 1000) text = Math.round(n).toLocaleString("en-US");
+    else if (abs >= 10) text = n.toFixed(1).replace(/\.0$/, "");
+    else if (abs >= 1) text = n.toFixed(2).replace(/\.?0+$/, "");
+    else text = n.toFixed(2);
+    return text + " " + unit;
+  }
+  function fillEnergyFigures(obj) {
+    const daily = document.getElementById("oaDailyValue"), dailyTag = document.getElementById("oaDailyTag");
+    const embodied = document.getElementById("oaEmbodiedValue"), embodiedTag = document.getElementById("oaEmbodiedTag");
+    if (!daily || !embodied) return;
+    const key = obj.canonicalId || obj.objectId;
+    daily.textContent = "—"; embodied.textContent = "—";
+    dailyTag.textContent = "未核算"; dailyTag.dataset.state = "none";
+    embodiedTag.textContent = "未核算"; embodiedTag.dataset.state = "none";
+    loadEnergyManifest().then(map => {
+      if (!objArchiveOpen || !oaCurrent || (oaCurrent.canonicalId || oaCurrent.objectId) !== key) return;
+      const item = map && map.get(key);
+      const dTag = energyTag(item, "daily"), eTag = energyTag(item, "embodied");
+      if (item) {
+        daily.textContent = energyNumber(item.dailyKwh, "kWh/日");
+        embodied.textContent = energyNumber(item.embodiedKwh, "kWh");
+      }
+      dailyTag.textContent = dTag.text; dailyTag.dataset.state = dTag.state;
+      embodiedTag.textContent = eTag.text; embodiedTag.dataset.state = eTag.state;
+    });
+  }
+
+  /* 阶段二：档案内容填充（居民档案版 B + A 的补充观察分支） */
   function populateObjectArchive(obj) {
-    const A=window.ArchiveData;
-    oaSubject.textContent='SUBJECT '+obj.objectId;
-    oaName.textContent=obj.labelEn.toUpperCase();
-    oaNameEn.textContent=obj.label+' / '+A.type(obj);
-    const record = window.ArchiveCatalog.get(obj);
-    document.getElementById('oaDescription').textContent = record?.description || '';
-    oaIdentity.innerHTML=A.identity(obj);
-    oaResourceUnit.textContent=A.type(obj);
-    document.querySelector('#objArchive .resource-unit svg').innerHTML=A.symbol(obj);
-    oaViewLabel.textContent='PORTRAIT / 3D VIEW AVAILABLE';
-    oaCarbonValue.textContent='DATA PENDING';
-    document.getElementById('oaCarbonExpression').innerHTML=A.expression(obj);
-    document.getElementById('oaCarbonUnit').textContent='kg CO₂e / year';
-    const vehicle = obj.category === 'person' || obj.category === 'vehicle';
-    oaCarbonNote.textContent=(vehicle?'VEHICLE':'OBJECT')+' OPERATION ONLY / ENERGY RECORD AND SOURCED FACTOR REQUIRED.';
-    oaFooterNote.textContent='ILLUSTRATIVE MODEL / OBJECT DATA NOT YET VERIFIED.';
-    document.getElementById('oaInsetOne').textContent=obj.category==='infrastructure'?'STRUCTURE / GEOMETRY':'WHEEL / CONSTRUCTION';
-    document.getElementById('oaInsetTwo').textContent=window.ArchiveMechanisms.title(obj);
-    document.getElementById('oaSourceText').textContent=A.sourceNotes(obj);
+    const A=window.ArchiveData, kind=window.ArchiveCatalog.subtype(obj);
+    const profile=window.residentProfile(kind,obj);
+    const azhong=kind==='truck' && obj.objectId==='TRK-0002';
+    oaSubject.textContent='居民档案 / '+(obj.canonicalId||obj.objectId);
+    oaName.textContent=azhong?'阿重':obj.label;
+    oaNameEn.textContent=(azhong?'厢式货车 · ':'')+obj.labelEn;
+    const structures={van:'高顶车厢 · 滑门导轨 · 轮组',mpv:'乘员舱 · 侧窗 · 轮组',truck:'驾驶室 · 货厢 · 底盘',suv:'车身 · 轮拱 · 底盘',sedan:'乘员舱 · 风挡 · 轮组',bus:'客舱 · 站立区 · 车门',coach:'乘员舱 · 行李舱 · 轮组',banner:'立杆 · 横撑 · 旗面','bike-rack':'车架 · 轮组 · 停放支架'};
+    const rows=[['居民编号',obj.canonicalId||obj.objectId],['来源街区',obj.cameraId||window.Census.get(obj.canonicalId)?.cameraId||'街区观察'],['城市角色',profile.role]];
+    if(structures[kind])rows.push(['身体结构',structures[kind]]);
+    oaIdentity.innerHTML=rows.map(([k,v])=>'<div class="id-row"><dt>'+k+'</dt><dd>'+A.escape(v)+'</dd></div>').join('');
+    document.getElementById('oaDescription').textContent=azhong?'「货物我都护好啦。」　温柔、靠谱、有些慢热。喜欢晚霞和驾驶室里的电台。':profile.story;
+    oaViewLabel.textContent='结构研究 / 01';
+    oaCarbonValue.textContent=profile.value;
+    document.getElementById('oaCarbonUnit').textContent=profile.unit;
+    oaCarbonNote.textContent=profile.note;
+    fillEnergyFigures(obj);
+    const link=document.getElementById('energySource');link.hidden=!profile.url;link.href=profile.url||'';link.textContent=profile.source+' ↗';
+    document.getElementById('oaCarbonExpression').innerHTML='<svg viewBox="0 0 32 24" width="52" height="39" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2h20l4 4v12l-4 4H6l-4-4V6z"/><path d="M8 9h4m8 0h4M10 15v2h12v-2"/></g></svg><small>工作神态 · '+profile.mood+'</small>';
+    oaResourceUnit.textContent=obj.label;
+    const icon=document.querySelector('#objArchive .resource-unit svg'),unit=icon.parentElement;
+    unit.querySelector('canvas')?.remove();icon.style.display='';
+    if(window.ArchiveCatalog.studyKind(obj)){
+      icon.style.display='none';
+      const tile=document.createElement('canvas');tile.width=154;tile.height=88;tile.style.cssText='width:77px;height:44px;display:block;margin:auto';unit.prepend(tile);
+      const model=window.ModelEngine.buildModel(obj.category,kind);
+      window.ArchiveEngineering.render(tile.getContext('2d'),model,{w:154,h:88,pitch:.32,glitch:false});
+    }else icon.innerHTML=A.symbol(obj);
+    document.getElementById('residentRole').textContent=profile.role;
+    oaFooterNote.textContent='居民叙事 / 角色创作';
+    document.getElementById('oaInsetOne').textContent=(kind==='streetlight'||(window.ArchiveCatalog.studyKind(obj)&&obj.category!=='vehicle'))?'构造 / STRUCTURE':'轮组 / WHEEL';
+    document.getElementById('oaInsetTwo').textContent=(window.ArchiveCatalog.studyKind(obj)&&obj.category!=='vehicle')?'侧视 / PROFILE':'机能 / MOTION STUDY';
+    document.getElementById('oaSourceText').textContent='观察编号 '+(obj.canonicalId||obj.objectId)+' · '+obj.label+'。形象为结构示意，独白与神态为角色创作。能耗卡使用同类公开资料。';
+    oaFooterNote.dataset.base='居民叙事 / 角色创作';
     // 人工补充的静态设施：档案里标「补充观察」，并用当前帧裁切图做临时证据占位
     let ex = document.getElementById('oaExtraEvidence');
     if (obj._extra) {
@@ -674,7 +650,7 @@
         ex.hidden = false;
       }
       oaNameEn.textContent = obj.label + ' / ' + A.type(obj) + ' · 补充观察';
-      oaFooterNote.textContent = 'MANUAL SUPPLEMENT / 补充观察：人工补充静态设施，未纳入 63 条候选主账。';
+      oaFooterNote.textContent = 'MANUAL SUPPLEMENT / 补充观察：人工补充静态设施，未纳入候选主账。';
     } else if (ex) ex.hidden = true;
   }
 
@@ -722,9 +698,10 @@
     oaDossier.hidden = true;
     oaDossier.classList.remove("is-open", "is-revealing");
     oaScanId.textContent = obj.objectId;
-    document.getElementById("oaScanType").textContent=window.ArchiveData.type(obj)+" / 01";
+    document.getElementById("oaScanType").textContent=(window.ArchiveCatalog.studyKind(obj)?obj.labelEn:window.ArchiveData.type(obj))+" / 01";
     const subtype=window.ArchiveCatalog.subtype(obj);
-    const parts=obj.category==='person'?['HELMET','RIDER','FRAME','DRIVE']:subtype==='truck'?['CAB','CARGO BODY','CHASSIS','RUNNING GEAR']:obj.category==='infrastructure'?['MAST','ARM','LED ARRAY','BASE']:['BODY','GLAZING','RUNNING GEAR','THERMAL'];
+    const street=window.ArchiveCatalog.studyKind(obj)&&obj.category!=='vehicle';
+    const parts=street?['PROFILE','SURFACE','ASSEMBLY','DETAIL']:obj.category==='person'?['HELMET','RIDER','FRAME','DRIVE']:subtype==='truck'?['CAB','CARGO BODY','CHASSIS','RUNNING GEAR']:obj.category==='infrastructure'?['MAST','ARM','LED ARRAY','BASE']:['BODY','GLAZING','RUNNING GEAR','THERMAL'];
     document.getElementById('oaScanParts').replaceChildren(...parts.map(label=>{const span=document.createElement('span');span.textContent=label;return span;}));
     oaFootnoteId.textContent = obj.objectId;
     oaScanStatus.textContent = "INITIALIZING";
@@ -783,7 +760,7 @@
     oaDossier.classList.add("is-revealing");
     populateObjectArchive(obj);
     renderArchiveInsets(obj);
-    if(window.ArchiveMotion)requestAnimationFrame(()=>{if(objArchiveOpen&&oaCurrent===obj)window.ArchiveMotion.start(oaProfileCanvas,obj);});
+    if(window.ArchiveMotion&&(!window.ArchiveCatalog.studyKind(obj)||obj.category==='vehicle'))requestAnimationFrame(()=>{if(objArchiveOpen&&oaCurrent===obj)window.ArchiveMotion.start(oaProfileCanvas,obj);});
     oaEntry.play();
     requestAnimationFrame(function () { if(objArchiveOpen && oaCurrent===obj)oaDossier.classList.add("is-open"); });
     // 实体模型持续渲染（切换到档案阶段的画布）
@@ -792,9 +769,18 @@
       oaSolidPlayer.attach(oaSolidCanvas);
       oaSolidPlayer.showSolid(obj.category, window.ArchiveCatalog.subtype(obj));
     }
+    // 档案滑动到星图：挂在真正滚动的 .dossier-shell 上，滚到底自动进入星图
+    const scrollPane = document.querySelector('#objArchive .dossier-shell');
+    if (window.PopulationJourney && scrollPane && obj.canonicalId) {
+      window.PopulationJourney.mount(scrollPane, obj.canonicalId, () => {
+        if (window.ObjectUniverse?.enabled) return window.ObjectUniverse.open(obj.canonicalId);
+        const btn = document.getElementById('openGlobalSurvey');
+        if (btn) btn.click();
+      });
+    }
   }
 
-  function openObjectArchive(obj, opts) {
+  function openObjectArchive(obj) {
     rememberScene();
     selectedId = obj.objectId;
     oaCurrent = obj;
@@ -811,9 +797,7 @@
     objArchive.setAttribute("aria-hidden","false");
     document.body.style.overflow = "hidden";
     video.pause();
-    // 转场已经做过"取出 + 转一圈"，这里直接落档案，避免再走一遍黑底扫描（不出现黑屏）
-    if (opts && opts.skipScan) { oaScan.hidden = true; oaPhase = "dossier"; showDossier(obj); }
-    else runScan(obj);
+    runScan(obj);
   }
 
   function closeObjectArchive(options={}) {
@@ -940,17 +924,8 @@
       o._fit = null;
     });
     if (!detData) return;
-    const boundIds = new Set(Object.values(detData.binding));
-    detData.trk.forEach((info, tid) => {
-      if (boundIds.has(tid)) return;            // 有档案的轨迹走原目标框（可点击）
-      const el = document.createElement("div");
-      el.className = "track-box track-ghost" + (info.static ? " static-ghost" : "");
-      el.style.opacity = "0";
-      el.style.display = "none";
-      el.innerHTML = '<span class="box-tag">T' + String(tid).padStart(2, "0") + "</span>";
-      layer.appendChild(el);
-      detGhostEls.set(tid, el);
-    });
+    // 5.4.2 框层退回 B：未绑定轨迹一律不画框（不再创建 ghost）
+    // 原 ghost 建框循环已断开，detGhostEls 保持为空，renderDetGhosts 自然空转
   }
   function sampleDetBox(tid, t) {
     const info = detData && detData.trk.get(tid);
@@ -1013,7 +988,6 @@
     if (time - lastDraw < 33) return;
     lastDraw = time;
 
-    if (turnState) drawTurntable(time);
     const t = video.currentTime;
 
 
@@ -1072,8 +1046,8 @@
         bb = obj._staticTooLarge ? null : fit;
         visible = inWindow && !!bb;
       } else if (moving) {
-        // 动态主体：只画烘焙检测框；没绑上 recordId 的用淡细 ghost，不拿手写框凑数
-        bb = detBox ? { x: detBox.x, y: detBox.y, w: detBox.w, h: detBox.h } : null;
+        // 动态主体：优先烘焙检测框；检测断档 / 未绑定（如 ST1-0011）回退到关键帧框，保证有框
+        bb = detBox ? { x: detBox.x, y: detBox.y, w: detBox.w, h: detBox.h } : ((inWindow && fit) ? fit : null);
         visible = !!bb;
       } else {
         // 静态工业物：位置固定，沿用原标注框（比 YOLO 更准）；过大标注跳过
@@ -1110,12 +1084,24 @@
         const H = (b.h * 100).toFixed(3) + "%";
         if (obj._W !== W) { el.style.width = W; obj._W = W; }
         if (obj._H !== H) { el.style.height = H; obj._H = H; }
+        // 标签第二行：当日已运行时长 ÷ 日运行时段（census appear→disappear），只画细条不写数字
+        if (obj._meterEl) {
+          const span = Math.max(0.1, (obj.disappear || 0) - (obj.appear || 0));
+          const ratio = Math.min(1, Math.max(0, (t - (obj.appear || 0)) / span));
+          const rw = (ratio * 100).toFixed(1) + "%";
+          if (obj._meterW !== rw) { obj._meterEl.style.width = rw; obj._meterW = rw; }
+          obj._meterRatio = ratio;
+          const meterOff = (obj._bw || 0) < 60;   // 框宽 <60px 只留第一行，进度条隐藏
+          if (obj._meterOff !== meterOff) { obj._meterOff = meterOff; el.classList.toggle("meter-off", meterOff); }
+        }
         {
           const dist = Math.abs(b.x + b.w / 2 - .5) + Math.abs(b.y + b.h / 2 - .45) * 1.4;
-          // 琥珀色只给正在移动的主体（车辆 / 骑手）；静态物永不给琥珀色
-          if (obj.category === "vehicle" || obj.category === "person") {
-            const rank = obj.objectId === selectedId ? 0 : (obj.objectId === focusId ? 1 : 2);
-            trackPick.push({ el, rank, dist });
+          // 5.4.2：唯一的金色框 = 被选中/被追踪的那一个。只有"选中"优先；
+          // 未选中时仍只跟随移动主体（悬停不改变框色，标签才能跟随类别色）
+          if (obj.objectId === selectedId) {
+            trackPick.push({ el, rank: 0, dist });
+          } else if (obj.category === "vehicle" || obj.category === "person") {
+            trackPick.push({ el, rank: 2, dist });
           }
         }
         // 锁定进度条：目标出现后 1.2s 内填满 → 模拟识别锁定过程
@@ -1130,8 +1116,8 @@
         }
       }
 
-      // presence → 透明度；静态物基础透明度 0.55（2px 常驻冷蓝灰框），悬停由 CSS 提亮到 0.9
-      const op = (obj._pres * (moving ? 1 : 0.55)).toFixed(3);
+      // presence → 透明度；5.4.2 起所有框统一 opacity 1（淡入淡出仍由 presence 控制）
+      const op = obj._pres.toFixed(3);
       if (obj._op !== op) { el.style.opacity = op; obj._op = op; }
       const sc = (0.90 + 0.10 * obj._pres).toFixed(3);
       const tf = "translate(" + (obj._tx || 0) + "px," + (obj._ty || 0) + "px) scale(" + sc + ")";
@@ -1156,7 +1142,7 @@
     // 无档案检测框（street3 试点）：按时间取框、停放弱化、叠框去重
     renderDetGhosts(t, visObjs);
 
-    // 正在跟的那个目标：琥珀金；同一时刻画面里最多 1 个（选中 > 悬停 > 画面中心）
+    // 正在跟的那个目标：金色；同一时刻画面里最多 1 个（选中 > 画面中心，悬停不改色）
     let bestPick = null, bestScore = 1e9;
     trackPick.forEach((p) => {
       const score = p.rank * 100 + p.dist;
@@ -1254,7 +1240,7 @@
       energyKwh: 0, _extra: true, _thumbCrop: crop, thumb: crop
     };
     boxEls.set(rec.id, el);
-    startTurntable(obj, () => openObjectArchive(obj, { skipScan: true }));
+    openObjectArchive(obj);
   }
   async function buildExtraUI(key) {
     try {
@@ -1328,7 +1314,8 @@
         // 识别框 / 清单 / 标签必须先于任何异步依赖生成：
         // 档案文案层只是文字补充，绝不能阻塞「实时识别」这一主功能
         buildSceneUI();
-        buildExtraUI(key);   // 补充静态标注：独立于主账，不参与 63/115 与「已识别记录」统计
+        // 5.4.2：static-extra 补充标注（7 条）已废弃 —— 不再加载、不再画框，数据文件保留
+        // buildExtraUI(key);
         // 离线检测：四段街道全部读烘焙 JSON（street3 优先 hi）；legacy 仍走手写标注
         if (DET_FILES[key]) {
           detData = await loadDetData(key);

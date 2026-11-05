@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="integration/entry-narrative.css">
 <link rel="stylesheet" href="integration/monitor-layout.css">
 <link rel="stylesheet" href="integration/object-universe.css">
+<link rel="stylesheet" href="archive/resident.css">
 </head>
 <body class="is-booting">
 
@@ -362,11 +363,11 @@
         <div class="visual-column">
           <section class="dossier-box object-visual reveal r1">
             <div class="mini-heading">
-              <span>IMAGE / ACQUISITION RECORD</span>
+              <span>居民肖像 / PORTRAIT</span>
               <span id="oaViewLabel">VIEW 01/01</span>
             </div>
             <canvas id="oaSolidCanvas" class="approved-object" aria-label="目标实体模型"></canvas>
-            <span class="visual-caption"><span>STRUCTURAL STUDY / ILLUSTRATIVE RECONSTRUCTION</span><button id="oaInspect" type="button">3D VIEW ↗</button></span>
+            <span class="visual-caption"><span>类别结构示意</span><button id="oaInspect" type="button">旋转检视 ↗</button></span>
           </section>
           <div class="insets">
             <section class="dossier-box anatomy reveal r3">
@@ -392,71 +393,26 @@
           </section>
 
           <section class="dossier-box carbon-box reveal r4">
-            <h3>CARBON RECORD</h3>
-            <div class="carbon-body">
-              <div class="carbon-value">
-                <span>ANNUAL USE-PHASE CO₂e</span>
-                <strong id="oaCarbonValue">DATA PENDING</strong>
-                <span id="oaCarbonExpression"></span>
-                <small id="oaCarbonUnit">kg CO₂e / year</small>
-                <p id="oaCarbonNote">MODEL, ENERGY USE AND GRID<br>FACTOR REQUIRED.</p>
-              </div>
-              <div class="carbon-diagram">
-                <span>IF ELECTRIC / METHOD ONLY</span>
-                <div class="carbon-chain">
-                  <div>
-                    <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M32 5 16 32h13l-4 23 21-33H32Z" class="filled-wire"/></svg>
-                    <b>CHARGING<br>kWh / YEAR</b>
-                  </div>
-                  <span class="arrow">×</span>
-                  <div>
-                    <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M8 51V34l12-8v9l12-9v25M32 51V9h8v42M9 51h44M14 42v4m8-4v4"/></svg>
-                    <b>GRID FACTOR<br>kg CO₂e / kWh</b>
-                  </div>
-                  <span class="arrow">=</span>
-                  <div>
-                    <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M14 44a12 12 0 0 1 0-24 17 17 0 0 1 32 0 12 12 0 0 1 0 24Z"/><text x="30" y="35" text-anchor="middle">CO₂</text></svg>
-                    <b>CO₂e</b>
-                  </div>
-                </div>
-              </div>
+            <h3>能耗侧写 <small>ENERGY STUDY</small></h3>
+            <div class="energy-reading"><div><span id="oaCarbonUnit"></span><strong id="oaCarbonValue"></strong></div><span id="oaCarbonExpression"></span></div>
+            <div class="energy-figures" id="oaEnergyFigures">
+              <div class="energy-row"><span>日使用能耗</span><b id="oaDailyValue">—</b><em id="oaDailyTag">未核算</em></div>
+              <div class="energy-row"><span>制造能耗</span><b id="oaEmbodiedValue">—</b><em id="oaEmbodiedTag">未核算</em></div>
             </div>
+            <p id="oaCarbonNote"></p><a id="energySource" target="_blank" rel="noopener">查阅同类资料 ↗</a>
           </section>
-
-          <section class="dossier-box resource-box reveal r5">
-            <header>
-              <h3>RESOURCE CONNECTION</h3>
-              <span>OPERATION BOUNDARY ONLY<br>PRODUCTION ACCOUNTED SEPARATELY</span>
-            </header>
-            <div class="resource-network">
-              <div class="resource-inputs">
-                <div><span>ENERGY RECORD</span><b>+</b><span>PERIOD</span></div>
-                <div><span>REGION / YEAR</span><b>→</b><span>FACTOR</span></div>
-              </div>
-              <b class="network-arrow">→</b>
-              <div class="resource-unit">
-                <svg viewBox="0 0 90 64" aria-hidden="true">
-                  <rect x="5" y="4" width="80" height="53"/>
-                  <circle cx="32" cy="30" r="21"/><circle cx="32" cy="30" r="5"/>
-                  <path d="M11 30h42M32 9v42M17 15l30 30M17 45l30-30M61 14h16m-16 7h16m-16 7h16m-16 7h16M15 57v5m60-5v5"/>
-                </svg>
-                <span id="oaResourceUnit">OBJECT</span>
-              </div>
-              <b class="network-arrow">→</b>
-              <span class="resource-result">USE-PHASE<br>CO₂e</span>
-            </div>
-          </section>
+          <section class="dossier-box resource-box reveal r5"><h3>城市关系 <small>URBAN ROLE</small></h3><div class="resident-route"><span>街区</span><i></i><span class="resource-unit"><svg viewBox="0 0 90 64" aria-hidden="true"></svg><span id="oaResourceUnit"></span></span><i></i><span id="residentRole"></span></div></section>
         </div>
       </div>
 
       <footer class="dossier-footer reveal r6">
-        <button id="oaBackToScene" type="button">◀ BACK TO SCENE</button>
+        <button id="oaBackToScene" type="button">← 返回街区</button>
         <span id="oaFooterNote">MODEL-SPECIFIC DATA NOT YET VERIFIED.</span>
         <div>
-          <button id="oaPrev" type="button">‹ PREVIOUS</button>
-          <button id="oaNext" type="button">NEXT ›</button>
-          <button id="oaSource" type="button">SOURCE NOTES ↗</button>
-          <button id="oaReplay" type="button">REPLAY ↻</button>
+          <button id="oaPrev" type="button">‹ 上一位</button>
+          <button id="oaNext" type="button">下一位 ›</button>
+          <button id="oaSource" type="button">资料来源 ↗</button>
+          <button id="oaReplay" type="button">重播 ↻</button>
         </div>
       </footer>
     </div>
@@ -489,6 +445,9 @@
 <script src="archive/visuals.js"></script>
 <script src="archive/data.js"></script>
 <script src="archive/catalog.js"></script>
+<script src="integration/street-profiles.js"></script>
+<script src="archive/resident.js"></script>
+<script src="integration/population-journey.js"></script>
 <script src="archive/inspection.js"></script>
 <script src="archive/entry.js"></script>
 <script src="panels.js"></script>

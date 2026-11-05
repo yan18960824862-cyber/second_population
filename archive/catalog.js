@@ -33,7 +33,14 @@
     }
   }
   function get(obj) { return obj.archive?.objectId===obj.objectId ? obj.archive : records.get(obj.objectId) || null; }
-  function subtype(obj) { return get(obj)?.model || window.ModelEngine.detectSubtype(obj.category, obj.labelEn); }
+  const streetLabels = ['METRO SIGN','GANTRY SIGN','CAMERA POLE','BARRIER','GUARDRAIL','KERB','ARROW','MANHOLE','FENCE','SIGN','LANE MARK','BANNER','BIKE RACK'];
+  function studyKind(obj) {
+    const label=(obj.labelEn||'').trim().toUpperCase();
+    if (/\bVAN\b/.test(label)) return 'van';
+    if (/\bMPV\b/.test(label)) return 'mpv';
+    return streetLabels.includes(label)?label.toLowerCase().replaceAll(' ','-'):null;
+  }
+  function subtype(obj) { return studyKind(obj) || get(obj)?.model || window.ModelEngine.detectSubtype(obj.category, obj.labelEn); }
   const originalIdentity = window.ArchiveData.identity, originalNotes = window.ArchiveData.sourceNotes;
   window.ArchiveData.identity = obj => originalIdentity(obj) + (get(obj)?.details || []).map(d =>
     '<div class="id-row"><dt>' + window.ArchiveData.escape(d.label) + '</dt><dd>' + window.ArchiveData.escape(d.value) + '</dd></div>'
@@ -49,5 +56,5 @@
       record.details.map(d => '\n\n' + d.label + ': ' + d.value + '\nSource: ' + d.source).join('') +
       '\n\nMODEL MAPPING\n' + record.category + ' / ' + record.model + ' — shared illustrative model family; not a verified make or exact reconstruction.';
   };
-  window.ArchiveCatalog = { load, validate, get, subtype };
+  window.ArchiveCatalog = { load, validate, get, subtype, studyKind };
 })();

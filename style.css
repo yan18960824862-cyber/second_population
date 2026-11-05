@@ -386,19 +386,6 @@ body {
   pointer-events: none;
 }
 
-/* ── 点击转场：取出物体转一圈再进档案（只做合成，不动布局） ── */
-.turn-stage {
-  position: fixed;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0;
-  transform-origin: 50% 50%;
-  background: radial-gradient(closest-side, rgba(4, 9, 12, .78) 0%, rgba(4, 9, 12, .55) 55%, rgba(4, 9, 12, 0) 78%);
-}
-.is-turning .box-card, .is-turning .universe-card { display: none !important; }
-.turn-stage canvas { width: 100%; height: 100%; display: block; }
-.turn-stage.done { opacity: 0 !important; transition: opacity .2s ease-out; }
-
 /* ── 识别框（v5.5）：单一细矩形，无角标 / 无内嵌线 / 无阴影 / 无渐变 ── */
 :root {
   --box-cool: #9FB6C2;   /* 冷蓝灰，低饱和 */
@@ -411,7 +398,8 @@ body {
   top: 0;
   pointer-events: auto;
   cursor: pointer;
-  border: 2px solid var(--box-cool-soft);
+  /* 5.4.2：3px 实线、opacity 1，颜色由 JS 按类别写入 --box-stroke（星云五色高亮版） */
+  border: 3px solid var(--box-stroke, #86e3ea);
   background: none;
   box-shadow: none;
   transition: border-color .2s, opacity .2s;
@@ -420,13 +408,15 @@ body {
 
 .track-box:hover, .track-box.selected,
 .track-box.focused {
-  border-color: var(--box-cool);
+  border-color: var(--box-stroke, #86e3ea);
   z-index: 8;
 }
 
-/* 正在追踪那一个：琥珀金，全场最多 1 个 */
+/* 正在追踪 / 被选中的那一个：全场唯一金黄 5px（另加 1px 白描边，与"金黄"类框区分） */
 .track-box.tracking {
-  border-color: var(--box-amber);
+  border-color: rgb(255, 214, 102) !important;
+  border-width: 5px;
+  outline: 1px solid rgba(255, 255, 255, .92);
   z-index: 9;
 }
 
@@ -448,14 +438,14 @@ body {
   left: 0;
   transform: translateY(-100%);
   display: block;
-  padding: 0 2px 1px;
+  padding: 0 2px 4px;
   background: none;
   border: none;
   box-shadow: none;
-  color: var(--box-cool-soft);
+  color: var(--box-tag, #86e3ea);
   font-family: var(--mono);
-  font-size: 8px;
-  font-weight: 400;
+  font-size: 9px;
+  font-weight: 500;
   line-height: 1.2;
   letter-spacing: .08em;
   white-space: nowrap;
@@ -463,26 +453,41 @@ body {
   text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 0 4px rgba(0, 0, 0, .8);
 }
 
-.track-box.tracking .box-tag { color: var(--box-amber); }
+.track-box.tracking .box-tag { color: rgb(255, 214, 102); }
 
-/* 主体目标（车辆 / 骑手）：实线，成为画面视觉重心 */
+/* 标签第二行：日能耗进度细条（宽 50px、高 2px、无数字，颜色跟随类别） */
+.box-meter {
+  display: block;
+  width: 50px;
+  height: 2px;
+  margin-top: 2px;
+  background: var(--box-track, rgba(134, 227, 234, .2));
+  border-radius: 0;
+  overflow: hidden;
+}
+.box-meter i {
+  display: block;
+  height: 2px;
+  width: 0;
+  background: var(--box-tag, #86e3ea);
+}
+.track-box.meter-off .box-meter { display: none; }
+
+/* 主体目标（车辆 / 骑手）：3px 实线，颜色仍按类别 */
 .track-box.subject {
-  border-color: var(--box-cool-soft);
+  border-color: var(--box-stroke, #86e3ea);
   z-index: 6;
 }
 
-/* 静态工业物（灯杆 / 护栏 / 指示牌 / 井盖 / 路缘等）：2px 冷蓝灰框，
-   JS 以 0.55 基础透明度常驻渲染，悬停提亮到 0.9 并显示短编号；永不给琥珀色 */
+/* 静态工业物（灯杆 / 护栏 / 指示牌 / 井盖 / 路缘等）：3px 实线、opacity 1，
+   颜色按类别取自星云五色，名称常驻显示 */
 .track-box.static {
-  border: 2px solid rgba(176, 198, 212, .85);
+  border: 3px solid var(--box-stroke, #86e3ea);
   z-index: 1;
 }
 .track-box.static:hover {
-  opacity: .90 !important;
-  border-color: rgba(210, 228, 238, .98);
+  border-color: var(--box-stroke, #86e3ea);
 }
-.track-box.static .box-tag { display: none; }
-.track-box.static:hover .box-tag { display: block; color: rgba(210, 228, 238, .98); }
 /* 仅验收用：body.show-extra-seq 时把补充框的序号常驻显示（生产默认仍悬停才出） */
 body.show-extra-seq .track-box.extra .box-tag { display: block; color: rgba(210, 228, 238, .98); }
 /* 档案里的补充观察占位图 */
@@ -496,15 +501,12 @@ body.show-extra-seq .track-box.extra .box-tag { display: block; color: rgba(210,
   color: rgba(176, 198, 212, .82); font-family: var(--font-mono, monospace);
 }
 
-/* 过小目标不显示标签 */
-.track-box.tag-off .box-tag { display: none; }
+/* 5.4.2：取消"过小目标不显示标签"，每个框都常驻名称 + 编号 */
+.track-box .box-tag { display: block; }
 
 /* 贴边时标签翻向内侧，避免被 .viewport 裁切 */
 .track-box.tag-in .box-tag { top: 1px; left: 3px; transform: none; }
 .track-box.tag-r  .box-tag { left: auto; right: 2px; }
-
-.track-box.focused .box-tag,
-.track-box.selected .box-tag { display: none; }
 
 /* 追踪态压过 subject / static 的基础色（同特异性下靠后生效，故置于末尾） */
 .track-box.tracking,
@@ -512,8 +514,19 @@ body.show-extra-seq .track-box.extra .box-tag { display: block; color: rgba(210,
 .track-box.tracking:hover,
 .track-box.tracking.selected,
 .track-box.tracking.focused {
-  border-color: var(--box-amber);
+  border-color: rgb(255, 214, 102) !important;
+  border-width: 5px;
+  outline: 1px solid rgba(255, 255, 255, .92);
   z-index: 9;
+}
+/* 5.4.2：星图联动高亮不得改掉类别色/金色，也不加发光与底色 */
+.viewport .track-box.universe-hover {
+  border-color: var(--box-stroke, #86e3ea) !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+.viewport .track-box.universe-hover.tracking {
+  border-color: rgb(255, 214, 102) !important;
 }
 
 /* ── 引出档案卡（焦点 / 选中目标展开） ── */
@@ -841,9 +854,9 @@ body.show-extra-seq .track-box.extra .box-tag { display: block; color: rgba(210,
 .transport { animation: fadeIn     .8s ease .26s both; }
 .tickerbar { animation: riseBottom .7s cubic-bezier(.22, 1, .36, 1) .12s both; }
 
-/* 选中识别框：跟踪脉冲呼吸光 */
+/* 5.4.2：选中框不再使用呼吸光/阴影，唯一标识改为金色 5px（见 .tracking 规则） */
 .track-box.selected {
-  animation: trackPulse 1.9s ease-in-out infinite;
+  animation: none;
 }
 @keyframes trackPulse {
   0%, 100% {
